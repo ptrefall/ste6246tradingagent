@@ -11,6 +11,7 @@ set(SRCS
 )
 #---------------------------------------------------------------
 find_package(Irrlicht REQUIRED)
+find_package(GAlib REQUIRED)
 #---------------------------------------------------------------
 add_executable(TradingAgent ${HDRS} ${SRCS})
 #---------------------------------------------------------------
@@ -19,5 +20,6 @@ set_target_properties(TradingAgent PROPERTIES LINKER_LANGUAGE CXX)
 #---------------------------------------------------------------
 target_link_libraries(TradingAgent
   debug ${IRR_LIB_DEBUG} optimized ${IRR_LIB_RELEASE}
+  debug ${GALIB_LIB_DEBUG} optimized ${GALIB_LIB_RELEASE}
 )
 #---------------------------------------------------------------
