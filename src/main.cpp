@@ -4,6 +4,9 @@
 #include <GA\GA2DBinStrGenome.h>
 #include <iostream>
 
+#include <ClanLib\core.h>
+#include <Totem\ComponentFactory.h>
+
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -15,6 +18,8 @@ float Objective(GAGenome &);
 
 int main(int argc, char **argv)
 {
+	CL_SetupCore clanlib_core_setup;
+	Totem::ComponentFactory factory;
 	for(int ii=1; ii<argc; ii++) 
 	{
 		if(strcmp(argv[ii++],"seed") == 0) {
