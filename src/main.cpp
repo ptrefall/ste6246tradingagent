@@ -41,20 +41,65 @@ int main(int argc, char **argv)
 	ga.pCrossover(pcross);
 
 
-	IrrlichtDevice *device = createDevice( video::EDT_DIRECT3D9, dimension2d<u32>(640,480), 16, false, false, false, 0);
+	IrrlichtDevice *device = createDevice( video::EDT_DIRECT3D9, dimension2d<u32>(1680,1200), 16, false, false, false, 0);
 	if(!device)
 		return -1;
 
-	device->setWindowCaption(L"TradinAgent");
+	device->setWindowCaption(L"TradingAgent");
 
 	IVideoDriver* driver = device->getVideoDriver();
 	ISceneManager* smgr = device->getSceneManager();
 	IGUIEnvironment* guienv = device->getGUIEnvironment();
 
+	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!",
+                rect<s32>(10,10,260,22), true);
+
+	ISceneNode *tower = smgr->addSceneNode("Tower");
+	{
+		IAnimatedMesh* mesh = smgr->getMesh("../../bin/resources/Mesh/Tower/turret_base1.3ds");
+		IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh, tower );
+		if (node)
+		{
+			node->setMaterialFlag(EMF_LIGHTING, false);
+			node->setMD2Animation(scene::EMAT_STAND);
+			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Tower/Base_Diffuse.tga") );
+			node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
+			node->setPosition(vector3df(10.0f, 0.0f, 0.0f));
+		}
+	}
+	{
+		IAnimatedMesh* mesh = smgr->getMesh("../../bin/resources/Mesh/Tower/turret_head5.3ds");
+		IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh, tower );
+		if (node)
+		{
+			node->setMaterialFlag(EMF_LIGHTING, false);
+			node->setMD2Animation(scene::EMAT_STAND);
+			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Tower/Head_Diffuse.tga") );
+			node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
+			node->setPosition(vector3df(10.0f, 6.5f, 0.0f));
+		}
+	}
+	{
+		IAnimatedMesh* mesh = smgr->getMesh("../../bin/resources/Mesh/Tower/turret_gun6.3ds");
+		IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh, tower );
+		if (node)
+		{
+			node->setMaterialFlag(EMF_LIGHTING, false);
+			node->setMD2Animation(scene::EMAT_STAND);
+			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Tower/Weapon_Diffuse.tga") );
+			node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
+			node->setPosition(vector3df(10.0f, 8.0f, 0.0f));
+		}
+	}
+
+	smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
+
 	double accum_time = 0.0;
 	while(device->run())
 	{
 		double fps_ms = 1.0 / (double)driver->getFPS();
+		device->setWindowCaption((const wchar_t*)(CL_String("TradingAgent") + CL_StringHelp::int_to_text(driver->getFPS())).c_str());
+
 		if(fps_ms < 0.1)
 			accum_time += fps_ms;
 		if(accum_time > 10.0)
@@ -64,9 +109,14 @@ int main(int argc, char **argv)
 			std::cout << "The GA found:\n" << ga.statistics().bestIndividual() << "\n";
 		}
 
+		//tower->setRotation(vector3df(0.0f, 1.0f, 0.0f));
+
 		driver->beginScene(true, true, SColor(255,100,101,140));
 		smgr->drawAll();
+		guienv->drawAll();
 		driver->endScene();
+
+
 	}
 	device->drop();
 	return 0;
