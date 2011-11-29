@@ -8,11 +8,11 @@ FIND_PATH(IRR_INCLUDE_PATH Irrlicht/irrlicht.h
     )
 
 FIND_LIBRARY(IRR_LIB_DEBUG
-  NAMES Irrlicht-mt-debug-static.lib
+  NAMES Irrlicht-static-mt-debug
   PATHS ../depends/lib
     )
 	
 FIND_LIBRARY(IRR_LIB_RELEASE
-  NAMES Irrlicht-mt-static.lib
+  NAMES Irrlicht-static-mt
   PATHS ../depends/lib
     )
