@@ -92,6 +92,22 @@ int main(int argc, char **argv)
 		}
 	}
 
+	{
+		IAnimatedMesh* mesh = smgr->getMesh("../../bin/resources/Mesh/Beast/beast.ms3d");
+		IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh, tower );
+		if (node)
+		{
+			node->setMaterialFlag(EMF_LIGHTING, false);
+			//node->setMD2Animation(scene::EMAT_STAND);
+			node->setAnimationSpeed(30.0f);
+			node->setFrameLoop(1, 400);
+			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Beast/beast1.jpg") );
+			//node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
+			node->setPosition(vector3df(-10.0f, 0.0f, 0.0f));
+			node->setScale(vector3df(0.1f, 0.1f, 0.1f));
+		}
+	}
+
 	smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
 
 	double accum_time = 0.0;
