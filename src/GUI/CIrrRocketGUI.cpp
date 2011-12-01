@@ -53,10 +53,10 @@ CIrrRocketGUI::CIrrRocketGUI(irr::IrrlichtDevice* device) : Device(device)
 
     printf("Loading fonts\n");
 	// Load the fonts from the path to the sample directory.
-	Rocket::Core::FontDatabase::LoadFontFace("assets/Delicious-Roman.otf");
-	Rocket::Core::FontDatabase::LoadFontFace("assets/Delicious-Bold.otf");
-	Rocket::Core::FontDatabase::LoadFontFace("assets/Delicious-Italic.otf");
-	Rocket::Core::FontDatabase::LoadFontFace("assets/Delicious-BoldItalic.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("../../bin/resources/Fonts/Delicious-Roman.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("../../bin/resources/Fonts/Delicious-Bold.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("../../bin/resources/Fonts/Delicious-Italic.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("../../bin/resources/Fonts/Delicious-BoldItalic.otf");
 
 	RocketContext = Rocket::Core::CreateContext("default", Rocket::Core::Vector2i(Device->getVideoDriver()->getScreenSize().Width, Device->getVideoDriver()->getScreenSize().Height));
 
@@ -72,11 +72,11 @@ CIrrRocketGUI::CIrrRocketGUI(irr::IrrlichtDevice* device) : Device(device)
 	///DEMO
 	Device->setEventReceiver(InputEvents);
 
-	Rocket::Core::ElementDocument* cursor = RocketContext->LoadMouseCursor("assets/cursor.rml");
+	Rocket::Core::ElementDocument* cursor = RocketContext->LoadMouseCursor("../../bin/resources/Gui/cursor.rml");
 	if (cursor)
 		cursor->RemoveReference();
 
-	Rocket::Core::ElementDocument* document = RocketContext->LoadDocument("assets/demo.rml");
+	Rocket::Core::ElementDocument* document = RocketContext->LoadDocument("../../bin/resources/Gui/demo.rml");
 	if (document)
 	{
 		document->Show();
