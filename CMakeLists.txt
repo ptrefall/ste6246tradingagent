@@ -15,6 +15,9 @@ set(CMAKE_DEBUG_POSTFIX "_d")
 set(BUILD_SHARED_LIBS FALSE CACHE BOOL "TRUE to build project as shared libraries, FALSE to build it as static libraries")
 if(NOT BUILD_SHARED_LIBS)
 	add_definitions(-D_IRR_STATIC_LIB_)
+	add_definitions(-DFT2_BUILD_LIBRARY)
+	add_definitions(-D_LIB)
+	add_definitions(-DSTATIC_LIB)
 endif()
 
 # define an option for choosing between static and dynamic C runtime

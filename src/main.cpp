@@ -1,3 +1,6 @@
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include <Irrlicht\irrlicht.h>
 
 #include <GA\GASimpleGA.h>
@@ -10,6 +13,8 @@
 #include <SceneNode\HealthSceneNode.h>
 #include <SceneNode\CGridSceneNode.h>
 #include <SceneNode\Weather\irrWeatherManager.h>
+
+#include <GUI/CIrrRocketGUI.h>
 
 using namespace irr;
 using namespace core;
@@ -45,7 +50,7 @@ int main(int argc, char **argv)
 	ga.pCrossover(pcross);
 
 
-	IrrlichtDevice *device = createDevice( video::EDT_OPENGL, dimension2d<u32>(1920,1080), 16, false, false, false, 0);
+	IrrlichtDevice *device = createDevice( video::EDT_OPENGL, dimension2d<u32>(1920,1080), 32, false, false, false, 0);
 	if(!device)
 		return -1;
 
@@ -79,6 +84,8 @@ int main(int argc, char **argv)
 		node->setMaterialTexture(0, driver->getTexture("../../bin/resources/Particle/particlewhite.bmp"));
 	}*/
 
+	const float spawn_height = 175.0f;
+
 	ISceneNode *tower = smgr->addSceneNode("Tower");
 	{
 		IAnimatedMesh* mesh = smgr->getMesh("../../bin/resources/Mesh/Tower/turret_base3.3ds");
@@ -93,7 +100,7 @@ int main(int argc, char **argv)
 
 			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Tower/Base_Diffuse.tga") );
 			node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
-			node->setPosition(vector3df(10.0f, 0.0f, 0.0f));
+			node->setPosition(vector3df(10.0f, spawn_height, 0.0f));
 		}
 	}
 	{
@@ -108,7 +115,7 @@ int main(int argc, char **argv)
 			//node->addShadowVolumeSceneNode();
 			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Tower/Head_Diffuse.tga") );
 			node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
-			node->setPosition(vector3df(10.0f, 6.0f, 0.0f));
+			node->setPosition(vector3df(10.0f, spawn_height+6.0f, 0.0f));
 		}
 	}
 	{
@@ -123,7 +130,7 @@ int main(int argc, char **argv)
 			//node->addShadowVolumeSceneNode();
 			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Tower/Weapon_Diffuse.tga") );
 			node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
-			node->setPosition(vector3df(10.0f, 8.0f, 0.0f));
+			node->setPosition(vector3df(10.0f, spawn_height+8.0f, 0.0f));
 		}
 	}
 
@@ -142,7 +149,7 @@ int main(int argc, char **argv)
 			node->setFrameLoop(1, 400);
 			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Beast/beast1.jpg") );
 			//node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
-			node->setPosition(vector3df(-20.0f, 0.0f, 0.0f));
+			node->setPosition(vector3df(-20.0f, spawn_height, 0.0f));
 			node->setScale(vector3df(0.2f, 0.2f, 0.2f));
 
 			scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
@@ -155,7 +162,8 @@ int main(int argc, char **argv)
 	//smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
 	//smgr->addCameraSceneNodeMaya(0, -1500.0f, 200.0f, 1500.0f);
 	ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0, 100.0f, 0.5f);
-	camera->setPosition(vector3df(0, 30, -40));
+	camera->setPosition(vector3df(0, spawn_height+30, -40));
+	camera->setFarValue(100000);
 
 	//ISceneNode *sky = smgr->addSkyDomeSceneNode( driver->getTexture("../../bin/resources/Sky/skydome.jpg"),16,16, 1.0f, 2.0f);
 	//sky->setMaterialFlag(EMF_LIGHTING, false);
@@ -165,6 +173,7 @@ int main(int argc, char **argv)
 	irrWeatherManager *weatherMgr = new irrWeatherManager(device);
 	weatherMgr->getAtmosphere()->setUpdateFog(true);
 	weatherMgr->getAtmosphere()->setSkyImage("../../bin/resources/Sky/skydome.jpg");
+	weatherMgr->getAtmosphere()->setDaysPerDay(400);
 
 	SCloudCreationInfo info;
     info.setDefaults();
@@ -174,21 +183,50 @@ int main(int argc, char **argv)
     info.seed = device->getTimer()->getTime();
     info.numParticles = 10;
 
-	ICloudLayer* layer = weatherMgr->addCloudLayer(vector3df(0,19000,0), info, 50, false);
+	ICloudLayer* layer = weatherMgr->addCloudLayer(vector3df(0,10000,0), info, 50, false);
 
-	info.textureNames.clear();
+	//info.textureNames.clear();
     info.textureName = "../../bin/resources/Clouds/cumulus1.png";
-    weatherMgr->addCloudLayer(vector3df(0,49000,0), info, 300, false);
+    weatherMgr->addCloudLayer(vector3df(0,19000,0), info, 80, false);
 
 	scene::CGridSceneNode* grid = new scene::CGridSceneNode(smgr->getRootSceneNode(), smgr);
 	grid->setMaterialFlag(EMF_LIGHTING, false);
 	grid->drop();
+
+	scene::ITerrainSceneNode* terrain = smgr->addTerrainSceneNode(
+                "../../bin/resources/Terrain/terrain-heightmap.bmp",
+                0,                                      // parent node
+                -1,                                     // node id
+                core::vector3df(-4500.f, 100.f, -4500.f),         // position
+                core::vector3df(0.f, 0.f, 0.f),         // rotation
+                core::vector3df(100.f, 1.0f, 100.f),      // scale
+                video::SColor ( 255, 255, 255, 255 ),   // vertexColor
+                5,                                      // maxLOD
+                scene::ETPS_17,                         // patchSize
+                4                                       // smoothFactor
+                );
+
+        terrain->setMaterialFlag(video::EMF_LIGHTING, true);
+
+        terrain->setMaterialTexture(0,
+                        driver->getTexture("../../bin/resources/Terrain/terrain_dl.tga"));
+        terrain->setMaterialTexture(1,
+                        driver->getTexture("../../bin/resources/Terrain/detailmap3.jpg"));
+        
+        terrain->setMaterialType(video::EMT_DETAIL_MAP);
+
+        terrain->scaleTexture(4.0f, 320.0f);
+
+	CIrrRocketGUI rocket_gui(device);
 
 	device->getCursorControl()->setVisible(false);
 
 	double accum_time = 0.0;
 	while(device->run())
 	{
+		if (!device->isWindowActive())
+			device->yield();
+
 		double fps_ms = 1.0 / (double)driver->getFPS();
 		device->setWindowCaption((const wchar_t*)(CL_String("TradingAgent") + CL_StringHelp::int_to_text(driver->getFPS())).c_str());
 
@@ -208,6 +246,7 @@ int main(int argc, char **argv)
 		driver->beginScene(true, true, SColor(255,100,101,140));
 		smgr->drawAll();
 		guienv->drawAll();
+		rocket_gui.run();
 		driver->endScene();
 
 

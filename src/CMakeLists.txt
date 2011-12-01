@@ -44,15 +44,36 @@ set(WEATHER_SCENE_NODE_SRCS
 )
 SOURCE_GROUP("Source Files\\SceneNode\\Weather" FILES ${WEATHER_SCENE_NODE_SRCS})
 #---------------------------------------------------------------
+set(GUI_HDRS
+	./GUI/CIrrRocketEventReceiver.h
+	./GUI/CIrrRocketGUI.h
+	./GUI/IrrRocketFileInterface.h
+	./GUI/IrrRocketInterface.h
+	./GUI/IrrRocketRenderer.h
+)
+SOURCE_GROUP("Header Files\\GUI" FILES ${GUI_HDRS})
+#---------------------------------------------------------------
+set(GUI_SRCS
+	./GUI/CIrrRocketEventReceiver.cpp
+	./GUI/CIrrRocketGUI.cpp
+	./GUI/IrrRocketFileInterface.cpp
+	./GUI/IrrRocketInterface.cpp
+	./GUI/IrrRocketRenderer.cpp
+)
+SOURCE_GROUP("Source Files\\GUI" FILES ${GUI_SRCS})
+#---------------------------------------------------------------
 find_package(Irrlicht REQUIRED)
 find_package(GAlib REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(ClanLib REQUIRED)
 find_package(Totem REQUIRED)
+find_package(Freetype REQUIRED)
+find_package(Rocket REQUIRED)
 #---------------------------------------------------------------
 add_executable(TradingAgent ${HDRS} ${SRCS} 
 							${SCENE_NODE_HDRS} ${SCENE_NODE_SRCS}
 							${WEATHER_SCENE_NODE_HDRS} ${WEATHER_SCENE_NODE_SRCS}
+							${GUI_HDRS} ${GUI_SRCS}
 	)
 #---------------------------------------------------------------
 set_target_properties(TradingAgent PROPERTIES DEBUG_POSTFIX _d)
@@ -64,5 +85,8 @@ target_link_libraries(TradingAgent
   debug ${ZLIB_LIBRARY_DEBUG} optimized ${ZLIB_LIBRARY_RELEASE}
   debug ${CL_CORE_LIB_DEBUG} optimized ${CL_CORE_LIB_RELEASE}
   debug ${TOTEM_LIB_DEBUG} optimized ${TOTEM_LIB_RELEASE}
+  debug ${FREETYPE_LIB_DEBUG} optimized ${FREETYPE_LIB_RELEASE}
+  debug ${ROCKET_CORE_LIB_DEBUG} optimized ${ROCKET_CORE_LIB_RELEASE}
+  debug ${ROCKET_CONTROLS_LIB_DEBUG} optimized ${ROCKET_CONTROLS_LIB_RELEASE}
 )
 #---------------------------------------------------------------
