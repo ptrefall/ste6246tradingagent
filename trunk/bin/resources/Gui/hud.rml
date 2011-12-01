@@ -1,0 +1,31 @@
+<rml>
+	<head>
+		<title>Lagran In-Game GUI HTML V0.1</title>
+		<link type="text/rcss" href="reset.rcss"/>
+		<link type="text/rcss" href="main.rcss"/>
+	</head>
+	<body>
+		<!--SCREENSPACE WRAPPER-->
+		<div id="wrapper"><div id="wrapper-inner">
+
+				<!--HEALTH CONTAINER-->
+				<div id="health">
+					<div id="health_label">health</div>
+					<div id="health_value">100%</div>
+				</div>
+			    
+				<!--ENERGY CONTAINER-->
+				<div id="energy">
+					<div id="energy_label">Energy</div>
+					<div id="energy_value">100%</div>
+				</div>
+			    
+				<!--SPEED CONTAINER-->
+				<div id="speed">
+    				<div id="speed_label">Speed</div>
+    				<div id="speed_value">100%</div>
+				</div>
+		    
+		</div></div>
+	</body>
+</rml>

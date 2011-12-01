@@ -57,6 +57,7 @@ CIrrRocketGUI::CIrrRocketGUI(irr::IrrlichtDevice* device) : Device(device)
 	Rocket::Core::FontDatabase::LoadFontFace("../../bin/resources/Fonts/Delicious-Bold.otf");
 	Rocket::Core::FontDatabase::LoadFontFace("../../bin/resources/Fonts/Delicious-Italic.otf");
 	Rocket::Core::FontDatabase::LoadFontFace("../../bin/resources/Fonts/Delicious-BoldItalic.otf");
+	Rocket::Core::FontDatabase::LoadFontFace("../../bin/resources/Fonts/xirod.ttf");
 
 	RocketContext = Rocket::Core::CreateContext("default", Rocket::Core::Vector2i(Device->getVideoDriver()->getScreenSize().Width, Device->getVideoDriver()->getScreenSize().Height));
 
@@ -72,11 +73,11 @@ CIrrRocketGUI::CIrrRocketGUI(irr::IrrlichtDevice* device) : Device(device)
 	///DEMO
 	Device->setEventReceiver(InputEvents);
 
-	Rocket::Core::ElementDocument* cursor = RocketContext->LoadMouseCursor("../../bin/resources/Gui/cursor.rml");
+	Rocket::Core::ElementDocument* cursor = RocketContext->LoadMouseCursor("../../bin/resources/Gui/old/cursor.rml");
 	if (cursor)
 		cursor->RemoveReference();
 
-	Rocket::Core::ElementDocument* document = RocketContext->LoadDocument("../../bin/resources/Gui/demo.rml");
+	Rocket::Core::ElementDocument* document = RocketContext->LoadDocument("../../bin/resources/Gui/hud.rml");
 	if (document)
 	{
 		document->Show();

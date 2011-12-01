@@ -159,9 +159,9 @@ int main(int argc, char **argv)
 		}
 	}
 
-	//smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
-	//smgr->addCameraSceneNodeMaya(0, -1500.0f, 200.0f, 1500.0f);
-	ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0, 100.0f, 0.5f);
+	//ICameraSceneNode *camera = smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
+	//ICameraSceneNode *camera = smgr->addCameraSceneNodeMaya(0, -1500.0f, 200.0f, 1500.0f);
+	ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0, 100.0f, 0.25f);
 	camera->setPosition(vector3df(0, spawn_height+30, -40));
 	camera->setFarValue(100000);
 
