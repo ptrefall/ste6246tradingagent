@@ -13,6 +13,7 @@
 #include <SceneNode\HealthSceneNode.h>
 #include <SceneNode\CGridSceneNode.h>
 #include <SceneNode\Weather\irrWeatherManager.h>
+#include <SceneNode\TAnimSprite.h>
 
 #include <GUI/CIrrRocketGUI.h>
 
@@ -73,6 +74,7 @@ int main(int argc, char **argv)
                 rect<s32>(10,10,260,22), true);
 
 	smgr->setShadowColor(video::SColor(150,0,0,0));
+	smgr->getParameters()->setAttribute(scene::ALLOW_ZWRITE_ON_TRANSPARENT, true);
 
 	IMeshManipulator *meshManip = driver->getMeshManipulator();
 
@@ -234,6 +236,28 @@ int main(int argc, char **argv)
 	grid->setMaterialFlag(EMF_LIGHTING, false);
 	grid->drop();
 
+	std::vector<TAnimSprite*> sprites;
+	{
+		TAnimSprite* myNode = new TAnimSprite(smgr->getRootSceneNode(), smgr, 666);
+		myNode->Load("../../bin/resources/Sprites/human_001.png",72,96);
+		myNode->SetSpeed(100);
+		myNode->setPosition(vector3df(40, 0, 0));
+		float spwn_height = terrain->getHeight(myNode->getPosition().X, myNode->getPosition().Z);
+		myNode->setPosition(vector3df(40, spwn_height, 0));
+		myNode->setScale(vector3df(45,45,00));
+		sprites.push_back(myNode);
+	}
+	{
+		TAnimSprite* myNode = new TAnimSprite(smgr->getRootSceneNode(), smgr, 667);
+		myNode->Load("../../bin/resources/Sprites/goblin_001.png",72,96);
+		myNode->SetSpeed(100);
+		myNode->setPosition(vector3df(30, 0, 0));
+		float spwn_height = terrain->getHeight(myNode->getPosition().X, myNode->getPosition().Z);
+		myNode->setPosition(vector3df(30, spwn_height, 0));
+		myNode->setScale(vector3df(40,40,00));
+		sprites.push_back(myNode);
+	}
+
 	CIrrRocketGUI rocket_gui(device);
 
 	device->getCursorControl()->setVisible(false);
@@ -257,6 +281,9 @@ int main(int argc, char **argv)
 		}
 
 		weatherMgr->updateWeather();
+
+		for(unsigned int i = 0; i < sprites.size(); i++)
+			sprites[i]->Update();
 
 		//tower->setRotation(vector3df(0.0f, 1.0f, 0.0f));
 
