@@ -13,6 +13,7 @@ set(SRCS
 set(SCENE_NODE_HDRS
 	./SceneNode/HealthSceneNode.h
 	./SceneNode/CGridSceneNode.h
+	./SceneNode/TAnimSprite.h
 )
 SOURCE_GROUP("Header Files\\SceneNode" FILES ${SCENE_NODE_HDRS})
 #---------------------------------------------------------------
