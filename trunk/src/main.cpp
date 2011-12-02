@@ -3,8 +3,8 @@
 
 #include <Irrlicht\irrlicht.h>
 
-#include <GA\GASimpleGA.h>
-#include <GA\GA2DBinStrGenome.h>
+#include <GA\GASStateGA.h>
+#include <GA\GA3DBinStrGenome.h>
 #include <iostream>
 
 #include <ClanLib\core.h>
@@ -36,18 +36,27 @@ int main(int argc, char **argv)
 		}
 	}
 	int width    = 10;
-	int height   = 5;
+	int height   = 10;
+	int depth   = 3;
 	int popsize  = 30;
-	int ngen     = 400;
+	int ngen     = 100;
+	float preplace = 1.0;
 	float pmut   = 0.001;
 	float pcross = 0.9;
-	GA2DBinaryStringGenome genome(width, height, Objective);
+	GA3DBinaryStringGenome genome(width, height, depth, Objective);
 
-	GASimpleGA ga(genome);
+	GASteadyStateGA ga(genome);
+	ga.minimize();
 	ga.populationSize(popsize);
+	ga.pReplacement(preplace);
 	ga.nGenerations(ngen);
 	ga.pMutation(pmut);
 	ga.pCrossover(pcross);
+	ga.scoreFilename("../../bin/bog.dat");	// name of file for scores
+	ga.scoreFrequency(10);	// keep the scores of every 10th generation
+	ga.flushFrequency(50);	// specify how often to write the score to disk
+	ga.selectScores(GAStatistics::AllScores);
+	GAGenome &individual = ga.population().individual(0);
 
 
 	IrrlichtDevice *device = createDevice( video::EDT_OPENGL, dimension2d<u32>(1920,1080), 32, false, false, false, 0);
@@ -84,7 +93,28 @@ int main(int argc, char **argv)
 		node->setMaterialTexture(0, driver->getTexture("../../bin/resources/Particle/particlewhite.bmp"));
 	}*/
 
-	const float spawn_height = 175.0f;
+	scene::ITerrainSceneNode* terrain = smgr->addTerrainSceneNode(
+            "../../bin/resources/Terrain/terrain-heightmap.bmp",
+            0,                                      // parent node
+            -1,                                     // node id
+            core::vector3df(-4500.f, 100.f, -4500.f),         // position
+            core::vector3df(0.f, 0.f, 0.f),         // rotation
+            core::vector3df(100.f, 1.0f, 100.f),      // scale
+            video::SColor ( 255, 255, 255, 255 ),   // vertexColor
+            5,                                      // maxLOD
+            scene::ETPS_17,                         // patchSize
+            4                                       // smoothFactor
+            );
+
+    terrain->setMaterialFlag(video::EMF_LIGHTING, true);
+    terrain->setMaterialTexture(0,
+                    driver->getTexture("../../bin/resources/Terrain/terrain_dl.tga"));
+    terrain->setMaterialTexture(1,
+                    driver->getTexture("../../bin/resources/Terrain/detailmap3.jpg"));
+    terrain->setMaterialType(video::EMT_DETAIL_MAP);
+    terrain->scaleTexture(4.0f, 320.0f);
+
+	//const float spawn_height = 175.0f;
 
 	ISceneNode *tower = smgr->addSceneNode("Tower");
 	{
@@ -100,6 +130,9 @@ int main(int argc, char **argv)
 
 			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Tower/Base_Diffuse.tga") );
 			node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
+
+			node->setPosition(vector3df(10.0f, 0.0f, 0.0f));
+			float spawn_height = terrain->getHeight(node->getPosition().X, node->getPosition().Z);
 			node->setPosition(vector3df(10.0f, spawn_height, 0.0f));
 		}
 	}
@@ -115,6 +148,8 @@ int main(int argc, char **argv)
 			//node->addShadowVolumeSceneNode();
 			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Tower/Head_Diffuse.tga") );
 			node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
+			node->setPosition(vector3df(10.0f, 0.0f, 0.0f));
+			float spawn_height = terrain->getHeight(node->getPosition().X, node->getPosition().Z);
 			node->setPosition(vector3df(10.0f, spawn_height+6.0f, 0.0f));
 		}
 	}
@@ -130,6 +165,8 @@ int main(int argc, char **argv)
 			//node->addShadowVolumeSceneNode();
 			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Tower/Weapon_Diffuse.tga") );
 			node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
+			node->setPosition(vector3df(10.0f, 0.0f, 0.0f));
+			float spawn_height = terrain->getHeight(node->getPosition().X, node->getPosition().Z);
 			node->setPosition(vector3df(10.0f, spawn_height+8.0f, 0.0f));
 		}
 	}
@@ -149,6 +186,8 @@ int main(int argc, char **argv)
 			node->setFrameLoop(1, 400);
 			node->setMaterialTexture( 0, driver->getTexture("../../bin/resources/Mesh/Beast/beast1.jpg") );
 			//node->setRotation(vector3df(-90.0f, 0.0f, 0.0f));
+			node->setPosition(vector3df(-20.0f, 0.0f, 0.0f));
+			float spawn_height = terrain->getHeight(node->getPosition().X, node->getPosition().Z);
 			node->setPosition(vector3df(-20.0f, spawn_height, 0.0f));
 			node->setScale(vector3df(0.2f, 0.2f, 0.2f));
 
@@ -162,7 +201,9 @@ int main(int argc, char **argv)
 	//ICameraSceneNode *camera = smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
 	//ICameraSceneNode *camera = smgr->addCameraSceneNodeMaya(0, -1500.0f, 200.0f, 1500.0f);
 	ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0, 100.0f, 0.25f);
-	camera->setPosition(vector3df(0, spawn_height+30, -40));
+	camera->setPosition(vector3df(0, 0, -40));
+	float spawn_height = terrain->getHeight(camera->getPosition().X, camera->getPosition().Z);
+	camera->setPosition(vector3df(0.0f, spawn_height+30.0f, -40.0f));
 	camera->setFarValue(100000);
 
 	//ISceneNode *sky = smgr->addSkyDomeSceneNode( driver->getTexture("../../bin/resources/Sky/skydome.jpg"),16,16, 1.0f, 2.0f);
@@ -192,30 +233,6 @@ int main(int argc, char **argv)
 	scene::CGridSceneNode* grid = new scene::CGridSceneNode(smgr->getRootSceneNode(), smgr);
 	grid->setMaterialFlag(EMF_LIGHTING, false);
 	grid->drop();
-
-	scene::ITerrainSceneNode* terrain = smgr->addTerrainSceneNode(
-                "../../bin/resources/Terrain/terrain-heightmap.bmp",
-                0,                                      // parent node
-                -1,                                     // node id
-                core::vector3df(-4500.f, 100.f, -4500.f),         // position
-                core::vector3df(0.f, 0.f, 0.f),         // rotation
-                core::vector3df(100.f, 1.0f, 100.f),      // scale
-                video::SColor ( 255, 255, 255, 255 ),   // vertexColor
-                5,                                      // maxLOD
-                scene::ETPS_17,                         // patchSize
-                4                                       // smoothFactor
-                );
-
-        terrain->setMaterialFlag(video::EMF_LIGHTING, true);
-
-        terrain->setMaterialTexture(0,
-                        driver->getTexture("../../bin/resources/Terrain/terrain_dl.tga"));
-        terrain->setMaterialTexture(1,
-                        driver->getTexture("../../bin/resources/Terrain/detailmap3.jpg"));
-        
-        terrain->setMaterialType(video::EMT_DETAIL_MAP);
-
-        terrain->scaleTexture(4.0f, 320.0f);
 
 	CIrrRocketGUI rocket_gui(device);
 
@@ -258,7 +275,7 @@ int main(int argc, char **argv)
 
 float Objective(GAGenome &g) 
 {
-	GA2DBinaryStringGenome & genome = (GA2DBinaryStringGenome &)g;
+	GA3DBinaryStringGenome & genome = (GA3DBinaryStringGenome &)g;
 	
 	float score = 0.0;
 	int count = 0;
@@ -267,11 +284,14 @@ float Objective(GAGenome &g)
 	{
 		for(int j = 0; j<genome.height(); j++)
 		{
-			if(genome.gene(i,j) == 0 && count%2 == 0)
-				score += 1.0;
-			if(genome.gene(i,j) == 1 && count%2 != 0)
-				score += 1.0;
-			count++;
+			for(int k = 0; k<genome.depth(); k++)
+			{
+				if(genome.gene(i,j,k) == 0 && count%2 == 0)
+					score += 1.0;
+				if(genome.gene(i,j,k) == 1 && count%2 != 0)
+					score += 1.0;
+				count++;
+			}
 		}
 	}
 	return score;

@@ -62,6 +62,16 @@ set(GUI_SRCS
 )
 SOURCE_GROUP("Source Files\\GUI" FILES ${GUI_SRCS})
 #---------------------------------------------------------------
+set(GA_GENOME_HDRS
+	./GeneticAlg/Genome/ProsumerGenome.h
+)
+SOURCE_GROUP("Header Files\\GeneticAlg\\Genome" FILES ${GA_GENOME_HDRS})
+#---------------------------------------------------------------
+set(GA_GENOME_SRCS
+	./GeneticAlg/Genome/ProsumerGenome.cpp
+)
+SOURCE_GROUP("Source Files\\GeneticAlg\\Genome" FILES ${GA_GENOME_SRCS})
+#---------------------------------------------------------------
 find_package(Irrlicht REQUIRED)
 find_package(GAlib REQUIRED)
 find_package(ZLIB REQUIRED)
@@ -74,6 +84,7 @@ add_executable(TradingAgent ${HDRS} ${SRCS}
 							${SCENE_NODE_HDRS} ${SCENE_NODE_SRCS}
 							${WEATHER_SCENE_NODE_HDRS} ${WEATHER_SCENE_NODE_SRCS}
 							${GUI_HDRS} ${GUI_SRCS}
+							${GA_GENOME_HDRS} ${GA_GENOME_SRCS}
 	)
 #---------------------------------------------------------------
 set_target_properties(TradingAgent PROPERTIES DEBUG_POSTFIX _d)
