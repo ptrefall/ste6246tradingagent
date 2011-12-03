@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     terrain->setMaterialTexture(1,
                     driver->getTexture("../../bin/resources/Terrain/detailmap3.jpg"));
     terrain->setMaterialType(video::EMT_DETAIL_MAP);
-    terrain->scaleTexture(4.0f, 320.0f);
+    terrain->scaleTexture(4.0f, 1280.0f);
 
 	//const float spawn_height = 175.0f;
 
@@ -239,22 +239,50 @@ int main(int argc, char **argv)
 	std::vector<TAnimSprite*> sprites;
 	{
 		TAnimSprite* myNode = new TAnimSprite(smgr->getRootSceneNode(), smgr, 666);
-		myNode->Load("../../bin/resources/Sprites/human_001.png",72,96);
-		myNode->SetSpeed(100);
+		myNode->Load("../../bin/resources/Sprites/human_001.png",72,97);
+		myNode->SetSpeed(400);
 		myNode->setPosition(vector3df(40, 0, 0));
 		float spwn_height = terrain->getHeight(myNode->getPosition().X, myNode->getPosition().Z);
 		myNode->setPosition(vector3df(40, spwn_height, 0));
 		myNode->setScale(vector3df(45,45,00));
+		myNode->setDebugDataVisible(EDS_BBOX);
+		myNode->setMaterialFlag(EMF_LIGHTING, false);
+		myNode->setMaterialFlag(EMF_FOG_ENABLE, true);
+		{
+			vector3df endpos = myNode->getPosition()+vector3df(0,0,-100.0f);
+			float end_height = terrain->getHeight(endpos.X, endpos.Z);
+			endpos = vector3df(endpos.X, end_height, endpos.Z);
+			scene::ISceneNodeAnimator *anim = smgr->createFlyStraightAnimator(myNode->getPosition(), endpos, 20000, true, false);
+			if(anim)
+			{
+				myNode->addAnimator(anim);
+				anim->drop();
+			}
+		}
 		sprites.push_back(myNode);
 	}
 	{
 		TAnimSprite* myNode = new TAnimSprite(smgr->getRootSceneNode(), smgr, 667);
-		myNode->Load("../../bin/resources/Sprites/goblin_001.png",72,96);
-		myNode->SetSpeed(100);
+		myNode->Load("../../bin/resources/Sprites/goblin_001.png",72,97);
+		myNode->SetSpeed(400);
 		myNode->setPosition(vector3df(30, 0, 0));
 		float spwn_height = terrain->getHeight(myNode->getPosition().X, myNode->getPosition().Z);
 		myNode->setPosition(vector3df(30, spwn_height, 0));
-		myNode->setScale(vector3df(40,40,00));
+		myNode->setScale(vector3df(45,45,00));
+		myNode->setDebugDataVisible(EDS_BBOX);
+		myNode->setMaterialFlag(EMF_LIGHTING, false);
+		myNode->setMaterialFlag(EMF_FOG_ENABLE, true);
+		{
+			vector3df endpos = myNode->getPosition()+vector3df(0,0,-100.0f);
+			float end_height = terrain->getHeight(endpos.X, endpos.Z);
+			endpos = vector3df(endpos.X, end_height, endpos.Z);
+			scene::ISceneNodeAnimator *anim = smgr->createFlyStraightAnimator(myNode->getPosition(), endpos, 18000, true, false);
+			if(anim)
+			{
+				myNode->addAnimator(anim);
+				anim->drop();
+			}
+		}
 		sprites.push_back(myNode);
 	}
 
@@ -283,7 +311,7 @@ int main(int argc, char **argv)
 		weatherMgr->updateWeather();
 
 		for(unsigned int i = 0; i < sprites.size(); i++)
-			sprites[i]->Update();
+			sprites[i]->Update(ESD_SOUTH);
 
 		//tower->setRotation(vector3df(0.0f, 1.0f, 0.0f));
 
