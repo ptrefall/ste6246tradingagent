@@ -6,6 +6,53 @@ namespace irr
 {
 	namespace scene
 	{
+
+	//Direction of this sprite
+	enum SpriteForwardDirection
+	{
+		ESD_NORTH,
+		ESD_EAST,
+		ESD_SOUTH,
+		ESD_WEST,
+		ESD_COUNT
+	};
+
+	//Which face of this sprite to display
+	enum SpriteFace
+	{
+		ESF_FRONT,
+		ESF_BACK,
+		ESF_LEFT,
+		ESF_RIGHT,
+		ESF_COUNT
+	};
+
+	//Which order of sequence an animation should be played
+	struct SpriteAnimSequence
+	{
+		std::vector<s32> seq;
+		s32 crntIndex;
+
+		SpriteAnimSequence() : crntIndex(-1) {}
+		SpriteAnimSequence(const std::vector<s32> &seq) : seq(seq), crntIndex(-1) {}
+		SpriteAnimSequence(const s32 &v0, const s32 &v1, const s32 &v2, const s32 &v3) : crntIndex(-1) { seq.push_back(v0); seq.push_back(v1); seq.push_back(v2); seq.push_back(v3); }
+		void update() { crntIndex++; if(crntIndex >= seq.size()) crntIndex = 0;}
+		void reset() { crntIndex = -1; }
+		s32 currentFrame() { if(crntIndex < 0) return 0; return seq[crntIndex]; }
+	};
+
+	struct SpriteAnimState
+	{
+		SpriteFace face;
+		SpriteAnimSequence seq;
+		
+		SpriteAnimState() : face(ESF_BACK) {}
+		SpriteAnimState(const SpriteFace &face, const SpriteAnimSequence &seq) : face(face), seq(seq) {}
+		void reset() { seq.reset(); }
+		void update() { seq.update(); }
+		s32 currentFrame() { return seq.currentFrame(); }
+	};
+
 	class TAnimSprite : public ISceneNode
 	  {
 		 private:
@@ -17,6 +64,9 @@ namespace irr
 			   f32                 fWidth,fHeight;
 			   s32                 crntFrm,TotalFrm;
 			   s32                 stepww,stephh;
+			   typedef std::unordered_map<SpriteForwardDirection, SpriteAnimState> SpriteDirectionStateMap;
+			   SpriteDirectionStateMap spriteDirectionStates;
+			   SpriteForwardDirection currentDirectionState;
 			   BOOL                forward;
 			   DWORD               time;
 			   DWORD               oldtick;
@@ -29,7 +79,13 @@ namespace irr
 					  Material.Lighting = false;
                   
 					  u16 ind[] = { 0,1,3, 3,1,2, 1,0,2, 2,0,3 };
-					  memcpy(Indices,ind,sizeof(u16)*12);                         
+					  memcpy(Indices,ind,sizeof(u16)*12);     
+
+					  spriteDirectionStates[ESD_NORTH] = SpriteAnimState(ESF_BACK,  SpriteAnimSequence(0, 2, 0, 2));
+					  spriteDirectionStates[ESD_EAST]  = SpriteAnimState(ESF_RIGHT, SpriteAnimSequence(3, 5, 3, 5));
+					  spriteDirectionStates[ESD_SOUTH] = SpriteAnimState(ESF_FRONT, SpriteAnimSequence(6, 8, 6, 8));
+					  spriteDirectionStates[ESD_WEST]  = SpriteAnimState(ESF_LEFT,  SpriteAnimSequence(9, 11, 9, 11));
+					  currentDirectionState = ESD_SOUTH;
 			   }     
           
 			  virtual void Load(char* filename,s32 frmWidth,s32 frmHeight)
@@ -38,13 +94,14 @@ namespace irr
 				   core::dimension2d<u32> Screensize = driver->getScreenSize(); 
 				   float x = (float)frmWidth/(float)Screensize.Width;
 				   float y = (float)frmHeight/(float)Screensize.Height;
-				   Vertices[0] = video::S3DVertex(-x, 0,0, 0,0,0,video::SColor(255,255,255,255),0,1);
-				   Vertices[1] = video::S3DVertex( x, 0,0, 0,0,0,video::SColor(255,255,255,255),1,1); 
+				   Vertices[0] = video::S3DVertex(-x, 0,  0, 0,0,0,video::SColor(255,255,255,255),0,1);
+				   Vertices[1] = video::S3DVertex( x, 0,  0, 0,0,0,video::SColor(255,255,255,255),1,1); 
 				   Vertices[2] = video::S3DVertex( x, 2*y,0, 0,0,0,video::SColor(255,255,255,255),1,0);
 				   Vertices[3] = video::S3DVertex(-x, 2*y,0, 0,0,0,video::SColor(255,255,255,255),0,0);
                
 				   Box.reset(Vertices[0].Pos);
-				   for (s32 i=1; i<4; ++i)  Box.addInternalPoint(Vertices[i].Pos);
+				   for (s32 i=1; i<4; ++i)  
+					   Box.addInternalPoint(Vertices[i].Pos);
                   
 				   Texture = driver->getTexture(filename);
 				   driver->makeColorKeyTexture(Texture,core::position2d<s32>(0,0));
@@ -100,12 +157,12 @@ namespace irr
                
 			   }
           
-			  virtual void Update()
+			  virtual void Update(const SpriteForwardDirection &direction)
 			   {
 				  if(GetTickCount()-oldtick > time)
 				  {  
 					   oldtick = GetTickCount();
-					   if (forward) 
+					   /*if (forward) 
 					   {
 						   crntFrm++; 
 						   if (crntFrm > TotalFrm-1)crntFrm = 0;
@@ -116,7 +173,35 @@ namespace irr
 						   if (crntFrm < 0 )crntFrm = TotalFrm-1;
 					   }      
 					   float x = (crntFrm % stepww)*fWidth;
-					   float y = (crntFrm / stepww)*fHeight; 
+					   float y = (crntFrm / stepww)*fHeight; */
+
+					   float x,y;
+					   if(currentDirectionState == direction)
+					   {
+							SpriteDirectionStateMap::iterator anim_state_it = spriteDirectionStates.find(direction);
+							SpriteAnimState &anim_state = anim_state_it->second;
+							anim_state.update();
+							x = (anim_state.currentFrame() % stepww)*fWidth;
+							y = (anim_state.currentFrame() / stepww)*fHeight;
+					   }
+					   else
+					   {
+						   {
+								SpriteDirectionStateMap::iterator anim_state_it = spriteDirectionStates.find(currentDirectionState);
+								SpriteAnimState &anim_state = anim_state_it->second;
+								anim_state.reset();
+								currentDirectionState = direction;
+						   }
+
+						   {
+								SpriteDirectionStateMap::iterator anim_state_it = spriteDirectionStates.find(direction);
+								SpriteAnimState &anim_state = anim_state_it->second;
+								anim_state.update();
+								x = (anim_state.currentFrame() % stepww)*fWidth;
+								y = (anim_state.currentFrame() / stepww)*fHeight;
+						   }
+					   }
+
 					   Vertices[0].TCoords.X = x; 
 					   Vertices[0].TCoords.Y = y+fHeight;
 					   Vertices[1].TCoords.X = x+fWidth; 
@@ -132,6 +217,14 @@ namespace irr
             
 			  virtual void render()
 			   {  
+				   /*this->updateAbsolutePosition();
+				   core::vector3df vect = (getSceneManager()->getActiveCamera()->getAbsolutePosition()) - (this->getAbsolutePosition());
+					vect = vect.getHorizontalAngle();
+					std::cout << vect.Y << " ";
+					//vect.Y = -vect.Y;
+					//vect.Z = 0;
+					vect.X = 0;
+					this->setRotation(vect);*/
                
 				  video::IVideoDriver* driver = SceneManager->getVideoDriver();
 				  driver->setMaterial(Material);  
