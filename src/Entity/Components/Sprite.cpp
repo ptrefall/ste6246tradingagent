@@ -5,7 +5,7 @@
 using namespace Components;
 using namespace Totem;
 
-Sprite::Sprite(Entity &owner, const std::string &name, irr::scene::ISceneNode& parent, irr::scene::ISceneManager& smgr, std::string &filename)
+Sprite::Sprite(Entity &owner, const std::string &name, irr::scene::ISceneNode& parent, irr::scene::ISceneManager& smgr, std::string &filename, irr::core::vector2di &frame_dimension)
 : Component(name), owner(owner), spriteNode(0x0), filename(filename), smgr(smgr)
 {
 	anim_speed_property = owner.addProperty<int>("AnimSpeed", 400);
@@ -19,7 +19,7 @@ Sprite::Sprite(Entity &owner, const std::string &name, irr::scene::ISceneNode& p
 	position_property.valueChanged().connect(this, &Sprite::onPositionChanged);
 
 	spriteNode = new irr::scene::TAnimSprite(smgr.getRootSceneNode(), &smgr, 668);
-	spriteNode->Load(filename.c_str(), 72,97);
+	spriteNode->Load(filename.c_str(), frame_dimension.X, frame_dimension.Y); // 72,97);
 	spriteNode->SetSpeed(anim_speed_property.get());
 
 	spriteNode->setPosition(position_property.get());

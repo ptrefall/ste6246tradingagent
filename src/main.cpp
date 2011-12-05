@@ -22,6 +22,8 @@
 #include <Entity\Components\Sprite.h>
 #include <Totem\ComponentFactory.h>
 
+#include <iostream>
+
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -64,8 +66,16 @@ int main(int argc, char **argv)
 	ga.selectScores(GAStatistics::AllScores);
 	GAGenome &individual = ga.population().individual(0);
 
+	char a;
+	std::cout << "Do you want to draw the scene with 1) Software, or 2) OpenGL renderer?" << std::endl;
+	std::cin >> a;
 
-	IrrlichtDevice *device = createDevice( video::EDT_OPENGL, dimension2d<u32>(1920,1080), 32, false, false, false, 0);
+	IrrlichtDevice *device = 0x0;
+	if(a == '1')
+		device = createDevice( video::EDT_BURNINGSVIDEO, dimension2d<u32>(800,600), 16, false, false, false, 0);
+	else if(a == '2')
+		device = createDevice( video::EDT_OPENGL, dimension2d<u32>(1920,1080), 32, false, false, false, 0);
+	
 	if(!device)
 		return -1;
 
@@ -75,13 +85,10 @@ int main(int argc, char **argv)
 	ISceneManager* smgr = device->getSceneManager();
 	IGUIEnvironment* guienv = device->getGUIEnvironment();
 
-	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!",
-                rect<s32>(10,10,260,22), true);
-
 	smgr->setShadowColor(video::SColor(150,0,0,0));
 	smgr->getParameters()->setAttribute(scene::ALLOW_ZWRITE_ON_TRANSPARENT, true);
 
-	IMeshManipulator *meshManip = driver->getMeshManipulator();
+	//IMeshManipulator *meshManip = driver->getMeshManipulator();
 
 	// create light
 	/*{
@@ -104,9 +111,9 @@ int main(int argc, char **argv)
             "../../bin/resources/Terrain/terrain-heightmap.bmp",
             0,                                      // parent node
             -1,                                     // node id
-            core::vector3df(-4500.f, 100.f, -4500.f),         // position
+            core::vector3df(-2500.f, 100.f, -2500.f),         // position
             core::vector3df(0.f, 0.f, 0.f),         // rotation
-            core::vector3df(100.f, 1.0f, 100.f),      // scale
+            core::vector3df(50.f, 1.0f, 50.f),      // scale
             video::SColor ( 255, 255, 255, 255 ),   // vertexColor
             5,                                      // maxLOD
             scene::ETPS_17,                         // patchSize
@@ -123,8 +130,8 @@ int main(int argc, char **argv)
 
 	//const float spawn_height = 175.0f;
 
-	ISceneNode *tower = smgr->addSceneNode("Tower");
-	{
+	//ISceneNode *tower = smgr->addSceneNode("Tower");
+	/*{
 		IAnimatedMesh* mesh = smgr->getMesh("../../bin/resources/Mesh/Tower/turret_base3.3ds");
 		meshManip->recalculateTangents(mesh, true, true, true);
 		IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh, tower );
@@ -176,9 +183,9 @@ int main(int argc, char **argv)
 			float spawn_height = terrain->getHeight(node->getPosition().X, node->getPosition().Z);
 			node->setPosition(vector3df(10.0f, spawn_height+8.0f, 0.0f));
 		}
-	}
+	}*/
 
-	{
+	/*{
 		IAnimatedMesh* mesh = smgr->getMesh("../../bin/resources/Mesh/Beast/beast.ms3d");
 		meshManip->recalculateTangents(mesh, true, true, true);
 		IAnimatedMeshSceneNode* node = smgr->addAnimatedMeshSceneNode( mesh, tower );
@@ -203,7 +210,7 @@ int main(int argc, char **argv)
 			healthbar->setProgress(60);
 			healthbar->setScale(vector3df(0.02f, 0.02f, 0.02f));
 		}
-	}
+	}*/
 
 	//ICameraSceneNode *camera = smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
 	//ICameraSceneNode *camera = smgr->addCameraSceneNodeMaya(0, -1500.0f, 200.0f, 1500.0f);
@@ -211,104 +218,70 @@ int main(int argc, char **argv)
 	camera->setPosition(vector3df(0, 0, -40));
 	float spawn_height = terrain->getHeight(camera->getPosition().X, camera->getPosition().Z);
 	camera->setPosition(vector3df(0.0f, spawn_height+30.0f, -40.0f));
-	camera->setFarValue(100000);
+	if(a == '2')
+		camera->setFarValue(100000);
 
-	//ISceneNode *sky = smgr->addSkyDomeSceneNode( driver->getTexture("../../bin/resources/Sky/skydome.jpg"),16,16, 1.0f, 2.0f);
-	//sky->setMaterialFlag(EMF_LIGHTING, false);
-	//sky->drop();
-
-	driver->setFog(SColor(0, 255, 255, 255), EFT_FOG_LINEAR, 8000.0f, 40000.0f, 0.01f, true, true);
-	irrWeatherManager *weatherMgr = new irrWeatherManager(device);
-	weatherMgr->getAtmosphere()->setUpdateFog(true);
-	weatherMgr->getAtmosphere()->setSkyImage("../../bin/resources/Sky/skydome.jpg");
-	weatherMgr->getAtmosphere()->setDaysPerDay(400);
-
-	SCloudCreationInfo info;
-    info.setDefaults();
-	info.textureNames.push_back(stringc("../../bin/resources/Clouds/cumulus2.png"));
-    info.textureNames.push_back(stringc("../../bin/resources/Clouds/cumulus3.png"));
-    info.textureName = "../../bin/resources/Clouds/cumulus2.png";
-    info.seed = device->getTimer()->getTime();
-    info.numParticles = 10;
-
-	ICloudLayer* layer = weatherMgr->addCloudLayer(vector3df(0,10000,0), info, 50, false);
-
-	//info.textureNames.clear();
-    info.textureName = "../../bin/resources/Clouds/cumulus1.png";
-    weatherMgr->addCloudLayer(vector3df(0,19000,0), info, 80, false);
-
-	scene::CGridSceneNode* grid = new scene::CGridSceneNode(smgr->getRootSceneNode(), smgr);
-	grid->setMaterialFlag(EMF_LIGHTING, false);
-	grid->drop();
-
-	std::vector<TAnimSprite*> sprites;
-	/*{
-		TAnimSprite* myNode = new TAnimSprite(smgr->getRootSceneNode(), smgr, 666);
-		myNode->Load("../../bin/resources/Sprites/human_001.png",72,97);
-		myNode->SetSpeed(400);
-		myNode->setPosition(vector3df(40, 0, 0));
-		float spwn_height = terrain->getHeight(myNode->getPosition().X, myNode->getPosition().Z);
-		myNode->setPosition(vector3df(40, spwn_height, 0));
-		myNode->setScale(vector3df(45,45,00));
-		myNode->setDebugDataVisible(EDS_BBOX);
-		myNode->setMaterialFlag(EMF_LIGHTING, false);
-		myNode->setMaterialFlag(EMF_FOG_ENABLE, true);
-		{
-			vector3df endpos = myNode->getPosition()+vector3df(0,0,-100.0f);
-			float end_height = terrain->getHeight(endpos.X, endpos.Z);
-			endpos = vector3df(endpos.X, end_height, endpos.Z);
-			scene::ISceneNodeAnimator *anim = smgr->createFlyStraightAnimator(myNode->getPosition(), endpos, 20000, true, false);
-			if(anim)
-			{
-				myNode->addAnimator(anim);
-				anim->drop();
-			}
-		}
-		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
-		HealthSceneNode *healthbar = new scene::HealthSceneNode(myNode,smgr,-1,coll,50,10,vector3df(0,0,0));
-		healthbar->setProgress(60);
-		healthbar->setScale(vector3df(0.02f, 0.02f, 0.02f));
-		sprites.push_back(myNode);
-	}
+	//////////////////////////////////////////
+	// WEATHER INITIALIZING
+	//////////////////////////////////////////
+	irrWeatherManager *weatherMgr = 0x0;
+	if(a == '1')
 	{
-		TAnimSprite* myNode = new TAnimSprite(smgr->getRootSceneNode(), smgr, 667);
-		myNode->Load("../../bin/resources/Sprites/human_002.png",72,97);
-		myNode->SetSpeed(400);
-		myNode->setPosition(vector3df(30, 0, 0));
-		float spwn_height = terrain->getHeight(myNode->getPosition().X, myNode->getPosition().Z);
-		myNode->setPosition(vector3df(30, spwn_height, 0));
-		myNode->setScale(vector3df(45,45,00));
-		myNode->setDebugDataVisible(EDS_BBOX);
-		myNode->setMaterialFlag(EMF_LIGHTING, false);
-		myNode->setMaterialFlag(EMF_FOG_ENABLE, true);
-		{
-			vector3df endpos = myNode->getPosition()+vector3df(0,0,-100.0f);
-			float end_height = terrain->getHeight(endpos.X, endpos.Z);
-			endpos = vector3df(endpos.X, end_height, endpos.Z);
-			scene::ISceneNodeAnimator *anim = smgr->createFlyStraightAnimator(myNode->getPosition(), endpos, 18000, true, false);
-			if(anim)
-			{
-				myNode->addAnimator(anim);
-				anim->drop();
-			}
-		}
-		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
-		HealthSceneNode *healthbar = new scene::HealthSceneNode(myNode,smgr,-1,coll,50,10,vector3df(0,0,0));
-		healthbar->setProgress(60);
-		healthbar->setScale(vector3df(0.02f, 0.02f, 0.02f));
-		sprites.push_back(myNode);
-	}*/
+		ISceneNode *sky = smgr->addSkyDomeSceneNode( driver->getTexture("../../bin/resources/Sky/skydome.jpg"),16,16, 1.0f, 2.0f);
+		sky->setMaterialFlag(EMF_LIGHTING, false);
+		//sky->drop();
+	}
+	else
+	{
+		driver->setFog(SColor(0, 255, 255, 255), EFT_FOG_LINEAR, 8000.0f, 40000.0f, 0.01f, true, true);
+		weatherMgr = new irrWeatherManager(device);
+		weatherMgr->getAtmosphere()->setUpdateFog(true);
+		weatherMgr->getAtmosphere()->setSkyImage("../../bin/resources/Sky/skydome.jpg");
+		weatherMgr->getAtmosphere()->setDaysPerDay(400);
 
+		SCloudCreationInfo info;
+		info.setDefaults();
+		info.textureNames.push_back(stringc("../../bin/resources/Clouds/cumulus2.png"));
+		info.textureNames.push_back(stringc("../../bin/resources/Clouds/cumulus3.png"));
+		info.textureName = "../../bin/resources/Clouds/cumulus2.png";
+		info.seed = device->getTimer()->getTime();
+		info.numParticles = 10;
+
+		ICloudLayer* layer = weatherMgr->addCloudLayer(vector3df(0,10000,0), info, 50, false);
+
+		//info.textureNames.clear();
+		info.textureName = "../../bin/resources/Clouds/cumulus1.png";
+		weatherMgr->addCloudLayer(vector3df(0,19000,0), info, 80, false);
+	}
+
+	/*scene::CGridSceneNode* grid = new scene::CGridSceneNode(smgr->getRootSceneNode(), smgr);
+	grid->setMaterialFlag(EMF_LIGHTING, false);
+	grid->drop();*/
+
+	//////////////////////////////////////////
+	// TOTEM INITIALIZING
+	//////////////////////////////////////////
 	Totem::ComponentFactory factory;
 	Components::Health::RegisterToFactory(factory);
 	Components::Sprite::RegisterToFactory(factory);
 	EntityManager emgr(*terrain);
 
+	///////////////////////////////
+	// POPULATION
+	///////////////////////////////
 	try{
 		Entity &entity = emgr.create(factory);
 		entity.addComponent<EntityManager, ISceneManager>("Health", emgr, *smgr);
-		entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
-			*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Sprites/goblin_001.png"));
+		if(a == '1')
+		{
+			entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
+				*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Particle/Particle.tga"), vector2di(64,64));
+		}
+		else
+		{
+			entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
+				*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Sprites/goblin_001.png"), vector2di(72,97));
+		}
 		entity.sendEvent0(T_HashedString("LOAD"));
 	}catch(std::exception &e){
 		std::cout << e.what() << std::endl;
@@ -317,8 +290,16 @@ int main(int argc, char **argv)
 	try{
 		Entity &entity = emgr.create(factory);
 		entity.addComponent<EntityManager, ISceneManager>("Health", emgr, *smgr);
-		entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
-			*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Sprites/human_001.png"));
+		if(a == '1')
+		{
+			entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
+				*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Particle/Particle.tga"), vector2di(64,64));
+		}
+		else
+		{
+			entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
+				*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Sprites/human_001.png"), vector2di(72,97));
+		}
 		entity.sendEvent0(T_HashedString("LOAD"));
 		entity.getProperty<vector3df>("Position") = vector3df(40,0,0);
 	}catch(std::exception &e){
@@ -328,16 +309,35 @@ int main(int argc, char **argv)
 	try{
 		Entity &entity = emgr.create(factory);
 		entity.addComponent<EntityManager, ISceneManager>("Health", emgr, *smgr);
-		entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
-			*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Sprites/human_002.png"));
+		if(a == '1')
+		{
+			entity.addComponent<ISceneNode, ISceneManager, std::string, vector2di>(Components::Sprite::Type(), 
+				*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Particle/Particle.tga"), vector2di(64,64));
+		}
+		else
+		{
+			entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
+				*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Sprites/human_002.png"), vector2di(72,97));
+		}
 		entity.sendEvent0(T_HashedString("LOAD"));
 		entity.getProperty<vector3df>("Position") = vector3df(30,0,0);
 	}catch(std::exception &e){
 		std::cout << e.what() << std::endl;
 	}
 
-
-	CIrrRocketGUI rocket_gui(device);
+	//////////////////////////////////////////
+	// GUI INITIALIZING
+	//////////////////////////////////////////
+	CIrrRocketGUI *rocket_gui = 0x0;
+	if(a == '1')
+	{
+		guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!",
+                rect<s32>(10,10,260,22), true);
+	}
+	else
+	{
+		rocket_gui = new CIrrRocketGUI(device);
+	}
 
 	device->getCursorControl()->setVisible(false);
 
@@ -359,19 +359,16 @@ int main(int argc, char **argv)
 			std::cout << "The GA found:\n" << ga.statistics().bestIndividual() << "\n";
 		}
 
-		weatherMgr->updateWeather();
-
-		for(unsigned int i = 0; i < sprites.size(); i++)
-			sprites[i]->Update(ESD_SOUTH);
-
-		emgr.update((float)fps_ms);
-
-		//tower->setRotation(vector3df(0.0f, 1.0f, 0.0f));
+		if(weatherMgr)
+			weatherMgr->updateWeather();
+		//emgr.update((float)fps_ms);
 
 		driver->beginScene(true, true, SColor(255,100,101,140));
 		smgr->drawAll();
-		guienv->drawAll();
-		rocket_gui.run();
+		if(rocket_gui)
+			rocket_gui->run();
+		else
+			guienv->drawAll();
 		driver->endScene();
 
 
