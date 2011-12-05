@@ -11,7 +11,7 @@ using namespace scene;
 
 float round( float d )
 {
-   return floor( d + 0.5 );
+   return (float)floor( (double)d + 0.5 );
 }
 
 IWeatherManagerAtmosphere::IWeatherManagerAtmosphere(irr::IrrlichtDevice* const irrDevice,irr::scene::ISceneNode* const parent, irr::s32 id)
@@ -84,8 +84,8 @@ void IWeatherManagerAtmosphere::prep_interpolation(f64 Jdate, f64 time)//time-ti
         core::matrix4 mat;
         core::vector3df kampas;
         saule(52.0f,-5.0f,Jdate);//52.0 -5.0 kaunas 54.54 -23.54
-        kampas.X=-sun_angle[1];//heigh
-        kampas.Y=sun_angle[0];//0.0f;-
+        kampas.X=(irr::f32)-sun_angle[1];//heigh
+        kampas.Y=(irr::f32)sun_angle[0];//0.0f;-
         kampas.Z=0.0f;
         mat.setRotationDegrees(kampas);
         f32 vieta[4];
@@ -99,8 +99,8 @@ void IWeatherManagerAtmosphere::prep_interpolation(f64 Jdate, f64 time)//time-ti
         sun_pos_from.Z=vieta[2];
         sun_angle_from=sun_angle[1];
         saule(52.0f,-5.0f,Jdate+time);//52.0 -5.0 kaunas 54.54 -23.54
-        kampas.X=-sun_angle[1];//heigh
-        kampas.Y=sun_angle[0];//0.0f;-
+        kampas.X=(irr::f32)-sun_angle[1];//heigh
+        kampas.Y=(irr::f32)sun_angle[0];//0.0f;-
         kampas.Z=0.0f;
         core::matrix4 mat2;
         mat2.setRotationDegrees(kampas);
@@ -122,25 +122,25 @@ void IWeatherManagerAtmosphere::saule(f64 pl,f64 lw,f64 J)
         //pl - latitude
         //double J=2453097;
         f64 M = 357.5291f + 0.98560028*(J - 2451545);//degree
-        M=round360(M);//degree
+        M=(irr::f64)round360((irr::f32)M);//degree
         f64 Mrad=M*rad;//radian
         f64 C = 1.9148f* sin(Mrad) + 0.02f* sin(2*Mrad) + 0.0003f*sin(3* Mrad);//degree
         //printf("C %3.4f\n",C);
-        C=round360(C);//degree
+        C=(irr::f64)round360((irr::f32)C);//degree
         //f64 Crad=C*rad;//radian
         f64 lemda = M + 102.9372f + C + 180.0f;//degree
-        lemda=round360(lemda);//degree
+        lemda=(irr::f64)round360((irr::f32)lemda);//degree
         f64 lemdarad=lemda*rad;//radian
         f64 alfa =lemda - 2.468f *sin(2* lemdarad) + 0.053f* sin(4* lemdarad)-0.0014f *sin(6 *lemdarad);//degree
-        alfa=round360(alfa);//degree
+        alfa=(irr::f64)round360((irr::f32)alfa);//degree
         f64 sigma=22.8008f* sin(lemdarad) + 0.5999f* sin(lemdarad)*sin(lemdarad)*sin(lemdarad)
         + 0.0493f* sin(lemdarad)*sin(lemdarad)*sin(lemdarad)*sin(lemdarad)*sin(lemdarad);//degree
-        sigma=round360(sigma);//degree
+        sigma=(irr::f64)round360((irr::f32)sigma);//degree
         f64 sigmarad=sigma*rad;//radian
         f64 zv=280.16f+360.9856235f*(J-2451545.0f)-lw;//degree
-        zv=round360(zv);//degree
+        zv=(irr::f64)round360((irr::f32)zv);//degree
         f64 H = zv - alfa;//degree
-        H=round360(H);//degree
+        H=(irr::f64)round360((irr::f32)H);//degree
         f64 Hrad=H*rad;//radian
         f64 A = atan2(sin(Hrad), cos(Hrad)* sin(pl*rad) - tan(sigmarad)*cos(pl*rad))/rad;
         f64 h = asin(sin(pl*rad)*sin(sigmarad) + cos(pl*rad)*cos(sigmarad)*cos(Hrad))/rad;
@@ -216,8 +216,8 @@ void IWeatherManagerAtmosphere::startTimer()
         Atimer=device->getTimer();
         // Atimer->start();
         //Atimer->setTime(0);
-        currentTime=Atimer->getRealTime();
-        startTime=Atimer->getRealTime();
+        currentTime=(irr::f32)Atimer->getRealTime();
+        startTime=(irr::f32)Atimer->getRealTime();
         dTime=0.0f;
         J1=J;//force update sun first time
         ptime=Atimer->getRealTime();
@@ -228,7 +228,7 @@ void IWeatherManagerAtmosphere::startTimer()
 //###Calculates delta time (time from last frame) for timer
 void IWeatherManagerAtmosphere::updateTimer()
 {
-        currentTime =Atimer->getRealTime();
+        currentTime =(irr::f32)Atimer->getRealTime();
         dTime=currentTime-startTime;
 }
 
@@ -273,7 +273,7 @@ void IWeatherManagerAtmosphere::update()
         //---move sun billboard to sun place
         counter_time+=J-J1;//1440
         time_int_step=counter_time/(sun_interpolation_speed*J1minute);//(1.0f/(sun_interpolation_speed*(1.0f/1440.0f)))*dTime;
-        vector3df sun_place=getInterpolated3df(sun_pos_from,sun_pos_to, time_int_step);
+        vector3df sun_place=getInterpolated3df(sun_pos_from,sun_pos_to, (irr::f32)time_int_step);
         J1=J;
         ICameraSceneNode *cam=smgr->getActiveCamera();
         core::vector3df cameraPos = cam->getAbsolutePosition();
@@ -290,8 +290,8 @@ void IWeatherManagerAtmosphere::update()
 
         // sunlight->setPosition(vt);
         //---sun movement end
-        f32 inv = 1.0f - time_int_step;
-        uvX=((sun_angle_from *inv + sun_angle_to*time_int_step)+90.0f)/180;
+        f32 inv = 1.0f - (irr::f32)time_int_step;
+        uvX=(((irr::f32)sun_angle_from *inv + (irr::f32)sun_angle_to*(irr::f32)time_int_step)+90.0f)/180;
 
         if(time_int_step>=1.0f)
             time_int_step=0.0f;

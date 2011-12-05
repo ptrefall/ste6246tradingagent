@@ -68,12 +68,12 @@ void IrrRocketRenderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_v
     irr::core::vector3df scaleSet(1024.f/Driver->getViewPort().getWidth(), 768.f/Driver->getViewPort().getHeight(), 1);
 
     irr::core::array<irr::video::S3DVertex> Vertices;
-    for (irr::u32 i=0;i<num_vertices;++i)
+    for (irr::u32 i=0;i<(irr::u32)num_vertices;++i)
     {
         Vertices.push_back(irr::video::S3DVertex(vertices[i].position.x, vertices[i].position.y, 0, 0, 0, 1, irr::video::SColor(vertices[i].colour.alpha, vertices[i].colour.red, vertices[i].colour.green, vertices[i].colour.blue), vertices[i].tex_coord.x, vertices[i].tex_coord.y));
     }
     irr::core::array<irr::u16> Indices;
-    for (irr::u32 i=0;i<num_indices;i+=3)
+    for (irr::u32 i=0;i<(irr::u32)num_indices;i+=3)
     {
         Indices.push_back(indices[i]);
         Indices.push_back(indices[i+2]);
@@ -94,11 +94,11 @@ void IrrRocketRenderer::RenderGeometry(Rocket::Core::Vertex* vertices, int num_v
 Rocket::Core::CompiledGeometryHandle IrrRocketRenderer::CompileGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, Rocket::Core::TextureHandle texture)
 {
     irr::scene::SMeshBuffer* buffer = new irr::scene::SMeshBuffer();
-    for (irr::u32 i=0;i<num_vertices;++i)
+    for (irr::u32 i=0;i<(irr::u32)num_vertices;++i)
     {
         buffer->Vertices.push_back(irr::video::S3DVertex(vertices[i].position.x, vertices[i].position.y, 0, 0, 0, 1, irr::video::SColor(vertices[i].colour.alpha, vertices[i].colour.red, vertices[i].colour.green, vertices[i].colour.blue), vertices[i].tex_coord.x, vertices[i].tex_coord.y));
     }
-    for (irr::u32 i=0;i<num_indices;i+=3)
+    for (irr::u32 i=0;i<(irr::u32)num_indices;i+=3)
     {
         buffer->Indices.push_back(indices[i]);
         buffer->Indices.push_back(indices[i+2]);
@@ -176,16 +176,16 @@ void IrrRocketRenderer::SetScissorRegion(int x, int y, int width, int height)
     //ScissorArea = irr::core::rect<irr::s32>(x,y,x+width,y+height);
 
     ScissorTransform[0].setTranslation(irr::core::vector3df(x+width/2.f,y/2.f,0));
-    ScissorTransform[0].setScale(irr::core::vector3df(width, y, 1));
+    ScissorTransform[0].setScale(irr::core::vector3df((irr::f32)width, (irr::f32)y, 1.0f));
 
     ScissorTransform[1].setTranslation(irr::core::vector3df(x+width/2.f,y+height+(Driver->getScreenSize().Height-y-height)/2.f,0));
-    ScissorTransform[1].setScale(irr::core::vector3df(width, (Driver->getScreenSize().Height-y-height), 1));
+    ScissorTransform[1].setScale(irr::core::vector3df((irr::f32)width, (irr::f32)(Driver->getScreenSize().Height-y-height), 1.0f));
 
     ScissorTransform[2].setTranslation(irr::core::vector3df(x/2.f,y+height/2.f,0));
-    ScissorTransform[2].setScale(irr::core::vector3df(x, Driver->getScreenSize().Height, 1));
+    ScissorTransform[2].setScale(irr::core::vector3df((irr::f32)x, (irr::f32)Driver->getScreenSize().Height, 1.0f));
 
     ScissorTransform[3].setTranslation(irr::core::vector3df(x+width+(Driver->getScreenSize().Width-x-width)/2.f,y+height/2.f,0));
-    ScissorTransform[3].setScale(irr::core::vector3df(Driver->getScreenSize().Width-x-width, Driver->getScreenSize().Height, 1));
+    ScissorTransform[3].setScale(irr::core::vector3df((irr::f32)(Driver->getScreenSize().Width-x-width), (irr::f32)Driver->getScreenSize().Height, 1.0f));
 
     //EnableScissorRegion(true);
 }

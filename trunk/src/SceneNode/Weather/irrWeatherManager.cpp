@@ -179,10 +179,10 @@ void irrWeatherManager::updateWeather()
                         irr::scene::IBoltSceneNode* beam = 0;
                         beam = new irr::scene::IBoltSceneNode(
                             cloud, device->getSceneManager(), -1);
-                        beam->setLine(vector3df(0,0,0), vector3df((neg=1)?dirX:-dirX,-14020,(neg=1)?dirZ:-dirZ),
+                        beam->setLine(vector3df(0.0f,0.0f,0.0f), vector3df((irr::f32)dirX,-14020.0f,(irr::f32)dirZ),
                         50, randHeight, 10, randBolts, false, irr::video::SColor(255,185,243,255));
                         beam->drop();
-                        beam->setScale(vector3df(randScaleX,1,randScaleZ));
+                        beam->setScale(vector3df((irr::f32)randScaleX,1.0f,(irr::f32)randScaleZ));
 
                         //void setLine(core::vector3df start, core::vector3df end, u32 updateTime = 300, u32 height = 10,
                         //u32 parts = 10, u32 bolts = 1, bool steddyend = true, video::SColor color = video::SColor(255,255,0,0));
@@ -196,7 +196,7 @@ void irrWeatherManager::updateWeather()
                         }
 
                         cloud->getMaterial(0).AmbientColor = irr::video::SColor(255,28,216,255);
-                        cloud->setLightningHost(device->getTimer()->getTime() + randLifeTime);
+                        cloud->setLightningHost((irr::f32)device->getTimer()->getTime() + (irr::f32)randLifeTime);
 
 
                         /*ILightSceneNode* light1 =

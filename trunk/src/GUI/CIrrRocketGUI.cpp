@@ -66,7 +66,7 @@ CIrrRocketGUI::CIrrRocketGUI(irr::IrrlichtDevice* device) : Device(device)
     GUI_Camera = Device->getSceneManager()->addCameraSceneNode(0, irr::core::vector3df(driver->getScreenSize().Width/2.f, driver->getScreenSize().Height/2.f, 5), irr::core::vector3df(driver->getScreenSize().Width/2.f, driver->getScreenSize().Height/2.f, 0), -1, false);
     GUI_Camera->setUpVector(irr::core::vector3df(0, -1, 0));
     irr::core::matrix4 mat;
-	mat.buildProjectionMatrixOrthoLH(driver->getScreenSize().Width, driver->getScreenSize().Height, 0.1,10);
+	mat.buildProjectionMatrixOrthoLH((irr::f32)driver->getScreenSize().Width, (irr::f32)driver->getScreenSize().Height, 0.1f,10);
 	GUI_Camera->setProjectionMatrix(mat);
 
 

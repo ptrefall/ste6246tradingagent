@@ -45,7 +45,7 @@ IAtmosphereSkySceneNode::IAtmosphereSkySceneNode(irr::video::ITexture* const tex
             nr=nr+3;                        //indices number
             irr::f64 x=cos(angle*0.017453292519943295769236907684886f)*100;//vertice x coord
             irr::f64 z=sin(angle*0.017453292519943295769236907684886f)*100;//vertice z coord
-            Vertices[vert]=irr::video::S3DVertex(x, -5.0f, z,
+            Vertices[vert]=irr::video::S3DVertex((irr::f32)x, -5.0f, (irr::f32)z,
                0.0568988f, 0.688538f, -0.722965f,
                irr::video::SColor(255,255,255,255), 0.0f, 0.9f);
             angle=angle+angle2;
@@ -110,5 +110,5 @@ irr::video::SMaterial& IAtmosphereSkySceneNode::setMaterial(irr::video::ITexture
 //update uv maping x coordinate
 void IAtmosphereSkySceneNode::setuvX(irr::f64 v)
 {
-      uvX=v;
+      uvX=(irr::f32)v;
 }

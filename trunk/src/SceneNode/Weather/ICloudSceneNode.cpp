@@ -182,7 +182,7 @@ void ICloudSceneNode::makeParticles()
 	f32 largestParticleSize = 0.0f;
 
 	// make each particle
-	for (i=0; i < ParticleCount; i++)
+	for (i=0; (irr::u32)i < ParticleCount; i++)
 	{
 		core::vector3df tmppos = ParticleData[i].pos;
 
@@ -238,7 +238,7 @@ void ICloudSceneNode::makeParticles()
 				c+= makeChildClouds(Particles[c],c+1,m,campos);
 			}*/
 
-			if (Particles.size() < c+10)
+			if (Particles.size() < (irr::u32)c+10)
 			{
 				// grow buffer
 				Particles.set_used(Particles.size()+50);
@@ -274,7 +274,7 @@ s16 ICloudSceneNode::makeChildClouds(SCloudParticle &parent,s16 start,core::matr
 {
 	depth+=1;
 
-	if (depth>MaxDepth)
+	if (depth>(irr::u32)MaxDepth)
 	{
 		return (0);
 	}
@@ -319,7 +319,7 @@ s16 ICloudSceneNode::makeChildClouds(SCloudParticle &parent,s16 start,core::matr
 
 		// set distance from camera
 		f32 td = (f32)campos.getDistanceFrom(Particles[c].pos);
-		Particles[c].distance = (td * 10000);
+		Particles[c].distance = (irr::u32)(td * 10000);
 
 		// level of detail
 		f32 lod = td / Particles[c].size.Width;
@@ -329,9 +329,9 @@ s16 ICloudSceneNode::makeChildClouds(SCloudParticle &parent,s16 start,core::matr
 			c+= makeChildClouds(Particles[c],c+1,m,campos);
 			depth-=1;
 			// grow buffer?
-			if (Particles.size() < c+Particles[c].children)
+			if (Particles.size() < (irr::u32)(c+Particles[c].children))
 			{
-				Particles.set_used(c+Particles[c].children);
+				Particles.set_used((irr::u32)(c+Particles[c].children));
 			}
 
 			if (c > CLOUD_PARTICLE_LIMIT)
@@ -658,25 +658,25 @@ void ICloudSceneNode::makeRandomCloud(s16 count)
 	u32 i;
 
 	// make particles
-	for (i=1; i<count+25; i++)
+	for (i=1; i<(irr::u32)count+25; i++)
 	{
 		f32 a,b,c;
 		// random position
-		if (i < count)
+		if (i < (irr::u32)count)
 		{
-			a = rand() / 1.5 - (rand() / 1.5);
-			c = rand() / 1.5 - (rand() / 1.5);
-			b = rand() / 5.0 - (rand() / 5.0); // 50.0
+			a = (irr::f32)(rand() / 1.5 - (rand() / 1.5));
+			c = (irr::f32)(rand() / 1.5 - (rand() / 1.5));
+			b = (irr::f32)(rand() / 5.0 - (rand() / 5.0)); // 50.0
 		}
 		else
 		{
-			a = rand() / 10.0 - (rand() / 10.0);
-			c = rand() / 10.0 - (rand() / 10.0);
-			b = rand() / 10.0 - (rand() / 10.0);
+			a = (irr::f32)(rand() / 10.0 - (rand() / 10.0));
+			c = (irr::f32)(rand() / 10.0 - (rand() / 10.0));
+			b = (irr::f32)(rand() / 10.0 - (rand() / 10.0));
 		}
 		ParticleData[i].pos = core::vector3d<f32>(a,b,c);
 
-		f32 f = rand() / 50 - 1;
+		f32 f = (irr::f32)(rand() / 50 - 1);
 		if (f < 0) f = -f;
 
 		// set the size
