@@ -49,7 +49,7 @@ bool CIrrRocketEventReceiver::OnEvent(const irr::SEvent& event)
         }
         else if (event.MouseInput.Event == irr::EMIE_MOUSE_WHEEL)
         {
-            Context->ProcessMouseWheel(-event.MouseInput.Wheel, mod);
+            Context->ProcessMouseWheel((int)-event.MouseInput.Wheel, mod);
         }
         else if (event.MouseInput.Event == irr::EMIE_LMOUSE_PRESSED_DOWN)
         {

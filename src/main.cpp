@@ -8,7 +8,6 @@
 #include <iostream>
 
 #include <ClanLib\core.h>
-#include <Totem\ComponentFactory.h>
 
 #include <SceneNode\HealthSceneNode.h>
 #include <SceneNode\CGridSceneNode.h>
@@ -16,6 +15,12 @@
 #include <SceneNode\TAnimSprite.h>
 
 #include <GUI/CIrrRocketGUI.h>
+
+#include <Entity\EntityManager.h>
+#include <Entity\Entity.h>
+#include <Entity\Components\Health.h>
+#include <Entity\Components\Sprite.h>
+#include <Totem\ComponentFactory.h>
 
 using namespace irr;
 using namespace core;
@@ -29,7 +34,7 @@ float Objective(GAGenome &);
 int main(int argc, char **argv)
 {
 	CL_SetupCore clanlib_core_setup;
-	Totem::ComponentFactory factory;
+
 	for(int ii=1; ii<argc; ii++) 
 	{
 		if(strcmp(argv[ii++],"seed") == 0) {
@@ -237,7 +242,7 @@ int main(int argc, char **argv)
 	grid->drop();
 
 	std::vector<TAnimSprite*> sprites;
-	{
+	/*{
 		TAnimSprite* myNode = new TAnimSprite(smgr->getRootSceneNode(), smgr, 666);
 		myNode->Load("../../bin/resources/Sprites/human_001.png",72,97);
 		myNode->SetSpeed(400);
@@ -259,11 +264,15 @@ int main(int argc, char **argv)
 				anim->drop();
 			}
 		}
+		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
+		HealthSceneNode *healthbar = new scene::HealthSceneNode(myNode,smgr,-1,coll,50,10,vector3df(0,0,0));
+		healthbar->setProgress(60);
+		healthbar->setScale(vector3df(0.02f, 0.02f, 0.02f));
 		sprites.push_back(myNode);
 	}
 	{
 		TAnimSprite* myNode = new TAnimSprite(smgr->getRootSceneNode(), smgr, 667);
-		myNode->Load("../../bin/resources/Sprites/goblin_001.png",72,97);
+		myNode->Load("../../bin/resources/Sprites/human_002.png",72,97);
 		myNode->SetSpeed(400);
 		myNode->setPosition(vector3df(30, 0, 0));
 		float spwn_height = terrain->getHeight(myNode->getPosition().X, myNode->getPosition().Z);
@@ -283,8 +292,50 @@ int main(int argc, char **argv)
 				anim->drop();
 			}
 		}
+		scene::ISceneCollisionManager* coll = smgr->getSceneCollisionManager();
+		HealthSceneNode *healthbar = new scene::HealthSceneNode(myNode,smgr,-1,coll,50,10,vector3df(0,0,0));
+		healthbar->setProgress(60);
+		healthbar->setScale(vector3df(0.02f, 0.02f, 0.02f));
 		sprites.push_back(myNode);
+	}*/
+
+	Totem::ComponentFactory factory;
+	Components::Health::RegisterToFactory(factory);
+	Components::Sprite::RegisterToFactory(factory);
+	EntityManager emgr(*terrain);
+
+	try{
+		Entity &entity = emgr.create(factory);
+		entity.addComponent<EntityManager, ISceneManager>("Health", emgr, *smgr);
+		entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
+			*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Sprites/goblin_001.png"));
+		entity.sendEvent0(T_HashedString("LOAD"));
+	}catch(std::exception &e){
+		std::cout << e.what() << std::endl;
 	}
+
+	try{
+		Entity &entity = emgr.create(factory);
+		entity.addComponent<EntityManager, ISceneManager>("Health", emgr, *smgr);
+		entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
+			*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Sprites/human_001.png"));
+		entity.sendEvent0(T_HashedString("LOAD"));
+		entity.getProperty<vector3df>("Position") = vector3df(40,0,0);
+	}catch(std::exception &e){
+		std::cout << e.what() << std::endl;
+	}
+
+	try{
+		Entity &entity = emgr.create(factory);
+		entity.addComponent<EntityManager, ISceneManager>("Health", emgr, *smgr);
+		entity.addComponent<ISceneNode, ISceneManager, std::string>(Components::Sprite::Type(), 
+			*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Sprites/human_002.png"));
+		entity.sendEvent0(T_HashedString("LOAD"));
+		entity.getProperty<vector3df>("Position") = vector3df(30,0,0);
+	}catch(std::exception &e){
+		std::cout << e.what() << std::endl;
+	}
+
 
 	CIrrRocketGUI rocket_gui(device);
 
@@ -297,7 +348,7 @@ int main(int argc, char **argv)
 			device->yield();
 
 		double fps_ms = 1.0 / (double)driver->getFPS();
-		device->setWindowCaption((const wchar_t*)(CL_String("TradingAgent") + CL_StringHelp::int_to_text(driver->getFPS())).c_str());
+		//device->setWindowCaption((const wchar_t*)(std::string("TradingAgent") + std::stringHelp::int_to_text(driver->getFPS())).c_str());
 
 		if(fps_ms < 0.1)
 			accum_time += fps_ms;
@@ -312,6 +363,8 @@ int main(int argc, char **argv)
 
 		for(unsigned int i = 0; i < sprites.size(); i++)
 			sprites[i]->Update(ESD_SOUTH);
+
+		emgr.update((float)fps_ms);
 
 		//tower->setRotation(vector3df(0.0f, 1.0f, 0.0f));
 

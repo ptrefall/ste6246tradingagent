@@ -2,6 +2,7 @@
 
 #include <Irrlicht\irrlicht.h>
 #include <Windows.h>
+#include <unordered_map>
 namespace irr
 {
 	namespace scene
@@ -36,7 +37,7 @@ namespace irr
 		SpriteAnimSequence() : crntIndex(-1) {}
 		SpriteAnimSequence(const std::vector<s32> &seq) : seq(seq), crntIndex(-1) {}
 		SpriteAnimSequence(const s32 &v0, const s32 &v1, const s32 &v2, const s32 &v3) : crntIndex(-1) { seq.push_back(v0); seq.push_back(v1); seq.push_back(v2); seq.push_back(v3); }
-		void update() { crntIndex++; if(crntIndex >= seq.size()) crntIndex = 0;}
+		void update() { crntIndex++; if((u32)crntIndex >= seq.size()) crntIndex = 0;}
 		void reset() { crntIndex = -1; }
 		s32 currentFrame() { if(crntIndex < 0) return 0; return seq[crntIndex]; }
 	};
@@ -88,7 +89,7 @@ namespace irr
 					  currentDirectionState = ESD_SOUTH;
 			   }     
           
-			  virtual void Load(char* filename,s32 frmWidth,s32 frmHeight)
+			  virtual void Load(const char* filename, s32 frmWidth, s32 frmHeight)
 			   {
 				   video::IVideoDriver* driver = SceneManager->getVideoDriver();
 				   core::dimension2d<u32> Screensize = driver->getScreenSize(); 

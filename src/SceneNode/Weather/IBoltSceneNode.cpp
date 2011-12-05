@@ -84,13 +84,13 @@ namespace irr
                 for (u32 a=0;a<parts;a++)
                 {
                     //printf("add Part[%i] ", a);
-                    boltarray[i].points.push_back(m_start+dir*a);
+                    boltarray[i].points.push_back(m_start+dir*(irr::f32)a);
                     if (a == parts-1 || a == 0)
                         boltarray[i].delta.push_back(0.0f);
                     else
                     {
                         u32 h = height*2;
-                        f32 d = (rand()%h);
+                        f32 d = (irr::f32)(rand()%h);
                         d-=(f32)height;
                         //printf("Delta: %f", d);
                         boltarray[i].delta.push_back(d);
@@ -106,23 +106,23 @@ namespace irr
                 if (dir.X != 0)
                 {
                     if (vec == 0)
-                        boltarray[i].normal = core::vector3df(-dir.Y/dir.X*cord,cord,0);
+                        boltarray[i].normal = core::vector3df(-dir.Y/dir.X*(irr::f32)cord,(irr::f32)cord,0);
                     else
-                        boltarray[i].normal = core::vector3df(-dir.Z/dir.X*cord,0,cord);
+                        boltarray[i].normal = core::vector3df(-dir.Z/dir.X*(irr::f32)cord,0,(irr::f32)cord);
                 }
                 else if (dir.Y != 0)
                 {
                     if (vec == 0)
-                        boltarray[i].normal = core::vector3df(cord,-dir.X/dir.Y*cord,0);
+                        boltarray[i].normal = core::vector3df((irr::f32)cord,-dir.X/dir.Y*(irr::f32)cord,0);
                     else
-                        boltarray[i].normal = core::vector3df(0,-dir.Z/dir.Y*cord,cord);
+                        boltarray[i].normal = core::vector3df(0,-dir.Z/dir.Y*(irr::f32)cord,(irr::f32)cord);
                 }
                 else if (dir.Z != 0)
                 {
                     if (vec == 0)
-                        boltarray[i].normal = core::vector3df(cord,0,-dir.X/dir.Z*cord);
+                        boltarray[i].normal = core::vector3df((irr::f32)cord,0,-dir.X/dir.Z*(irr::f32)cord);
                     else
-                        boltarray[i].normal = core::vector3df(0,cord,-dir.Y/dir.Z*cord);
+                        boltarray[i].normal = core::vector3df(0,(irr::f32)cord,-dir.Y/dir.Z*(irr::f32)cord);
                 }
                 boltarray[i].normal.normalize();
             }

@@ -73,11 +73,34 @@ set(GA_GENOME_SRCS
 )
 SOURCE_GROUP("Source Files\\GeneticAlg\\Genome" FILES ${GA_GENOME_SRCS})
 #---------------------------------------------------------------
+set(ENTITY_HDRS
+	./Entity/Entity.h
+	./Entity/EntityManager.h
+)
+SOURCE_GROUP("Header Files\\Entity" FILES ${ENTITY_HDRS})
+#---------------------------------------------------------------
+set(ENTITY_SRCS
+	./Entity/EntityManager.cpp
+)
+SOURCE_GROUP("Source Files\\Entity" FILES ${ENTITY_SRCS})
+#---------------------------------------------------------------
+set(ENTITY_COMPONENT_HDRS
+	./Entity/Components/Health.h
+	./Entity/Components/Sprite.h
+)
+SOURCE_GROUP("Header Files\\Entity\\Components" FILES ${ENTITY_COMPONENT_HDRS})
+#---------------------------------------------------------------
+set(ENTITY_COMPONENT_SRCS
+	./Entity/Components/Health.cpp
+	./Entity/Components/Sprite.cpp
+)
+SOURCE_GROUP("Source Files\\Entity\\Components" FILES ${ENTITY_COMPONENT_SRCS})
+#---------------------------------------------------------------
 find_package(Irrlicht REQUIRED)
 find_package(GAlib REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(ClanLib REQUIRED)
-find_package(Totem REQUIRED)
+#find_package(Totem REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(Rocket REQUIRED)
 #---------------------------------------------------------------
@@ -86,6 +109,8 @@ add_executable(TradingAgent ${HDRS} ${SRCS}
 							${WEATHER_SCENE_NODE_HDRS} ${WEATHER_SCENE_NODE_SRCS}
 							${GUI_HDRS} ${GUI_SRCS}
 							${GA_GENOME_HDRS} ${GA_GENOME_SRCS}
+							${ENTITY_HDRS} ${ENTITY_SRCS}
+							${ENTITY_COMPONENT_HDRS} ${ENTITY_COMPONENT_SRCS}
 	)
 #---------------------------------------------------------------
 set_target_properties(TradingAgent PROPERTIES DEBUG_POSTFIX _d)
@@ -96,7 +121,8 @@ target_link_libraries(TradingAgent
   debug ${GALIB_LIB_DEBUG} optimized ${GALIB_LIB_RELEASE}
   debug ${ZLIB_LIBRARY_DEBUG} optimized ${ZLIB_LIBRARY_RELEASE}
   debug ${CL_CORE_LIB_DEBUG} optimized ${CL_CORE_LIB_RELEASE}
-  debug ${TOTEM_LIB_DEBUG} optimized ${TOTEM_LIB_RELEASE}
+  TotemEDK
+  #debug ${TOTEM_LIB_DEBUG} optimized ${TOTEM_LIB_RELEASE}
   debug ${FREETYPE_LIB_DEBUG} optimized ${FREETYPE_LIB_RELEASE}
   debug ${ROCKET_CORE_LIB_DEBUG} optimized ${ROCKET_CORE_LIB_RELEASE}
   debug ${ROCKET_CONTROLS_LIB_DEBUG} optimized ${ROCKET_CONTROLS_LIB_RELEASE}

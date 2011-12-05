@@ -97,7 +97,7 @@ namespace irr
                             }
                             else
                             {
-                                delta[i] = rand()%h;
+                                delta[i] = (irr::f32)(rand()%h);
                                 delta[i] -= (f32)m_height;
                             }
                         }
@@ -105,7 +105,7 @@ namespace irr
 
                     if (!m_end && time-startTime >= m_updateTime)
                     {
-                       delta[delta.size()-1] = rand()%h;
+                       delta[delta.size()-1] = (irr::f32)(rand()%h);
                   delta[delta.size()-1] -= (f32)m_height;
                     }
 
