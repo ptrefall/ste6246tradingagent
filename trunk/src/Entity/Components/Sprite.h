@@ -12,8 +12,8 @@ namespace Components
 	class Sprite : public Totem::Component
 	{
 	public:
-		COMPONENT_3(Entity, Sprite, irr::scene::ISceneNode, irr::scene::ISceneManager, std::string)
-		Sprite(Entity &owner, const std::string &name, irr::scene::ISceneNode& parent, irr::scene::ISceneManager& mgr, std::string &filename);
+		COMPONENT_4(Entity, Sprite, irr::scene::ISceneNode, irr::scene::ISceneManager, std::string, irr::core::vector2di)
+		Sprite(Entity &owner, const std::string &name, irr::scene::ISceneNode& parent, irr::scene::ISceneManager& mgr, std::string &filename, irr::core::vector2di &frame_dimension);
 		virtual ~Sprite();
 
 		virtual void update(const float &dt);
