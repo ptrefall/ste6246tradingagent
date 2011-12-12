@@ -14,12 +14,14 @@ set(SCENE_NODE_HDRS
 	./SceneNode/HealthSceneNode.h
 	./SceneNode/CGridSceneNode.h
 	./SceneNode/TAnimSprite.h
+	./SceneNode/GraphSceneNode.h
 )
 SOURCE_GROUP("Header Files\\SceneNode" FILES ${SCENE_NODE_HDRS})
 #---------------------------------------------------------------
 set(SCENE_NODE_SRCS
   ./SceneNode/HealthSceneNode.cpp
   ./SceneNode/CGridSceneNode.cpp
+  ./SceneNode/GraphSceneNode.cpp
 )
 SOURCE_GROUP("Source Files\\SceneNode" FILES ${SCENE_NODE_SRCS})
 #---------------------------------------------------------------
