@@ -1,17 +1,17 @@
 #pragma once
 
-#include <GA\GAGenome.h>
+#include <GA\ga.h>
 #include <Totem\PropertyHandler.h>
 #include <Totem\PropertyListHandler.h>
 
 #define ENERGY_PROD_INVESTMENT_PER_KWH 14000
 
 //The saldo of the prosumer at any given time t.
-struct EconomicSaldo
+struct Saldo
 {
 	unsigned long time;
-	int saldo;
-	EconomicSaldo(unsigned long time, int saldo) : time(time), saldo(saldo) {}
+	float saldo;
+	Saldo(unsigned long time, float saldo) : time(time), saldo(saldo) {}
 };
 
 //How comfortable the prosumer is at any given time t.
@@ -75,15 +75,15 @@ public:
 
 //Genetic material
 protected:
-	Totem::Property<int> economic_capasity;
-	Totem::Property<int> energy_production_capacity;
-	Totem::Property<int> energy_consumption;
+	Totem::Property<float> economic_capasity;
+	Totem::Property<float> energy_production_capacity;
+	Totem::Property<float> energy_consumption;
 	Totem::Property<float> user_flexibility;
 	Totem::Property<ProsumerPolicy> policy;
 
 //State attributes
 protected:
-	Totem::PropertyList<EconomicSaldo> saldo_at_t;
+	Totem::PropertyList<Saldo> saldo_at_t;
 	Totem::PropertyList<Comfort> comfort_at_t;
 	Totem::PropertyList<Age> age_at_t;
 };

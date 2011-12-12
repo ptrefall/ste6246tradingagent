@@ -13,6 +13,7 @@
 #include <SceneNode\CGridSceneNode.h>
 #include <SceneNode\Weather\irrWeatherManager.h>
 #include <SceneNode\TAnimSprite.h>
+#include <SceneNode\GraphSceneNode.h>
 
 #include <GUI/CIrrRocketGUI.h>
 
@@ -257,6 +258,15 @@ int main(int argc, char **argv)
 	/*scene::CGridSceneNode* grid = new scene::CGridSceneNode(smgr->getRootSceneNode(), smgr);
 	grid->setMaterialFlag(EMF_LIGHTING, false);
 	grid->drop();*/
+
+	/*GraphSceneNode *graph = new GraphSceneNode(smgr->getRootSceneNode(), smgr);
+	for(unsigned int i = 0; i < 100.0f; i++)
+	{
+		graph->AddPlotPoint(vector3df(i*10.0f,sin(i*0.01f),0.0f));
+	}
+	graph->RegenerateGraph();
+	graph->setMaterialFlag(EMF_LIGHTING, false);*/
+	
 
 	//////////////////////////////////////////
 	// TOTEM INITIALIZING
