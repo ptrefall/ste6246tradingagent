@@ -84,6 +84,7 @@ int ProsumerGenome::write(std::ostream &stream) const
 	stream << "- Energy Consumption: " << energy_consumption.toString(*serializer).c_str() << "\n";
 	stream << "- User Flexibility: " << user_flexibility.toString(*serializer).c_str() << "\n";
 	stream << "- Policy: " << (policy.get() == GREEDY_PROSUMER ?  "Greedy" : "Cautious") << "\n";
+	//stream << "- SCORE: " << this->score() << "\n";
 	return 0;
 }
 
@@ -96,8 +97,6 @@ int ProsumerGenome::investInEnergyProduction(int kWh)
 	if(economic_investment > economic_capasity.get())
 		return 0;
 
-
-
 	return 0;
 }
 
@@ -108,13 +107,13 @@ void ProsumerGenome::Init(GAGenome &genome)
 {
 	ProsumerGenome &prosumer = static_cast<ProsumerGenome &>(genome);
 	
-	prosumer.economic_capasity = GARandomFloat(0.5f, 3.5f);
+	prosumer.economic_capasity = GARandomFloat(0.05f, 0.35f);
 	prosumer.energy_production_capacity = 0.0f;
-	prosumer.energy_consumption = GARandomFloat(0.5f, 3.5f);
+	prosumer.energy_consumption = GARandomFloat(0.05f, 0.35f);
 	prosumer.user_flexibility = 0.01f;
 	prosumer.policy = GREEDY_PROSUMER;
 
-	prosumer._evaluated = gaFalse;
+	//prosumer._evaluated = gaFalse;
 }
 
 int ProsumerGenome::Mutate(GAGenome &genome, float pmut)
@@ -157,7 +156,7 @@ float ProsumerGenome::Evaluate(GAGenome &genome)
 	float saldo = prosumer.economic_capasity.get();
 
 	float energy_consumption_per_hour = prosumer.energy_consumption.get() / prosumer.avg_per_hour_cost_factor;
-	float low_consumption = prosumer.user_flexibility * energy_consumption_per_hour;
+	float low_consumption = prosumer.user_flexibility * energy_consumption_per_hour; //prosumer.economic_capasity.get();
 	float saldo_reduction_factor = (low_consumption / energy_consumption_per_hour)*(low_consumption / energy_consumption_per_hour);
 
 	if(saldo_reduction_factor > 1.0f)
@@ -211,7 +210,7 @@ int ProsumerGenome::Cross(const GAGenome &a, const GAGenome &b, GAGenome *c, GAG
 
 		child.policy = mum.policy.get();
 
-		child._evaluated = gaFalse;
+		//child._evaluated = gaFalse;
 		n++;
 	}
 	if(d)
@@ -249,7 +248,7 @@ int ProsumerGenome::Cross(const GAGenome &a, const GAGenome &b, GAGenome *c, GAG
 
 		child.policy = dad.policy.get();
 
-		child._evaluated = gaFalse;
+		//child._evaluated = gaFalse;
 		n++;
 	}
 	return n;
