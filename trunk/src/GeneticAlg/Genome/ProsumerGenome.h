@@ -3,6 +3,7 @@
 #include <GA\ga.h>
 #include <Totem\PropertyHandler.h>
 #include <Totem\PropertyListHandler.h>
+#include <Totem\PropertySerializer.h>
 
 #define ENERGY_PROD_INVESTMENT_PER_KWH 14000
 
@@ -12,6 +13,7 @@ struct Saldo
 	unsigned long time;
 	float saldo;
 	Saldo(unsigned long time, float saldo) : time(time), saldo(saldo) {}
+	bool operator== (const Saldo &rhs) { if(this->time == rhs.time && this->saldo == rhs.saldo) return true; else return false; }
 };
 
 //How comfortable the prosumer is at any given time t.
@@ -50,7 +52,7 @@ public:
 
 public:
 	ProsumerGenome();
-	ProsumerGenome(const ProsumerGenome &orig) { copy(orig); }
+	ProsumerGenome(const ProsumerGenome &orig);
 	virtual ~ProsumerGenome();
 
 	ProsumerGenome &operator= (const GAGenome &orig)
@@ -86,4 +88,11 @@ protected:
 	Totem::PropertyList<Saldo> saldo_at_t;
 	Totem::PropertyList<Comfort> comfort_at_t;
 	Totem::PropertyList<Age> age_at_t;
+
+	const float compareFactor;
+	const float avg_per_hour_cost_factor;
+
+
+protected:
+	Totem::PropertySerializer *serializer;
 };

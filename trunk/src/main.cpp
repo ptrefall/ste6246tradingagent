@@ -23,6 +23,8 @@
 #include <Entity\Components\Sprite.h>
 #include <Totem\ComponentFactory.h>
 
+#include <GeneticAlg\Genome\ProsumerGenome.h>
+
 #include <iostream>
 
 using namespace irr;
@@ -38,7 +40,7 @@ int main(int argc, char **argv)
 {
 	CL_SetupCore clanlib_core_setup;
 
-	for(int ii=1; ii<argc; ii++) 
+	/*for(int ii=1; ii<argc; ii++) 
 	{
 		if(strcmp(argv[ii++],"seed") == 0) {
 			GARandomSeed((unsigned int)atoi(argv[ii]));
@@ -65,7 +67,65 @@ int main(int argc, char **argv)
 	ga.scoreFrequency(10);	// keep the scores of every 10th generation
 	ga.flushFrequency(50);	// specify how often to write the score to disk
 	ga.selectScores(GAStatistics::AllScores);
-	GAGenome &individual = ga.population().individual(0);
+	GAGenome &individual = ga.population().individual(0);*/
+
+	//{
+	ProsumerGenome genome; //default constructor
+	std::cout << "genome after creation:\n" << genome << std::endl;
+
+	int popsize  = 30;
+	int ngen     = 10;
+	float preplace = 0.1;
+	float pmut   = 0.001;
+	float pcross = 0.2;
+
+	GASteadyStateGA ga(genome);
+	ga.minimize();
+	ga.populationSize(popsize);
+	ga.pReplacement(preplace);
+	ga.nGenerations(ngen);
+	ga.pMutation(pmut);
+	ga.pCrossover(pcross);
+	ga.scoreFilename("../../bin/bog.dat");	// name of file for scores
+	ga.scoreFrequency(1);	// keep the scores of every 10th generation
+	ga.flushFrequency(50);	// specify how often to write the score to disk
+	ga.selectScores(GAStatistics::Maximum);
+	GANoScaling scalor;
+	ga.scaling(scalor);
+	GARankSelector selector;
+	ga.selector(selector);
+
+
+	/*genome.initialize();  // test the initializer
+	std::cout << "genome after initialization:\n" << genome << std::endl;
+
+	genome.mutate(0.99f);      // test the mutator
+	std::cout << "genome after mutation:\n" << genome << std::endl;
+
+	ProsumerGenome* a = new ProsumerGenome(genome);   // test copy constructor
+	ProsumerGenome* b = new ProsumerGenome(genome);
+
+	ProsumerGenome* c = static_cast<ProsumerGenome*>(genome.clone(GAGenome::CONTENTS));
+	std::cout << "clone contents:\n" << *c << "\n";
+	ProsumerGenome* d = static_cast<ProsumerGenome*>(genome.clone(GAGenome::ATTRIBUTES));
+	std::cout << "clone attributes:\n" << *d << "\n";
+
+	a->initialize();
+	b->initialize();
+	std::cout << "parents:\n" << *a << "\n" << *b << "\n";
+
+	ProsumerGenome::Cross(*a, *b, c, d);   // test two child crossover
+	std::cout << "children of crossover:\n" << *c << "\n" << *d << "\n";
+	ProsumerGenome::Cross(*a, *b, c, 0);   // test single child crossover
+	std::cout << "child of crossover:\n" << *c << "\n";
+
+	a->compare(*b);       // test the comparator
+
+	delete a;
+	delete b;
+	delete c;
+	delete d;
+	}*/
 
 	char a;
 	std::cout << "Do you want to draw the scene with 1) Software, or 2) OpenGL renderer?" << std::endl;
@@ -352,6 +412,7 @@ int main(int argc, char **argv)
 	device->getCursorControl()->setVisible(false);
 
 	double accum_time = 0.0;
+	int generation = 0;
 	while(device->run())
 	{
 		if (!device->isWindowActive())
@@ -362,12 +423,17 @@ int main(int argc, char **argv)
 
 		if(fps_ms < 0.1)
 			accum_time += fps_ms;
-		if(accum_time > 10.0)
+		/*if(accum_time > 10.0)
 		{
-			accum_time = 0.0;
+			accum_time = 0.0;*/
+		if(generation <= ngen)
+		{
 			ga.evolve();
-			std::cout << "The GA found:\n" << ga.statistics().bestIndividual() << "\n";
+			const ProsumerGenome &prosumer = static_cast<const ProsumerGenome &>(ga.statistics().bestIndividual());
+			std::cout << "Best prosumer of generation " << generation << ":\n" << prosumer << "\n";
+			generation++;
 		}
+		//}*/
 
 		if(weatherMgr)
 			weatherMgr->updateWeather();
