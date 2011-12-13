@@ -189,14 +189,14 @@ public:
 	 *
 	 * @return Returns true if data does not exist, false if it does.
 	 */
-	virtual bool isNull() const { return data == NULL_PTR; }
+	virtual bool isNull() const { return data == 0; }
 
 	/**
 	 * Call this function to serialize the value of the property into a string.
 	 * @param serializer The serializer to use for serialization.
 	 * @return Returns the serialized string value of this property.
 	 */
-	virtual T_String toString(IPropertySerializer &serializer) { return serializer.toString(this); }
+	virtual T_String toString(IPropertySerializer &serializer) const { return serializer.toString(this); }
 	/**
 	 * Call this function to deserialize a value from the string.
 	 * @param serialized_property The serialized string to deserialize.

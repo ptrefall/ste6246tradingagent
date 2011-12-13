@@ -60,7 +60,7 @@ public:
 	 * @param property The property to serialize
 	 * @return Returns serialized property
 	 */
-	virtual T_String toString(const IProperty *const property) = 0;
+	virtual T_String toString(IProperty const *const property) const = 0;
 
 	/**
 	 * Serializes a property list to text string
@@ -68,7 +68,7 @@ public:
 	 * @param propertyList The property list to serialize
 	 * @return Returns serialized property list
 	 */
-	virtual T_String toString(IPropertyList *const propertyList) = 0;
+	virtual T_String toString(IPropertyList *const propertyList) const = 0;
 
 	/**
 	 * Deserializes a property from string

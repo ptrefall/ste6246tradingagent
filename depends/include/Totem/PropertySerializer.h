@@ -68,7 +68,7 @@ public:
 	 * @param property The property to serialize
 	 * @return Returns serialized property
 	 */
-	virtual T_String toString(const IProperty *const property)
+	virtual T_String toString(IProperty const *const property) const
 	{
 		if(property->getType() == IProperty::getType<bool>())
 			return serialize<bool>(property);
@@ -94,7 +94,7 @@ public:
 	 * @param propertyList The property list to serialize
 	 * @return Returns serialized property list
 	 */
-	virtual T_String toString(IPropertyList *const propertyList)
+	virtual T_String toString(IPropertyList *const propertyList) const
 	{
 		/*if(propertyList->getType() == IPropertyList::getType<bool>())
 			return serialize<bool>(propertyList);
@@ -170,9 +170,9 @@ private:
 	 * @return Returns serialized property
 	 */
 	template<typename T>
-	T_String serialize(const IProperty *const property)
+	T_String serialize(IProperty const *const property) const
 	{	
-		const Property<T> *const prop = static_cast<const Property<T> *const>(property);
+		Property<T> const *const prop = static_cast<Property<T> const *const>(property);
 		std::stringstream stream;
 		stream << prop->get();
 		return stream.str();
@@ -185,7 +185,7 @@ private:
 	 * @return Returns serialized property list
 	 */
 	template<typename T>
-	T_String serialize(IPropertyList *const propertyList)
+	T_String serialize(IPropertyList *const propertyList) const
 	{	
 		PropertyList<T> *const prop = static_cast<PropertyList<T> *const>(propertyList);
 		std::stringstream stream;
