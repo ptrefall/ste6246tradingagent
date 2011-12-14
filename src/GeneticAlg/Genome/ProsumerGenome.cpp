@@ -84,7 +84,7 @@ int ProsumerGenome::write(std::ostream &stream) const
 	stream << "- Energy Consumption: " << energy_consumption.toString(*serializer).c_str() << "\n";
 	stream << "- User Flexibility: " << user_flexibility.toString(*serializer).c_str() << "\n";
 	stream << "- Policy: " << (policy.get() == GREEDY_PROSUMER ?  "Greedy" : "Cautious") << "\n";
-	//stream << "- SCORE: " << this->score() << "\n";
+	stream << "- SCORE: " << score() << "\n";
 	return 0;
 }
 
@@ -107,9 +107,9 @@ void ProsumerGenome::Init(GAGenome &genome)
 {
 	ProsumerGenome &prosumer = static_cast<ProsumerGenome &>(genome);
 	
-	prosumer.economic_capasity = GARandomFloat(0.05f, 0.35f);
+	prosumer.economic_capasity = GARandomFloat(0.1f, 0.55f);
 	prosumer.energy_production_capacity = 0.0f;
-	prosumer.energy_consumption = GARandomFloat(0.05f, 0.35f);
+	prosumer.energy_consumption = GARandomFloat(0.005f, 10.35f);
 	prosumer.user_flexibility = 0.01f;
 	prosumer.policy = GREEDY_PROSUMER;
 

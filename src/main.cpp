@@ -73,11 +73,11 @@ int main(int argc, char **argv)
 	ProsumerGenome genome; //default constructor
 	std::cout << "genome after creation:\n" << genome << std::endl;
 
-	int popsize  = 30;
-	int ngen     = 10;
+	int popsize  = 300;
+	int ngen     = 30;
 	float preplace = 0.1;
-	float pmut   = 0.001;
-	float pcross = 0.2;
+	float pmut   = 0.02;
+	float pcross = 0.35;
 
 	GASteadyStateGA ga(genome);
 	ga.minimize();
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	ga.scoreFilename("../../bin/bog.dat");	// name of file for scores
 	ga.scoreFrequency(1);	// keep the scores of every 10th generation
 	ga.flushFrequency(50);	// specify how often to write the score to disk
-	ga.selectScores(GAStatistics::Maximum);
+	ga.selectScores(GAStatistics::Maximum|GAStatistics::Minimum);
 	GANoScaling scalor;
 	ga.scaling(scalor);
 	GARankSelector selector;
