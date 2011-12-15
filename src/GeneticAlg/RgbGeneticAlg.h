@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <functional>
-#include <algorithm>
 
 #include "IGeneticAlg.h"
 #include <GeneticAlg\Genome\RgbGenome.h>
@@ -15,9 +14,19 @@ public:
 
 	static std::ostream &write(std::ostream& s, RgbGeneticAlg& d)
 	{
-		std::sort(d.generation->population->individuals.begin(), d.generation->population->individuals.end(), RgbGenomeSortPredicate<RgbGenome>);
 		s << "Generation: " << d.generation->id << ", population size: " << d.generation->population->size << std::endl;
-		for(unsigned int i = 0; i < d.generation->population->individuals.size(); i++)
+		if(d.generation->bestGenome->fitness() == 1.0)
+		{
+			s << "= Perfect individual: ";
+			RgbGenome::write(s, *d.generation->bestGenome);
+		}
+		else
+		{
+			s << "= Best individual: ";
+			RgbGenome::write(s, *d.generation->bestGenome);
+		}
+
+		for(unsigned int i = 1; i < d.generation->population->individuals.size(); i++)
 		{
 			s << "- ";
 			RgbGenome::write(s, *d.generation->population->individuals[i]);
@@ -38,5 +47,7 @@ protected:
 protected:
 	virtual RgbGenome *createInitialRandomGenome() override;
 	std::vector<RgbGenome*> findSurvivors() override;
+	void sortPopulation() override;
+	void selectBestIndividual() override;
 };
 

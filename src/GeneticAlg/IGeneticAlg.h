@@ -65,7 +65,7 @@ public:
 		createInitialGenomes();
 	}
 
-	void evolve()
+	bool evolve()
 	{
 		//New parameters for next generation
 		Generation<GenomeType> *newGeneration = 0x0;
@@ -114,6 +114,12 @@ public:
 
 		generation = newGeneration;
 		generations.push_back(newGeneration);
+
+		selectBestIndividual();
+
+		if(generation->bestGenome && generation->bestGenome->fitness() == 1.0)
+			return true;
+		return false;
 	}
 
 protected:
@@ -123,11 +129,14 @@ protected:
 protected:
 	virtual GenomeType *createInitialRandomGenome() = 0;
 	virtual std::vector<GenomeType*> findSurvivors() = 0;
+	virtual void sortPopulation() = 0;
+	virtual void selectBestIndividual() = 0;
 
 private:
 	void createInitialGenomes()
 	{
 		for(unsigned int i = 0; i < generation->population->size; i++)
 			generation->population->individuals.push_back(createInitialRandomGenome());
+		selectBestIndividual();
 	}
 };

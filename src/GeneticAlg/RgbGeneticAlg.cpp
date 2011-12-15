@@ -85,9 +85,22 @@ std::vector<RgbGenome*> RgbGeneticAlg::findSurvivors()
 {
 	std::vector<RgbGenome*> survivors;
 
-	std::sort(generation->population->individuals.begin(), generation->population->individuals.end(), RgbGenomeSortPredicate<RgbGenome>);
+	sortPopulation();
 	for(unsigned int i = 0; i < generation->survivorCount; i++)
 		survivors.push_back(generation->population->individuals[i]);
 
+
+
 	return survivors;
+}
+
+void RgbGeneticAlg::sortPopulation()
+{
+	std::sort(generation->population->individuals.begin(), generation->population->individuals.end(), RgbGenomeSortPredicate<RgbGenome>);
+}
+
+void RgbGeneticAlg::selectBestIndividual()
+{
+	sortPopulation();
+	generation->bestGenome = generation->population->individuals[0];
 }
