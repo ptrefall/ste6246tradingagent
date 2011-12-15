@@ -129,12 +129,14 @@ int main(int argc, char **argv)
 	delete d;
 	}*/
 
-	RgbGeneticAlg ga(20, 10);
+	RgbGeneticAlg ga(100, 99);
 	ga.initialize();
-	for(unsigned int i = 0; i < 30; i++)
+	for(unsigned int i = 0; i < 60; i++)
 	{
 		std::cout << ga;
-		ga.evolve();
+		bool perfect_genome_found = ga.evolve();
+		if(perfect_genome_found)
+			break;
 	}
 	std::cout << ga << std::endl;
 
