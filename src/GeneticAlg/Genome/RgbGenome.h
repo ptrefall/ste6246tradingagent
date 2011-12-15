@@ -26,6 +26,12 @@ public:
 	double fitness() const override;
 	const Rgb &chromosomeValue() const override;
 	void setChromosomeValue(Rgb &chromosome) override;
+
+	friend std::ostream& operator << (std::ostream& s, Rgb& d)
+	{
+		s << chromosome;
+		return s;
+	}
 	
 private:
 	Rgb target;

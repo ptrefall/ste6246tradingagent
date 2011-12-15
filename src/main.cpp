@@ -25,6 +25,8 @@
 
 #include <GeneticAlg\Genome\ProsumerGenome.h>
 
+#include <GeneticAlg\RgbGeneticAlg.h>
+
 #include <iostream>
 
 using namespace irr;
@@ -126,6 +128,9 @@ int main(int argc, char **argv)
 	delete c;
 	delete d;
 	}*/
+
+	RgbGeneticAlg ga(20, 10);
+	ga.evolve();
 
 	char a;
 	std::cout << "Do you want to draw the scene with 1) Software, or 2) OpenGL renderer?" << std::endl;
