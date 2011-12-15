@@ -44,6 +44,32 @@ bool RgbGeneticAlg::mutate(RgbGenome &genome, double chance) const
 std::vector<RgbGenome*> RgbGeneticAlg::crossover(RgbGenome &mum, RgbGenome &dad, unsigned int child_count, double chance)
 {
 	std::vector<RgbGenome*> children;
+
+	for(unsigned int i = 0; i < child_count; i++)
+	{
+		double result = (std::rand()%1000000)/1000000.0;
+		if(result <= chance)
+		{
+			Rgb midpoint;
+			midpoint.r = (mum.chromosomeValue().r + dad.chromosomeValue().r) / 2.0;
+			midpoint.g = (mum.chromosomeValue().g + dad.chromosomeValue().g) / 2.0;
+			midpoint.b = (mum.chromosomeValue().b + dad.chromosomeValue().b) / 2.0;
+
+			Rgb distance;
+			distance.r = (int)fabs((double)mum.chromosomeValue().r - (double)dad.chromosomeValue().r);
+			distance.g = (int)fabs((double)mum.chromosomeValue().g - (double)dad.chromosomeValue().g);
+			distance.b = (int)fabs((double)mum.chromosomeValue().b - (double)dad.chromosomeValue().b);
+
+			Rgb res;
+			res.r = midpoint.r + distance.r * (((std::rand()%1000000)/1000000.0)*((std::rand()%1000000)/1000000.0));
+			res.g = midpoint.g + distance.g * (((std::rand()%1000000)/1000000.0)*((std::rand()%1000000)/1000000.0));
+			res.b = midpoint.b + distance.b * (((std::rand()%1000000)/1000000.0)*((std::rand()%1000000)/1000000.0));
+
+			RgbGenome *child = new RgbGenome(res.r, res.g, res.b);
+			children.push_back(child);
+		}
+	}
+
 	return children;
 }
 
