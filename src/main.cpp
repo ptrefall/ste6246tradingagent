@@ -130,7 +130,13 @@ int main(int argc, char **argv)
 	}*/
 
 	RgbGeneticAlg ga(20, 10);
-	ga.evolve();
+	ga.initialize();
+	for(unsigned int i = 0; i < 30; i++)
+	{
+		std::cout << ga;
+		ga.evolve();
+	}
+	std::cout << ga << std::endl;
 
 	char a;
 	std::cout << "Do you want to draw the scene with 1) Software, or 2) OpenGL renderer?" << std::endl;

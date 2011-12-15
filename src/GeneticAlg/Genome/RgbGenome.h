@@ -10,10 +10,15 @@ public:
 	Rgb() : r(0), g(0), b(0) {}
 	Rgb(int r, int g, int b) : r(r), g(g), b(b) {}
 
-	friend std::ostream& operator << (std::ostream& s, Rgb& d)
+	static std::ostream &write(std::ostream& s, Rgb& d)
 	{
 		s << "Color: " << d.r << "," << d.g << "," << d.b << std::endl;
 		return s;
+	}
+
+	friend std::ostream& operator << (std::ostream& s, Rgb& d)
+	{
+		return d.write(s,d);
 	}
 };
 
@@ -27,10 +32,16 @@ public:
 	const Rgb &chromosomeValue() const override;
 	void setChromosomeValue(Rgb &chromosome) override;
 
-	friend std::ostream& operator << (std::ostream& s, Rgb& d)
+	static std::ostream &write(std::ostream& s, RgbGenome& d)
 	{
-		s << chromosome;
+		s << "Fitness: " << d.fitness() << ", Chromosome: ";
+		d.chromosome.write(s,d.chromosome);
 		return s;
+	}
+
+	friend std::ostream& operator << (std::ostream& s, RgbGenome& d)
+	{
+		return d.write(s,d);
 	}
 	
 private:
