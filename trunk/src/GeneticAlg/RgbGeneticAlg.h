@@ -20,3 +20,4 @@ protected:
 	RgbGenome *createInitialRandomGenome() override;
 	std::vector<RgbGenome*> findSurvivors() override;
 };
+
