@@ -46,8 +46,6 @@ public:
 
 		generation = new Generation<GenomeType>(1, generationSurvivorCount, populationSize);
 		generations.push_back(generation);
-
-		createInitialGenomes();
 	}
 
 	virtual ~IGeneticAlg()
@@ -62,6 +60,11 @@ public:
 	std::vector<Generation<GenomeType>*> generations;
 
 public:
+	void initialize()
+	{
+		createInitialGenomes();
+	}
+
 	void evolve()
 	{
 		//New parameters for next generation
