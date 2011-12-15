@@ -34,7 +34,7 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-float Objective(GAGenome &);
+//float Objective(GAGenome &);
 
 int main(int argc, char **argv)
 {
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 	GAGenome &individual = ga.population().individual(0);*/
 
 	//{
-	ProsumerGenome genome; //default constructor
+	/*ProsumerGenome genome; //default constructor
 	std::cout << "genome after creation:\n" << genome << std::endl;
 
 	int popsize  = 300;
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 	GANoScaling scalor;
 	ga.scaling(scalor);
 	GARankSelector selector;
-	ga.selector(selector);
+	ga.selector(selector);*/
 
 
 	/*genome.initialize();  // test the initializer
@@ -412,7 +412,7 @@ int main(int argc, char **argv)
 	device->getCursorControl()->setVisible(false);
 
 	double accum_time = 0.0;
-	int generation = 0;
+	//int generation = 0;
 	while(device->run())
 	{
 		if (!device->isWindowActive())
@@ -426,13 +426,13 @@ int main(int argc, char **argv)
 		/*if(accum_time > 10.0)
 		{
 			accum_time = 0.0;*/
-		if(generation <= ngen)
+		/*if(generation <= ngen)
 		{
 			ga.evolve();
 			const ProsumerGenome &prosumer = static_cast<const ProsumerGenome &>(ga.statistics().bestIndividual());
 			std::cout << "Best prosumer of generation " << generation << ":\n" << prosumer << "\n";
 			generation++;
-		}
+		}*/
 		//}*/
 
 		if(weatherMgr)
@@ -454,7 +454,7 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-float Objective(GAGenome &g) 
+/*float Objective(GAGenome &g) 
 {
 	GA3DBinaryStringGenome & genome = (GA3DBinaryStringGenome &)g;
 	
@@ -476,4 +476,4 @@ float Objective(GAGenome &g)
 		}
 	}
 	return score;
-}
+}*/
