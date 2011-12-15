@@ -65,13 +65,27 @@ set(GUI_SRCS
 )
 SOURCE_GROUP("Source Files\\GUI" FILES ${GUI_SRCS})
 #---------------------------------------------------------------
+set(GA_HDRS
+	./GeneticAlg/IGeneticAlg.h
+	./GeneticAlg/RgbGeneticAlg.h
+)
+SOURCE_GROUP("Header Files\\GeneticAlg" FILES ${GA_HDRS})
+#---------------------------------------------------------------
+set(GA_SRCS
+	./GeneticAlg/RgbGeneticAlg.cpp
+)
+SOURCE_GROUP("Source Files\\GeneticAlg" FILES ${GA_SRCS})
+#---------------------------------------------------------------
 set(GA_GENOME_HDRS
 	./GeneticAlg/Genome/ProsumerGenome.h
+	./GeneticAlg/Genome/IGenome.h
+	./GeneticAlg/Genome/RgbGenome.h
 )
 SOURCE_GROUP("Header Files\\GeneticAlg\\Genome" FILES ${GA_GENOME_HDRS})
 #---------------------------------------------------------------
 set(GA_GENOME_SRCS
 	./GeneticAlg/Genome/ProsumerGenome.cpp
+	./GeneticAlg/Genome/RgbGenome.cpp
 )
 SOURCE_GROUP("Source Files\\GeneticAlg\\Genome" FILES ${GA_GENOME_SRCS})
 #---------------------------------------------------------------
@@ -110,6 +124,7 @@ add_executable(TradingAgent ${HDRS} ${SRCS}
 							${SCENE_NODE_HDRS} ${SCENE_NODE_SRCS}
 							${WEATHER_SCENE_NODE_HDRS} ${WEATHER_SCENE_NODE_SRCS}
 							${GUI_HDRS} ${GUI_SRCS}
+							${GA_HDRS} ${GA_SRCS}
 							${GA_GENOME_HDRS} ${GA_GENOME_SRCS}
 							${ENTITY_HDRS} ${ENTITY_SRCS}
 							${ENTITY_COMPONENT_HDRS} ${ENTITY_COMPONENT_SRCS}
