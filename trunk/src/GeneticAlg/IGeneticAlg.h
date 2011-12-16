@@ -25,11 +25,10 @@ class Generation
 {
 public:
 	unsigned int id;
-	unsigned int survivorCount;
 	Population<GenomeType> *population;
 	GenomeType *bestGenome;
 
-	Generation(unsigned int id, unsigned int survivorCount, unsigned int populationSize) : id(id), survivorCount(survivorCount), population(new Population<GenomeType>(populationSize)), bestGenome(0x0) {}
+	Generation(unsigned int id, unsigned int populationSize) : id(id), population(new Population<GenomeType>(populationSize)), bestGenome(0x0) {}
 	~Generation() { delete population; }
 };
 
@@ -37,7 +36,7 @@ template<class GenomeType>
 class IGeneticAlg abstract
 {
 public:
-	IGeneticAlg(unsigned int populationSize, unsigned int generationSurvivorCount)
+	IGeneticAlg(unsigned int populationSize, double fitness_to_survive)
 	{
 		if(generationSurvivorCount >= populationSize)
 			throw T_Exception("The survival count of a generation must be smaller than the population size!");
