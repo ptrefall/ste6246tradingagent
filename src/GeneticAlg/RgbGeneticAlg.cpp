@@ -65,8 +65,23 @@ std::vector<RgbGenome*> RgbGeneticAlg::crossover(RgbGenome &mum, RgbGenome &dad,
 			res.g = midpoint.g + distance.g * (((std::rand()%1000000)/1000000.0)*((std::rand()%1000000)/1000000.0));
 			res.b = midpoint.b + distance.b * (((std::rand()%1000000)/1000000.0)*((std::rand()%1000000)/1000000.0));
 
-			RgbGenome *child = new RgbGenome(res.r, res.g, res.b);
-			children.push_back(child);
+			bool duplicate = false;
+			/*for(unsigned int i = 0; i < children.size(); i++)
+			{
+				if(	res.r == children[i]->chromosomeValue().r && 
+					res.g == children[i]->chromosomeValue().g &&
+					res.b == children[i]->chromosomeValue().b )
+				{
+					duplicate = true;
+					break;
+				}
+			}*/
+
+			if(duplicate == false)
+			{
+				RgbGenome *child = new RgbGenome(res.r, res.g, res.b);
+				children.push_back(child);
+			}
 		}
 	}
 
