@@ -3,7 +3,7 @@
 
 
 RgbGeneticAlg::RgbGeneticAlg(unsigned int populationSize, double fitness_for_survival_threshold, double crossover_chance, double mutation_chance)
-	: IGeneticAlg<RgbGenome>(populationSize, fitness_for_survival_threshold, crossover_chance, mutation_chance)
+	: IGeneticAlg<RgbGenome>(populationSize, fitness_for_survival_threshold, crossover_chance, 8, mutation_chance)
 {
 }
 

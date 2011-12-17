@@ -37,7 +37,7 @@ public:
 	RgbGenome(int r, int g, int b);
 	virtual ~RgbGenome();
 public:
-	double fitness() const override;
+	double fitness() override;
 	const Rgb &chromosomeValue() const override;
 	void setChromosomeValue(Rgb &chromosome, bool is_mutation, unsigned int generation) override;
 	bool wasMutatedInGeneration(const unsigned int &generation) const override;

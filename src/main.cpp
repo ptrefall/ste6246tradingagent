@@ -23,9 +23,9 @@
 #include <Entity\Components\Sprite.h>
 #include <Totem\ComponentFactory.h>
 
-#include <GeneticAlg\Genome\ProsumerGenome.h>
+//#include <GeneticAlg\Genome\ProsumerGenome.h>
 
-#include <GeneticAlg\RgbGeneticAlg.h>
+#include <GeneticAlg\ProsumerGeneticAlg.h>
 
 #include <iostream>
 
@@ -129,7 +129,18 @@ int main(int argc, char **argv)
 	delete d;
 	}*/
 
-	RgbGeneticAlg ga(10, 0.75, 0.2, 0.01);
+	//RgbGeneticAlg ga(10, 0.75, 0.2, 0.01);
+	ProsumerGeneticAlg ga(	10,			//Population Size 
+							0.0,		//Fitness threshold
+							0.2,		//Chance for crossover
+							2,			//Max children from crossover
+							0.01,		//Chance for mutation
+							1.0,		//Start saldo
+							16000.0,	//Øk
+							1.0,		//Ep
+							0.01,		//Ef
+							2.0,		//Flex
+							0);			//Policy
 	ga.initialize();
 	for(unsigned int i = 0; i < 1000; i++)
 	{
