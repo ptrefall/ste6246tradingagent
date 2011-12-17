@@ -192,6 +192,13 @@ std::vector<ProsumerGenome*> ProsumerGeneticAlg::findSurvivors()
 			survivors.push_back(generation->population->individuals[i]);
 	}
 
+	unsigned int deaths = generation->population->individuals.size() - survivors.size();
+
+	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
+	std::cout << "Deaths: " << deaths << std::endl;
+	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
 	return survivors;
 }
 

@@ -73,8 +73,8 @@ public:
         SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 		s << "Fitness: " << d.chromosomeValue().saldo << std::endl;
 		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		s << "- Chromosome:" << std::endl;
-		d.chromosome.write(s,d.chromosome);
+		//s << "- Chromosome:" << std::endl;
+		//d.chromosome.write(s,d.chromosome);
 		return s;
 	}
 
