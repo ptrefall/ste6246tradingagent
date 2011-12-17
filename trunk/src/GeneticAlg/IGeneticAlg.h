@@ -86,7 +86,7 @@ public:
 		{
 			for(unsigned int i = 1; i < survivors.size(); i++)
 			{
-				unsigned int rand_child_count = std::rand() % 8; //There's 8 possible combinations of RGB for 2 parents crossing
+				unsigned int rand_child_count = std::rand() % max_children_from_cross; //There's 8 possible combinations of RGB for 2 parents crossing
 				std::vector<GenomeType*> children = crossover(*survivors[i-1], *survivors[i], rand_child_count, crossover_chance); //% chance for any of the children in rand_child_count to result in a child
 			
 				//Add to list of children of current generation
