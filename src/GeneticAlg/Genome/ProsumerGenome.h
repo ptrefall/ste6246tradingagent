@@ -1,98 +1,86 @@
 #pragma once
 
-#include <GA\ga.h>
-#include <Totem\PropertyHandler.h>
-#include <Totem\PropertyListHandler.h>
-#include <Totem\PropertySerializer.h>
+#include "IGenome.h"
+#include <iostream>
+#include <unordered_map>
 
-#define ENERGY_PROD_INVESTMENT_PER_KWH 14000
-
-//The saldo of the prosumer at any given time t.
-struct Saldo
-{
-	unsigned long time;
-	float saldo;
-	Saldo(unsigned long time, float saldo) : time(time), saldo(saldo) {}
-	bool operator== (const Saldo &rhs) { if(this->time == rhs.time && this->saldo == rhs.saldo) return true; else return false; }
-};
-
-//How comfortable the prosumer is at any given time t.
-//comfort ranges from 0.0 to 1.0, where 0.0 is no comfort.
-struct Comfort
-{
-	unsigned long time;
-	float comfort;
-	Comfort(unsigned long time, float comfort) : time(time), comfort(comfort) {}
-};
-
-//The age of a prosumer at any given time t.
-struct Age
-{
-	unsigned long time;
-	unsigned int age;
-	Age(unsigned long time, unsigned int age) : time(time), age(age) {}
-};
-
-enum ProsumerPolicy
-{
-	GREEDY_PROSUMER = 0,
-	CAUTIOUS_PROSUMER = 1,
-	PROSUMER_POLICY_COUNT
-};
-
-class ProsumerGenome : public GAGenome, public Totem::PropertyHandler<>, public Totem::PropertyListHandler<>
+class Prosumer
 {
 public:
-	GADefineIdentity("ProsumerGenome", 201);
-	static void Init(GAGenome&);
-	static int Mutate(GAGenome&, float);
-	static float Compare(const GAGenome&, const GAGenome&);
-	static float Evaluate(GAGenome&);
-	static int Cross(const GAGenome&, const GAGenome&, GAGenome*, GAGenome*);
+	double economic_capacity;
+	double energy_production_capacity;
+	double energy_consumption;
+	double flexi_rate;
+	unsigned int policy;
 
-public:
-	ProsumerGenome();
-	ProsumerGenome(const ProsumerGenome &orig);
-	virtual ~ProsumerGenome();
+	double saldo;
 
-	ProsumerGenome &operator= (const GAGenome &orig)
+	const double compareFactor;
+	const double avg_per_hour_cost_factor;
+
+	Prosumer() : economic_capacity(1.0), energy_production_capacity(0.0), energy_consumption(0.1), flexi_rate(0.01), policy(0), saldo(1.0), compareFactor(800.0), avg_per_hour_cost_factor(24.0*365.0*52.0) {}
+	Prosumer(double ec, double ep, double ef, double flex, unsigned int policy, double saldo) 
+		: economic_capacity(ec), energy_production_capacity(ep), energy_consumption(ef), flexi_rate(flex), policy(policy), saldo(saldo), compareFactor(800.0), avg_per_hour_cost_factor(24.0*365.0*52.0) {}
+
+	static std::ostream &write(std::ostream& s, Prosumer& d)
 	{
-		if(&orig != this)
-			copy(orig);
-		return *this;
+		s << "- Economic Capacity: " << d.economic_capacity << std::endl;
+		s << "- Energy Production Capacity: " << d.energy_production_capacity << std::endl;
+		s << "- Energy Consumption: " << d.energy_consumption << std::endl;
+		s << "- Flexi Rate: " << d.flexi_rate << std::endl;
+		s << "- Policy: " << d.policy << std::endl;
+		return s;
 	}
 
-	virtual GAGenome *clone(CloneMethod) const;
-	virtual void copy(const GAGenome &orig);
-	virtual int equal(const GAGenome &rhs) const;
+	friend std::ostream& operator << (std::ostream& s, Prosumer& d)
+	{
+		return d.write(s,d);
+	}
 
-	virtual int read(std::istream &stream);
-	virtual int write(std::ostream &stream) const;
-
-public:
-	//Takes as input how much energy the individual
-	//wishes to invest in, and returns 1 if successful,
-	//0 if not (if individual has the cash for it).
-	int investInEnergyProduction(int kWh);
-
-//Genetic material
-protected:
-	Totem::Property<float> economic_capasity;
-	Totem::Property<float> energy_production_capacity;
-	Totem::Property<float> energy_consumption;
-	Totem::Property<float> user_flexibility;
-	Totem::Property<ProsumerPolicy> policy;
-
-//State attributes
-protected:
-	Totem::PropertyList<Saldo> saldo_at_t;
-	Totem::PropertyList<Comfort> comfort_at_t;
-	Totem::PropertyList<Age> age_at_t;
-
-	const float compareFactor;
-	const float avg_per_hour_cost_factor;
-
-
-protected:
-	Totem::PropertySerializer *serializer;
+	const Prosumer &operator= (const Prosumer &rhs)
+	{
+		economic_capacity = rhs.economic_capacity;
+		energy_production_capacity = rhs.energy_production_capacity;
+		energy_consumption = rhs.energy_consumption;
+		flexi_rate = rhs.flexi_rate;
+		policy = rhs.policy;
+		saldo = rhs.saldo;
+		return *this;
+	}
 };
+
+class ProsumerGenome : public IGenome<Prosumer>
+{
+public:
+	ProsumerGenome(double ec, double ep, double ef, double flex, unsigned int policy, double saldo);
+	virtual ~ProsumerGenome();
+public:
+	double fitness() override;
+	const Prosumer &chromosomeValue() const override;
+	void setChromosomeValue(Prosumer &chromosome, bool is_mutation, unsigned int generation) override;
+	bool wasMutatedInGeneration(const unsigned int &generation) const override;
+	std::vector<unsigned int> getGenerationsOfMutation() const override;
+
+	static std::ostream &write(std::ostream& s, ProsumerGenome& d)
+	{
+		s << "Fitness: " << d.fitness() << std::endl;
+		s << "Chromosome:" << std::endl;
+		d.chromosome.write(s,d.chromosome);
+		return s;
+	}
+
+	friend std::ostream& operator << (std::ostream& s, ProsumerGenome& d)
+	{
+		return d.write(s,d);
+	}
+	
+private:
+	Prosumer chromosome;
+	std::unordered_map<unsigned int, std::pair<Prosumer, Prosumer>> mutations;
+};
+
+template<class ChromosomeType>
+bool ProsumerGenomeSortPredicate(ProsumerGenome *g1, ProsumerGenome *g2)
+{
+	return g1->fitness() > g2->fitness();
+}
