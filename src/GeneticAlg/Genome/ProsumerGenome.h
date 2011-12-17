@@ -82,5 +82,5 @@ private:
 template<class ChromosomeType>
 bool ProsumerGenomeSortPredicate(ProsumerGenome *g1, ProsumerGenome *g2)
 {
-	return g1->fitness() > g2->fitness();
+	return g1->chromosomeValue().saldo > g2->chromosomeValue().saldo;
 }
