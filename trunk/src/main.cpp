@@ -138,8 +138,8 @@ int main(int argc, char **argv)
 							1.0,		//Start saldo
 							16000.0,	//Øk
 							1.0,		//Ep
-							0.01,		//Ef
-							2.0,		//Flex
+							160000.0,		//Ef
+							0.000001,		//Flex
 							0);			//Policy
 	ga.initialize();
 	for(unsigned int i = 0; i < 1000; i++)
