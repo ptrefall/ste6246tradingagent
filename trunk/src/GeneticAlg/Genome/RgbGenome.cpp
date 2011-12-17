@@ -10,7 +10,7 @@ RgbGenome::~RgbGenome()
 {
 }
 
-double RgbGenome::fitness()
+double RgbGenome::fitness(unsigned int generation)
 {
 	//Some fitness function goes here
 	int maxDiff = 255*3;

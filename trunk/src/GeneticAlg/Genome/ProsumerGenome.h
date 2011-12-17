@@ -3,6 +3,7 @@
 #include "IGenome.h"
 #include <iostream>
 #include <unordered_map>
+#include <windows.h>
 
 class Prosumer
 {
@@ -18,9 +19,9 @@ public:
 	const double compareFactor;
 	const double avg_per_hour_cost_factor;
 
-	Prosumer() : economic_capacity(1.0), energy_production_capacity(0.0), energy_consumption(0.1), flexi_rate(0.01), policy(0), saldo(1.0), compareFactor(800.0), avg_per_hour_cost_factor(24.0*365.0*52.0) {}
+	Prosumer() : economic_capacity(1.0), energy_production_capacity(0.0), energy_consumption(0.1), flexi_rate(0.01), policy(0), saldo(1.0), compareFactor(800.0), avg_per_hour_cost_factor(24.0*365.0) {}
 	Prosumer(double ec, double ep, double ef, double flex, unsigned int policy, double saldo) 
-		: economic_capacity(ec), energy_production_capacity(ep), energy_consumption(ef), flexi_rate(flex), policy(policy), saldo(saldo), compareFactor(800.0), avg_per_hour_cost_factor(24.0*365.0*52.0) {}
+		: economic_capacity(ec), energy_production_capacity(ep), energy_consumption(ef), flexi_rate(flex), policy(policy), saldo(saldo), compareFactor(800.0), avg_per_hour_cost_factor(24.0*365.0) {}
 
 	static std::ostream &write(std::ostream& s, Prosumer& d)
 	{
@@ -55,15 +56,23 @@ public:
 	ProsumerGenome(double ec, double ep, double ef, double flex, unsigned int policy, double saldo);
 	virtual ~ProsumerGenome();
 public:
-	double fitness() override;
+	double fitness(unsigned int generation) override;
 	const Prosumer &chromosomeValue() const override;
 	void setChromosomeValue(Prosumer &chromosome, bool is_mutation, unsigned int generation) override;
 	bool wasMutatedInGeneration(const unsigned int &generation) const override;
 	std::vector<unsigned int> getGenerationsOfMutation() const override;
 
+//Object functions
+public:
+	double buyAllEnergy_Strategy(unsigned int generation, double energy_consumption_per_hour);
+
+public:
 	static std::ostream &write(std::ostream& s, ProsumerGenome& d)
 	{
-		s << "Fitness: " << d.fitness() << std::endl;
+		HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
+		s << "Fitness: " << d.chromosomeValue().saldo << std::endl;
+		SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		s << "- Chromosome:" << std::endl;
 		d.chromosome.write(s,d.chromosome);
 		return s;

@@ -122,13 +122,14 @@ public:
 		generation = newGeneration;
 		generations.push_back(newGeneration);
 
+		//Calculate the fitness of the new population
+		for(unsigned int i = 0; i < generation->population->individuals.size(); i++)
+			generation->population->individuals[i]->fitness(generation->id);
+
 		selectBestIndividual();
 
-		//Has this generation found the perfect individual?
-		if(generation->bestGenome && generation->bestGenome->fitness() == 1.0)
-			return true;
 		//Did the population become extinct with this generation?
-		else if(generation->population->individuals.empty())
+		if(generation->population->individuals.empty())
 			return true;
 		return false;
 	}
@@ -146,8 +147,14 @@ protected:
 private:
 	void createInitialGenomes()
 	{
+		//Create an initial population
 		for(unsigned int i = 0; i < generation->population->size; i++)
 			generation->population->individuals.push_back(createInitialRandomGenome());
+
+		//Calculate the fitness of the initial population
+		for(unsigned int i = 0; i < generation->population->individuals.size(); i++)
+			generation->population->individuals[i]->fitness(generation->id);
+
 		selectBestIndividual();
 	}
 };

@@ -17,7 +17,7 @@ public:
 		s << "Generation: " << d.generation->id << ", population size: " << d.generation->population->size << std::endl;
 		if(d.generation->bestGenome)
 		{
-			if(d.generation->bestGenome->fitness() == 1.0)
+			if(d.generation->bestGenome->fitness(0) == 1.0)
 			{
 				s << "= Perfect individual: ";
 				RgbGenome::write(s, *d.generation->bestGenome);
