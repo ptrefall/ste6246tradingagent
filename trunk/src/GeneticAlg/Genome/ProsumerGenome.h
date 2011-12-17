@@ -24,11 +24,11 @@ public:
 
 	static std::ostream &write(std::ostream& s, Prosumer& d)
 	{
-		s << "- Economic Capacity: " << d.economic_capacity << std::endl;
-		s << "- Energy Production Capacity: " << d.energy_production_capacity << std::endl;
-		s << "- Energy Consumption: " << d.energy_consumption << std::endl;
-		s << "- Flexi Rate: " << d.flexi_rate << std::endl;
-		s << "- Policy: " << d.policy << std::endl;
+		s << "- - Economic Capacity: " << d.economic_capacity << std::endl;
+		s << "- - Energy Production Capacity: " << d.energy_production_capacity << std::endl;
+		s << "- - Energy Consumption: " << d.energy_consumption << std::endl;
+		s << "- - Flexi Rate: " << d.flexi_rate << std::endl;
+		s << "- - Policy: " << d.policy << std::endl;
 		return s;
 	}
 
@@ -64,7 +64,7 @@ public:
 	static std::ostream &write(std::ostream& s, ProsumerGenome& d)
 	{
 		s << "Fitness: " << d.fitness() << std::endl;
-		s << "Chromosome:" << std::endl;
+		s << "- Chromosome:" << std::endl;
 		d.chromosome.write(s,d.chromosome);
 		return s;
 	}

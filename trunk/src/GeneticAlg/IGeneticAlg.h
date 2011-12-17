@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <functional>
+#include <algorithm>
 
 template<class GenomeType>
 class Population
@@ -35,8 +36,8 @@ template<class GenomeType>
 class IGeneticAlg abstract
 {
 public:
-	IGeneticAlg(unsigned int populationSize, double fitness_for_survival_threshold, double crossover_chance, double mutation_chance)
-		: crossover_chance(crossover_chance), mutation_chance(mutation_chance)
+	IGeneticAlg(unsigned int populationSize, double fitness_for_survival_threshold, double crossover_chance, unsigned int max_children_from_cross, double mutation_chance)
+		: crossover_chance(crossover_chance), max_children_from_cross(max_children_from_cross), mutation_chance(mutation_chance)
 	{
 		generation = new Generation<GenomeType>(1, fitness_for_survival_threshold, populationSize);
 		generations.push_back(generation);
@@ -53,9 +54,15 @@ public:
 	Generation<GenomeType> *generation;
 	std::vector<Generation<GenomeType>*> generations;
 	double crossover_chance; 
+	unsigned int max_children_from_cross;
 	double mutation_chance;
 
 public:
+	double randomize() const
+	{
+		return (((double)(std::rand()%1000000))/1000000.0);
+	}
+
 	void initialize()
 	{
 		createInitialGenomes();
@@ -69,18 +76,18 @@ public:
 		unsigned int mutationCount = 0;
 
 		//Start extracting data from current generation
-		std::vector<RgbGenome*> survivors = findSurvivors();
+		std::vector<GenomeType*> survivors = findSurvivors();
 		newPopulationSize += survivors.size();
 
 		//All survivors are allowed to crossover, 
 		//but only if there's more than one survivor..
-		std::vector<RgbGenome*> children_of_current_gen;
+		std::vector<GenomeType*> children_of_current_gen;
 		if(survivors.size() > 1)
 		{
 			for(unsigned int i = 1; i < survivors.size(); i++)
 			{
 				unsigned int rand_child_count = std::rand() % 8; //There's 8 possible combinations of RGB for 2 parents crossing
-				std::vector<RgbGenome*> children = crossover(*survivors[i-1], *survivors[i], rand_child_count, crossover_chance); //% chance for any of the children in rand_child_count to result in a child
+				std::vector<GenomeType*> children = crossover(*survivors[i-1], *survivors[i], rand_child_count, crossover_chance); //% chance for any of the children in rand_child_count to result in a child
 			
 				//Add to list of children of current generation
 				for(unsigned int j = 0; j < children.size(); j++)
@@ -98,7 +105,7 @@ public:
 
 		//And for the very last step, we pass the current generation into the history books
 		//and let a new generation rise!
-		newGeneration = new Generation<RgbGenome>(generation->id+1, generation->fitness_for_survival_threshold, newPopulationSize);
+		newGeneration = new Generation<GenomeType>(generation->id+1, generation->fitness_for_survival_threshold, newPopulationSize);
 		
 		//Each survivor remain part of the new generation
 		for(unsigned int i = 0; i < survivors.size(); i++)

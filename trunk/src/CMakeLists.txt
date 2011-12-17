@@ -68,11 +68,13 @@ SOURCE_GROUP("Source Files\\GUI" FILES ${GUI_SRCS})
 set(GA_HDRS
 	./GeneticAlg/IGeneticAlg.h
 	./GeneticAlg/RgbGeneticAlg.h
+	./GeneticAlg/ProsumerGeneticAlg.h
 )
 SOURCE_GROUP("Header Files\\GeneticAlg" FILES ${GA_HDRS})
 #---------------------------------------------------------------
 set(GA_SRCS
 	./GeneticAlg/RgbGeneticAlg.cpp
+	./GeneticAlg/ProsumerGeneticAlg.cpp
 )
 SOURCE_GROUP("Source Files\\GeneticAlg" FILES ${GA_SRCS})
 #---------------------------------------------------------------

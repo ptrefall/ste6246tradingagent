@@ -30,9 +30,12 @@ const Prosumer &ProsumerGenome::chromosomeValue() const
 
 void ProsumerGenome::setChromosomeValue(Prosumer &chromosome, bool is_mutation, unsigned int generation)
 {
-	std::pair<Prosumer,Prosumer> from_to(this->chromosome, chromosome);
+	if(is_mutation)
+	{
+		std::pair<Prosumer,Prosumer> from_to(this->chromosome, chromosome);
+		mutations[generation] = from_to;
+	}
 	this->chromosome = chromosome;
-	mutations[generation] = from_to;
 }
 
 bool ProsumerGenome::wasMutatedInGeneration(const unsigned int &generation) const
