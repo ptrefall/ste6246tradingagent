@@ -29,9 +29,30 @@ const Rgb &RgbGenome::chromosomeValue() const
 	return chromosome;
 }
 
-void RgbGenome::setChromosomeValue(Rgb &chromosome)
+void RgbGenome::setChromosomeValue(Rgb &chromosome, bool is_mutation, unsigned int generation)
 {
-	this->chromosome.r = chromosome.r;
-	this->chromosome.g = chromosome.g;
-	this->chromosome.b = chromosome.b;
+	std::pair<Rgb,Rgb> from_to(this->chromosome, chromosome);
+	this->chromosome = chromosome;
+	mutations[generation] = from_to;
 }
+
+bool RgbGenome::wasMutatedInGeneration(const unsigned int &generation) const
+{
+	auto it = mutations.find(generation);
+	if(it != mutations.end())
+		return true;
+	else
+		return false;
+}
+
+std::vector<unsigned int> RgbGenome::getGenerationsOfMutation() const
+{
+	std::vector<unsigned int> generations;
+	auto it = mutations.begin();
+	for(; it != mutations.end(); ++it)
+	{
+		generations.push_back(it->first);
+	}
+	return generations;
+}
+

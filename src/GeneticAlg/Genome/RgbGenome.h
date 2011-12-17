@@ -2,6 +2,7 @@
 
 #include "IGenome.h"
 #include <iostream>
+#include <unordered_map>
 
 class Rgb
 {
@@ -20,6 +21,14 @@ public:
 	{
 		return d.write(s,d);
 	}
+
+	const Rgb &operator= (const Rgb &rhs)
+	{
+		this->r = rhs.r;
+		this->g = rhs.g;
+		this->b = rhs.b;
+		return *this;
+	}
 };
 
 class RgbGenome : public IGenome<Rgb>
@@ -30,7 +39,9 @@ public:
 public:
 	double fitness() const override;
 	const Rgb &chromosomeValue() const override;
-	void setChromosomeValue(Rgb &chromosome) override;
+	void setChromosomeValue(Rgb &chromosome, bool is_mutation, unsigned int generation) override;
+	bool wasMutatedInGeneration(const unsigned int &generation) const override;
+	std::vector<unsigned int> getGenerationsOfMutation() const override;
 
 	static std::ostream &write(std::ostream& s, RgbGenome& d)
 	{
@@ -47,6 +58,7 @@ public:
 private:
 	Rgb target;
 	Rgb chromosome;
+	std::unordered_map<unsigned int, std::pair<Rgb, Rgb>> mutations;
 };
 
 template<class ChromosomeType>

@@ -9,21 +9,24 @@
 class RgbGeneticAlg : public IGeneticAlg<RgbGenome>
 {
 public:
-	RgbGeneticAlg(unsigned int populationSize = 100, unsigned int generationSurvivorCount = 10);
+	RgbGeneticAlg(unsigned int populationSize = 100, double fitness_for_survival_threshold = 0.7, double crossover_chance = 0.2, double mutation_chance = 0.01);
 	virtual ~RgbGeneticAlg();
 
 	static std::ostream &write(std::ostream& s, RgbGeneticAlg& d)
 	{
 		s << "Generation: " << d.generation->id << ", population size: " << d.generation->population->size << std::endl;
-		if(d.generation->bestGenome->fitness() == 1.0)
+		if(d.generation->bestGenome)
 		{
-			s << "= Perfect individual: ";
-			RgbGenome::write(s, *d.generation->bestGenome);
-		}
-		else
-		{
-			s << "= Best individual: ";
-			RgbGenome::write(s, *d.generation->bestGenome);
+			if(d.generation->bestGenome->fitness() == 1.0)
+			{
+				s << "= Perfect individual: ";
+				RgbGenome::write(s, *d.generation->bestGenome);
+			}
+			else
+			{
+				s << "= Best individual: ";
+				RgbGenome::write(s, *d.generation->bestGenome);
+			}
 		}
 
 		for(unsigned int i = 1; i < d.generation->population->individuals.size(); i++)
