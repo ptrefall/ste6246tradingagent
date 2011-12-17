@@ -173,11 +173,11 @@ void ProsumerGeneticAlg::calcResult(Prosumer &result, const Prosumer &midpoint, 
 
 ProsumerGenome *ProsumerGeneticAlg::createInitialRandomGenome()
 {
-	double ec = (economic_capacity_base*0.5) + randomize()*economic_capacity_base;
-	double ep = (energy_production_base*0.5) + randomize()*energy_production_base;
-	double ef = (energy_consumption_base*0.5) + randomize()*energy_consumption_base;
-	double flex = (flex_rate_base*0.5) + randomize()*flex_rate_base;
-	unsigned int policy = (policy_base*0.5) + randomize()*policy_base;
+	double ec = economic_capacity_base/**0.5) + randomize()*economic_capacity_base*/;
+	double ep = energy_production_base/**0.5) + randomize()*energy_production_base*/;
+	double ef = energy_consumption_base/**0.5) + randomize()*energy_consumption_base*/;
+	double flex = flex_rate_base/**0.5) + randomize()*flex_rate_base*/;
+	unsigned int policy = policy_base/**0.5) + randomize()*policy_base*/;
 	return new ProsumerGenome(ec,ep,ef,flex,policy, start_saldo);
 }
 
@@ -188,7 +188,7 @@ std::vector<ProsumerGenome*> ProsumerGeneticAlg::findSurvivors()
 	sortPopulation();
 	for(unsigned int i = 0; i < generation->population->individuals.size(); i++)
 	{
-		if(generation->population->individuals[i]->fitness() > generation->fitness_for_survival_threshold)
+		if(generation->population->individuals[i]->chromosomeValue().saldo > generation->fitness_for_survival_threshold)
 			survivors.push_back(generation->population->individuals[i]);
 	}
 

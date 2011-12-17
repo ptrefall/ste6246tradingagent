@@ -127,7 +127,7 @@ std::vector<RgbGenome*> RgbGeneticAlg::findSurvivors()
 	sortPopulation();
 	for(unsigned int i = 0; i < generation->population->individuals.size(); i++)
 	{
-		if(generation->population->individuals[i]->fitness() >= generation->fitness_for_survival_threshold)
+		if(generation->population->individuals[i]->fitness(0) >= generation->fitness_for_survival_threshold)
 			survivors.push_back(generation->population->individuals[i]);
 	}
 

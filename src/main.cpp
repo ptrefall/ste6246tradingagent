@@ -130,19 +130,19 @@ int main(int argc, char **argv)
 	}*/
 
 	//RgbGeneticAlg ga(10, 0.75, 0.2, 0.01);
-	ProsumerGeneticAlg ga(	10,			//Population Size 
+	ProsumerGeneticAlg ga(	2,			//Population Size 
 							0.0,		//Fitness threshold
 							0.2,		//Chance for crossover
-							2,			//Max children from crossover
+							1,			//Max children from crossover
 							0.01,		//Chance for mutation
 							1.0,		//Start saldo
 							16000.0,	//Øk
 							1.0,		//Ep
-							160000.0,		//Ef
-							0.000001,		//Flex
+							24000.0,		//Ef
+							0.1,		//Flex
 							0);			//Policy
 	ga.initialize();
-	for(unsigned int i = 0; i < 1000; i++)
+	for(unsigned int i = 0; i < 100; i++)
 	{
 		std::cout << ga;
 		bool evolution_stopped = ga.evolve();
