@@ -130,13 +130,13 @@ int main(int argc, char **argv)
 	}*/
 
 	//RgbGeneticAlg ga(10, 0.75, 0.2, 0.01);
-	ProsumerGeneticAlg ga(	2,			//Population Size 
+	ProsumerGeneticAlg ga(	100,			//Population Size 
 							0.0,		//Fitness threshold
 							0.2,		//Chance for crossover
 							2,			//Max children from crossover
 							0.01,		//Chance for mutation
-							0.5,		//Start saldo
-							5.0,	//Øk
+							0.2,		//Start saldo
+							4.0,	//Øk
 							1.0,		//Ep
 							24000.0,		//Ef
 							0.1,		//Flex

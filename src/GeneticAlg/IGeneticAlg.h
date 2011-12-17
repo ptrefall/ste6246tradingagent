@@ -84,14 +84,17 @@ public:
 		std::vector<GenomeType*> children_of_current_gen;
 		if(survivors.size() > 1)
 		{
-			for(unsigned int i = 1; i < survivors.size(); i++)
+			for(unsigned int i = 1; i < survivors.size(); i += 2)
 			{
-				unsigned int rand_child_count = std::rand() % max_children_from_cross; //There's 8 possible combinations of RGB for 2 parents crossing
-				std::vector<GenomeType*> children = crossover(*survivors[i-1], *survivors[i], rand_child_count, crossover_chance); //% chance for any of the children in rand_child_count to result in a child
+				unsigned int rand_child_count = std::rand() % (max_children_from_cross+1); //There's 8 possible combinations of RGB for 2 parents crossing
+				if(rand_child_count > 0)
+				{
+					std::vector<GenomeType*> children = crossover(*survivors[i-1], *survivors[i], rand_child_count, crossover_chance); //% chance for any of the children in rand_child_count to result in a child
 			
-				//Add to list of children of current generation
-				for(unsigned int j = 0; j < children.size(); j++)
-					children_of_current_gen.push_back(children[j]);
+					//Add to list of children of current generation
+					for(unsigned int j = 0; j < children.size(); j++)
+						children_of_current_gen.push_back(children[j]);
+				}
 			}
 		}
 		newPopulationSize += children_of_current_gen.size();
