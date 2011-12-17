@@ -102,10 +102,10 @@ std::vector<ProsumerGenome*> ProsumerGeneticAlg::crossover(ProsumerGenome &mum, 
 		return children;
 	}*/
 
-	for(unsigned int i = 0; i < child_count; i++)
+	double result = randomize();
+	if(result <= chance)
 	{
-		double result = randomize();
-		if(result <= chance)
+		for(unsigned int i = 0; i < child_count; i++)
 		{
 			Prosumer midpoint;
 			calcMidpoint(midpoint, mum.chromosomeValue(), dad.chromosomeValue());
