@@ -3,8 +3,6 @@
 #include <vector>
 #include <functional>
 
-#include <Totem\types_config.h>
-
 template<class GenomeType>
 class Population
 {
@@ -25,10 +23,11 @@ class Generation
 {
 public:
 	unsigned int id;
+	double fitness_for_survival_threshold;
 	Population<GenomeType> *population;
 	GenomeType *bestGenome;
 
-	Generation(unsigned int id, unsigned int populationSize) : id(id), population(new Population<GenomeType>(populationSize)), bestGenome(0x0) {}
+	Generation(unsigned int id, double fitness_for_survival_threshold, unsigned int populationSize) : id(id), fitness_for_survival_threshold(fitness_for_survival_threshold), population(new Population<GenomeType>(populationSize)), bestGenome(0x0) {}
 	~Generation() { delete population; }
 };
 
@@ -36,14 +35,10 @@ template<class GenomeType>
 class IGeneticAlg abstract
 {
 public:
-	IGeneticAlg(unsigned int populationSize, double fitness_to_survive)
+	IGeneticAlg(unsigned int populationSize, double fitness_for_survival_threshold, double crossover_chance, double mutation_chance)
+		: crossover_chance(crossover_chance), mutation_chance(mutation_chance)
 	{
-		if(generationSurvivorCount >= populationSize)
-			throw T_Exception("The survival count of a generation must be smaller than the population size!");
-		if(generationSurvivorCount < 2)
-			throw T_Exception("Can't reproduce if there's only one she or one he... we'll die here");
-
-		generation = new Generation<GenomeType>(1, generationSurvivorCount, populationSize);
+		generation = new Generation<GenomeType>(1, fitness_for_survival_threshold, populationSize);
 		generations.push_back(generation);
 	}
 
@@ -57,6 +52,8 @@ public:
 	
 	Generation<GenomeType> *generation;
 	std::vector<Generation<GenomeType>*> generations;
+	double crossover_chance; 
+	double mutation_chance;
 
 public:
 	void initialize()
@@ -75,29 +72,33 @@ public:
 		std::vector<RgbGenome*> survivors = findSurvivors();
 		newPopulationSize += survivors.size();
 
-		//All survivors are allowed to crossover
+		//All survivors are allowed to crossover, 
+		//but only if there's more than one survivor..
 		std::vector<RgbGenome*> children_of_current_gen;
-		for(unsigned int i = 1; i < survivors.size(); i++)
+		if(survivors.size() > 1)
 		{
-			unsigned int rand_child_count = std::rand() % 8; //There's 8 possible combinations of RGB for 2 parents crossing
-			std::vector<RgbGenome*> children = crossover(*survivors[i-1], *survivors[i], rand_child_count, 0.2); //20% chance for any of the children in rand_child_count to result in a child
+			for(unsigned int i = 1; i < survivors.size(); i++)
+			{
+				unsigned int rand_child_count = std::rand() % 8; //There's 8 possible combinations of RGB for 2 parents crossing
+				std::vector<RgbGenome*> children = crossover(*survivors[i-1], *survivors[i], rand_child_count, crossover_chance); //% chance for any of the children in rand_child_count to result in a child
 			
-			//Add to list of children of current generation
-			for(unsigned int j = 0; j < children.size(); j++)
-				children_of_current_gen.push_back(children[j]);
+				//Add to list of children of current generation
+				for(unsigned int j = 0; j < children.size(); j++)
+					children_of_current_gen.push_back(children[j]);
+			}
 		}
 		newPopulationSize += children_of_current_gen.size();
 
 		//Finally, we step over all newly born children and cause a percentage chance of mutation
 		for(unsigned int i = 0; i < children_of_current_gen.size(); i++)
 		{
-			if(mutate(*children_of_current_gen[i], 0.01)) //1% chance of a mutation for R, G and B values of each child.
+			if(mutate(*children_of_current_gen[i], mutation_chance)) //% chance of a mutation for R, G and B values of each child.
 				mutationCount++;
 		}
 
 		//And for the very last step, we pass the current generation into the history books
 		//and let a new generation rise!
-		newGeneration = new Generation<RgbGenome>(generation->id+1, generation->survivorCount, newPopulationSize);
+		newGeneration = new Generation<RgbGenome>(generation->id+1, generation->fitness_for_survival_threshold, newPopulationSize);
 		
 		//Each survivor remain part of the new generation
 		for(unsigned int i = 0; i < survivors.size(); i++)
@@ -116,7 +117,11 @@ public:
 
 		selectBestIndividual();
 
+		//Has this generation found the perfect individual?
 		if(generation->bestGenome && generation->bestGenome->fitness() == 1.0)
+			return true;
+		//Did the population become extinct with this generation?
+		else if(generation->population->individuals.empty())
 			return true;
 		return false;
 	}

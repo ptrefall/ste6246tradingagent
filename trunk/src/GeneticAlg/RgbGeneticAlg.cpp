@@ -2,8 +2,8 @@
 #include <algorithm>
 
 
-RgbGeneticAlg::RgbGeneticAlg(unsigned int populationSize, unsigned int generationSurvivorCount)
-	: IGeneticAlg<RgbGenome>(populationSize, generationSurvivorCount)
+RgbGeneticAlg::RgbGeneticAlg(unsigned int populationSize, double fitness_for_survival_threshold, double crossover_chance, double mutation_chance)
+	: IGeneticAlg<RgbGenome>(populationSize, fitness_for_survival_threshold, crossover_chance, mutation_chance)
 {
 }
 
@@ -15,28 +15,45 @@ bool RgbGeneticAlg::mutate(RgbGenome &genome, double chance) const
 {
 	bool genome_was_mutated = false;
 	Rgb value = genome.chromosomeValue();
+	Rgb temp;
+	temp.r = value.r;
+	temp.g = value.g;
+	temp.b = value.b;
 
 	double result = (std::rand()%1000000)/1000000.0;
 	if(result <= chance)
 	{
-		value.r = std::rand()%256;
+		temp.r = std::rand()%256;
 		genome_was_mutated = true;
 	}
 	result = (std::rand()%1000000)/1000000.0;
 	if(result <= chance)
 	{
-		value.g = std::rand()%256;
+		temp.g = std::rand()%256;
 		genome_was_mutated = true;
 	}
 	result = (std::rand()%1000000)/1000000.0;
 	if(result <= chance)
 	{
-		value.b = std::rand()%256;
+		temp.b = std::rand()%256;
 		genome_was_mutated = true;
 	}
 
 	if(genome_was_mutated)
-		genome.setChromosomeValue(value);
+	{
+		Rgb midpoint;
+		midpoint.r = (value.r + temp.r) / 2.0;
+		midpoint.g = (value.g + temp.g) / 2.0;
+		midpoint.b = (value.b + temp.b) / 2.0;
+		Rgb distance;
+		distance.r = (int)fabs((double)value.r - (double)temp.r);
+		distance.g = (int)fabs((double)value.g - (double)temp.g);
+		distance.b = (int)fabs((double)value.b - (double)temp.b);
+		value.r = midpoint.r + distance.r * (((std::rand()%1000000)/1000000.0)*((std::rand()%1000000)/1000000.0));
+		value.g = midpoint.g + distance.g * (((std::rand()%1000000)/1000000.0)*((std::rand()%1000000)/1000000.0));
+		value.b = midpoint.b + distance.b * (((std::rand()%1000000)/1000000.0)*((std::rand()%1000000)/1000000.0));
+		genome.setChromosomeValue(value, true, generation->id);
+	}
 
 	return genome_was_mutated;
 }
@@ -44,6 +61,13 @@ bool RgbGeneticAlg::mutate(RgbGenome &genome, double chance) const
 std::vector<RgbGenome*> RgbGeneticAlg::crossover(RgbGenome &mum, RgbGenome &dad, unsigned int child_count, double chance)
 {
 	std::vector<RgbGenome*> children;
+
+	/*if(	mum.chromosomeValue().r == dad.chromosomeValue().r &&
+		mum.chromosomeValue().g == dad.chromosomeValue().g &&
+		mum.chromosomeValue().b == dad.chromosomeValue().b )
+	{
+		return children;
+	}*/
 
 	for(unsigned int i = 0; i < child_count; i++)
 	{
@@ -101,8 +125,11 @@ std::vector<RgbGenome*> RgbGeneticAlg::findSurvivors()
 	std::vector<RgbGenome*> survivors;
 
 	sortPopulation();
-	for(unsigned int i = 0; i < generation->survivorCount; i++)
-		survivors.push_back(generation->population->individuals[i]);
+	for(unsigned int i = 0; i < generation->population->individuals.size(); i++)
+	{
+		if(generation->population->individuals[i]->fitness() >= generation->fitness_for_survival_threshold)
+			survivors.push_back(generation->population->individuals[i]);
+	}
 
 
 
@@ -116,6 +143,12 @@ void RgbGeneticAlg::sortPopulation()
 
 void RgbGeneticAlg::selectBestIndividual()
 {
+	if(generation->population->individuals.empty())
+	{
+		generation->bestGenome = 0x0;
+		return;
+	}
+
 	sortPopulation();
 	generation->bestGenome = generation->population->individuals[0];
 }
