@@ -13,7 +13,7 @@ public:
 	~GAManager();
 
 	void initialize();
-	bool update(unsigned int generation);
+	bool evolve();
 
 //GA getters
 public:

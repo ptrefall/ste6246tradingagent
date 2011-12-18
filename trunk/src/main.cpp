@@ -148,7 +148,7 @@ int main(int argc, char **argv)
 	gaMgr.initialize();
 	for(unsigned int i = 0; i < 100; i++)
 	{
-		if(gaMgr.update(i))
+		if(gaMgr.evolve())
 			break;
 	}
 
