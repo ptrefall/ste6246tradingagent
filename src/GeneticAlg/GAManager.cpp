@@ -237,7 +237,7 @@ unsigned int GAManager::getFixedSupplierPopulationSize() const
 
 double GAManager::getFixedSupplierPriceOffer(unsigned int individual) const
 {
-	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().price_offer;
+	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().actual_price_offer;
 	return 0.0;
 }
 
