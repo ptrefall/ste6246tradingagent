@@ -26,6 +26,7 @@
 //#include <GeneticAlg\Genome\ProsumerGenome.h>
 
 #include <GeneticAlg\ProsumerGeneticAlg.h>
+#include <GeneticAlg\GAManager.h>
 
 #include <iostream>
 
@@ -130,7 +131,7 @@ int main(int argc, char **argv)
 	}*/
 
 	//RgbGeneticAlg ga(10, 0.75, 0.2, 0.01);
-	ProsumerGeneticAlg ga(	100,		//Population Size 
+	/*ProsumerGeneticAlg ga(	100,		//Population Size 
 							0.0,		//Fitness threshold
 							0.05,		//Chance for crossover
 							1,			//Max children from crossover
@@ -141,15 +142,15 @@ int main(int argc, char **argv)
 							24000.0,	//Ef
 							0.1,		//Flex
 							0);			//Policy
-	ga.initialize();
+	ga.initialize();*/
+
+	GAManager gaMgr;
+	gaMgr.initialize();
 	for(unsigned int i = 0; i < 100; i++)
 	{
-		std::cout << ga;
-		bool evolution_stopped = ga.evolve();
-		if(evolution_stopped)
+		if(gaMgr.update(i))
 			break;
 	}
-	std::cout << ga << std::endl;
 
 	char a;
 	std::cout << "Do you want to draw the scene with 1) Software, or 2) OpenGL renderer?" << std::endl;

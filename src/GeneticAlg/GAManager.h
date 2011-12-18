@@ -11,7 +11,9 @@ class GAManager
 public:
 	GAManager();
 	~GAManager();
+
 	void initialize();
+	bool update(unsigned int generation);
 
 //GA getters
 public:

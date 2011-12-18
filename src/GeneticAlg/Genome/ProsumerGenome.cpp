@@ -1,8 +1,8 @@
 #include "ProsumerGenome.h"
 #include <math.h>
 
-ProsumerGenome::ProsumerGenome(double ec, double ep, double ef, double flex, unsigned int policy, double saldo)
-	: chromosome(ec,ep,ef,flex,policy,saldo)
+ProsumerGenome::ProsumerGenome(GAManager &mgr, double ec, double ep, double ef, double flex, unsigned int policy, double saldo)
+	: mgr(mgr), chromosome(ec,ep,ef,flex,policy,saldo)
 {
 }
 

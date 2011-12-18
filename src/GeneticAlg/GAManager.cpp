@@ -33,6 +33,22 @@ void GAManager::initialize()
 	//if(fixedSupplierGA) fixedSupplierGA->initialize();
 }
 
+bool GAManager::update(unsigned int generation)
+{
+	bool finished = false;
+	finished = prosumerGA->evolve();
+	std::cout << *prosumerGA;
+	if(finished)
+		return finished;
+
+	/*finished = fixedSupplierGA->evolve();
+	std::cout << *fixedSupplierGA;
+	if(finished)
+		return finished;*/
+
+	return false;
+}
+
 ////////////////////////////////////////////////////
 // PROSUMER HELPERS
 ////////////////////////////////////////////////////
