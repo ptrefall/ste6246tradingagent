@@ -51,8 +51,8 @@ void GAManager::trade()
 	for(unsigned int i = 0; i < customers.size(); i++)
 	{
 		const double avg_per_hour_factor = customers[i]->avg_per_hour_cost_factor;
-		double economic_capacity = getProsumerEconomicCapacity(i);
-		double energy_consumption_this_hour = getProsumerEnergyConsumption(i) / avg_per_hour_factor; //We need it per hour/generation
+		double economic_capacity = customers[i]->economic_capacity;
+		double energy_consumption_this_hour = customers[i]->energy_consumption / avg_per_hour_factor; //We need it per hour/generation
 		double price;
 		unsigned int index_in_supplier;
 		int supplier_type = findBestPriceOffer(economic_capacity, energy_consumption_this_hour, price, index_in_supplier);
