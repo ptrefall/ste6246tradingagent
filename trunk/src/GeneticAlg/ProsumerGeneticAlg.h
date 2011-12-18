@@ -10,7 +10,8 @@
 class ProsumerGeneticAlg : public IGeneticAlg<ProsumerGenome>
 {
 public:
-	ProsumerGeneticAlg(	unsigned int populationSize =			100, 
+	ProsumerGeneticAlg(	GAManager &mgr,
+						unsigned int populationSize =			100, 
 						double fitness_for_survival_threshold = 0.7, 
 						double crossover_chance =				0.2, 
 						unsigned int max_children_from_cross =	8, 

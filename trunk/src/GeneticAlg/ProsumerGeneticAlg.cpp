@@ -2,7 +2,8 @@
 #include <algorithm>
 
 
-ProsumerGeneticAlg::ProsumerGeneticAlg(	unsigned int populationSize, 
+ProsumerGeneticAlg::ProsumerGeneticAlg(	GAManager &mgr,
+										unsigned int populationSize, 
 										double fitness_for_survival_threshold, 
 										double crossover_chance, 
 										unsigned int max_children_from_cross, 
@@ -14,7 +15,8 @@ ProsumerGeneticAlg::ProsumerGeneticAlg(	unsigned int populationSize,
 										double flex_rate_base,
 										unsigned int policy_base)
 
-	: IGeneticAlg<ProsumerGenome>(		populationSize, 
+	: IGeneticAlg<ProsumerGenome>(		mgr,
+										populationSize, 
 										fitness_for_survival_threshold, 
 										crossover_chance, 
 										max_children_from_cross, 
@@ -130,7 +132,8 @@ std::vector<ProsumerGenome*> ProsumerGeneticAlg::crossover(ProsumerGenome &mum, 
 
 			if(duplicate == false)
 			{
-				ProsumerGenome *child = new ProsumerGenome(	res.economic_capacity, 
+				ProsumerGenome *child = new ProsumerGenome( mgr,
+															res.economic_capacity, 
 															res.energy_production_capacity, 
 															res.energy_consumption,
 															res.flexi_rate,
@@ -178,7 +181,7 @@ ProsumerGenome *ProsumerGeneticAlg::createInitialRandomGenome()
 	double ef = energy_consumption_base/**0.5) + randomize()*energy_consumption_base*/;
 	double flex = flex_rate_base/**0.5) + randomize()*flex_rate_base*/;
 	unsigned int policy = policy_base/**0.5) + randomize()*policy_base*/;
-	return new ProsumerGenome(ec,ep,ef,flex,policy, start_saldo);
+	return new ProsumerGenome(mgr, ec,ep,ef,flex,policy, start_saldo);
 }
 
 std::vector<ProsumerGenome*> ProsumerGeneticAlg::findSurvivors()

@@ -50,10 +50,12 @@ public:
 	}
 };
 
+class GAManager;
+
 class ProsumerGenome : public IGenome<Prosumer>
 {
 public:
-	ProsumerGenome(double ec, double ep, double ef, double flex, unsigned int policy, double saldo);
+	ProsumerGenome(GAManager &mgr, double ec, double ep, double ef, double flex, unsigned int policy, double saldo);
 	virtual ~ProsumerGenome();
 public:
 	double fitness(unsigned int generation) override;
@@ -84,6 +86,7 @@ public:
 	}
 	
 private:
+	GAManager &mgr;
 	Prosumer chromosome;
 	std::unordered_map<unsigned int, std::pair<Prosumer, Prosumer>> mutations;
 };

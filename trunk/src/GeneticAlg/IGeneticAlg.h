@@ -28,16 +28,39 @@ public:
 	Population<GenomeType> *population;
 	GenomeType *bestGenome;
 
-	Generation(unsigned int id, double fitness_for_survival_threshold, unsigned int populationSize) : id(id), fitness_for_survival_threshold(fitness_for_survival_threshold), population(new Population<GenomeType>(populationSize)), bestGenome(0x0) {}
+	Generation(	unsigned int id,
+				double fitness_for_survival_threshold, 
+				unsigned int populationSize) 
+
+		:	id(id), 
+			fitness_for_survival_threshold(fitness_for_survival_threshold), 
+			population(new Population<GenomeType>(populationSize)), 
+			bestGenome(0x0) {}
+
 	~Generation() { delete population; }
 };
+
+class GAManager;
 
 template<class GenomeType>
 class IGeneticAlg abstract
 {
+
+////////////////////////////////////////////
+// CONSTRUCTION / DESTRUCTION
+////////////////////////////////////////////
 public:
-	IGeneticAlg(unsigned int populationSize, double fitness_for_survival_threshold, double crossover_chance, unsigned int max_children_from_cross, double mutation_chance)
-		: crossover_chance(crossover_chance), max_children_from_cross(max_children_from_cross), mutation_chance(mutation_chance)
+	IGeneticAlg(GAManager &mgr, 
+				unsigned int populationSize, 
+				double fitness_for_survival_threshold, 
+				double crossover_chance, 
+				unsigned int max_children_from_cross, 
+				double mutation_chance)
+
+		: mgr(mgr), 
+		  crossover_chance(crossover_chance), 
+		  max_children_from_cross(max_children_from_cross), 
+		  mutation_chance(mutation_chance)
 	{
 		generation = new Generation<GenomeType>(1, fitness_for_survival_threshold, populationSize);
 		generations.push_back(generation);
@@ -49,14 +72,25 @@ public:
 			delete generations[i];
 	}
 
+////////////////////////////////////////////
+// PUBLIC DATA
+////////////////////////////////////////////
 public:
-	
 	Generation<GenomeType> *generation;
 	std::vector<Generation<GenomeType>*> generations;
 	double crossover_chance; 
 	unsigned int max_children_from_cross;
 	double mutation_chance;
 
+////////////////////////////////////////////
+// PROTECTED DATA
+////////////////////////////////////////////
+protected:
+	GAManager &mgr;
+
+////////////////////////////////////////////
+// EVOLVE AND OTHER GENETIC BASE ALGORITHMS
+////////////////////////////////////////////
 public:
 	double randomize() const
 	{
@@ -137,16 +171,25 @@ public:
 		return false;
 	}
 
+////////////////////////////////////////////
+// ABSTRACT MUTATION AND CROSSOVER
+////////////////////////////////////////////
 protected:
 	virtual bool mutate(GenomeType &genome, double chance) const = 0;
 	virtual std::vector<GenomeType*> crossover(GenomeType &mum, GenomeType &dad, unsigned int child_count, double chance) = 0;
 
+////////////////////////////////////////////
+// ABSTRACT HELPERS
+////////////////////////////////////////////
 protected:
 	virtual GenomeType *createInitialRandomGenome() = 0;
 	virtual std::vector<GenomeType*> findSurvivors() = 0;
 	virtual void sortPopulation() = 0;
 	virtual void selectBestIndividual() = 0;
 
+////////////////////////////////////////////
+// INTERNAL GENOME INITIALIZATION
+////////////////////////////////////////////
 private:
 	void createInitialGenomes()
 	{
