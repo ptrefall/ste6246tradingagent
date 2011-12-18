@@ -48,6 +48,36 @@ void GAManager::trade()
 	std::vector<Prosumer*> customers;
 	getCustomersInRandomOrder(customers);
 	
+	for(unsigned int i = 0; i < customers.size(); i++)
+	{
+		const double avg_per_hour_factor = customers[i]->avg_per_hour_cost_factor;
+		double economic_capacity = getProsumerEconomicCapacity(i);
+		double energy_consumption_this_hour = getProsumerEnergyConsumption(i) * avg_per_hour_factor; //We need it per hour/generation
+		double price;
+		unsigned int index_in_supplier;
+		int supplier_type = findBestPriceOffer(economic_capacity, energy_consumption_this_hour, price, index_in_supplier);
+
+		//Could we afford the best price offered to us?
+		if(supplier_type == 0)
+		{
+			//Kill the poor lad
+			customers[i]->saldo = 0.0;
+		}
+		//Best price from a fixed price supplier
+		else if(supplier_type == 1)
+		{
+			customers[i]->genome->makePurchace(price);
+			fixedSupplierGA->generation->population->individuals[index_in_supplier]->reserveEnergySupply(energy_consumption_this_hour);
+		}
+		//Best price from a spot price supplier
+		else if(supplier_type == 2)
+		{
+		}
+		//Best price from a hybrid price supplier
+		else if(supplier_type == 3)
+		{
+		}
+	}
 }
 
 void GAManager::getCustomersInRandomOrder(std::vector<Prosumer*> &customers)
@@ -101,6 +131,18 @@ unsigned int GAManager::getProsumerPopulationSize() const
 	else return 0;
 }
 
+double GAManager::getProsumerEconomicCapacity(unsigned int individual) const
+{
+	if(prosumerGA) return prosumerGA->generation->population->individuals[individual]->chromosomeValue().economic_capacity;
+	else return 0.0;
+}
+
+double GAManager::getProsumerEnergyConsumption(unsigned int individual) const
+{
+	if(prosumerGA) return prosumerGA->generation->population->individuals[individual]->chromosomeValue().energy_consumption;
+	else return 0.0;
+}
+
 ////////////////////////////////////////////////////
 // GENERAL ALL SUPPLIERS HELPERS
 ////////////////////////////////////////////////////
@@ -122,6 +164,68 @@ unsigned int GAManager::getSuppliersSupplyCapacity() const
 	return supply_capacity;
 }
 
+int GAManager::findBestPriceOffer(double economic_capacity, double energy_consumption, double &price, unsigned int &index) const
+{
+	double best_price = 9999999999999999.0;
+	int best_at_index = -1;
+	int index_is_from = 0;
+
+	//Check best price from all fixed price suppliers
+	if(fixedSupplierGA)
+	{
+		for(unsigned int i = 0; i < getFixedSupplierPopulationSize(); i++)
+		{
+			//If supplier can meet the energy consumption requirement
+			if(getFixedSupplierUnreservedSupplyCapacity(i) >= energy_consumption)
+			{
+				double price_offer = getFixedSupplierPriceOffer(i);
+				if(best_price > price_offer)
+				{
+					best_price = price_offer;
+					best_at_index = i;
+					index_is_from = 1; //1 is fixed, 2 is spot and 3 is hybrid
+				}
+			}
+		}
+	}
+
+	//Check best price from all spot price suppliers
+
+	//Check best price from all hybrid price suppliers
+
+	//Run this last
+	if(best_at_index >= 0)
+	{
+		//If customer can't afford the best price offered, he's dead!
+		if(best_price > economic_capacity)
+			return 0;
+
+		//is fixed price
+		if(index_is_from == 1)
+		{
+			price = best_price;
+			index = best_at_index;
+			return 1;
+		}
+		//is spot price
+		else if(index_is_from == 2)
+		{
+			price = best_price;
+			index = best_at_index;
+			return 2;
+		}
+		//is hybrid price
+		else if(index_is_from == 3)
+		{
+			price = best_price;
+			index = best_at_index;
+			return 3;
+		}
+	}
+
+	return 0;
+}
+
 ////////////////////////////////////////////////////
 // FIXED SUPPLIER HELPERS
 ////////////////////////////////////////////////////
@@ -134,6 +238,12 @@ unsigned int GAManager::getFixedSupplierPopulationSize() const
 double GAManager::getFixedSupplierPriceOffer(unsigned int individual) const
 {
 	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().price_offer;
+	return 0.0;
+}
+
+double GAManager::getFixedSupplierUnreservedSupplyCapacity(unsigned int individual) const
+{
+	if(fixedSupplierGA) return getFixedSupplierSupplyCapacity(individual) - fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().reserved_energy;
 	return 0.0;
 }
 

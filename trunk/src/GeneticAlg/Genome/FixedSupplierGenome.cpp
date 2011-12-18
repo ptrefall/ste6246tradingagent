@@ -42,18 +42,8 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 	}
 
 
-	/*double energy_consumption_per_hour = chromosome.energy_consumption / chromosome.avg_per_hour_cost_factor;
-	double low_consumption = chromosome.flexi_rate * energy_consumption_per_hour;
-	
-	double ef_lifetime_reduction_factor = (low_consumption / energy_consumption_per_hour)*(low_consumption / energy_consumption_per_hour);
-	if(ef_lifetime_reduction_factor > 1.0f)
-		ef_lifetime_reduction_factor = 1.0f;
-
-	double bills_lifetime_reduction_factor = 1.0;
-	if(chromosome.policy == 0)
-		bills_lifetime_reduction_factor = buyAllEnergy_Strategy(generation, energy_consumption_per_hour);
-
-	chromosome.saldo = (1.0 - (ef_lifetime_reduction_factor+bills_lifetime_reduction_factor)) * chromosome.saldo;*/
+	//Somewhere in this fitness function we use, then reset the reserved energy from this generation
+	chromosome.reserved_energy = 0.0;
 
 	return chromosome.saldo;
 }
@@ -91,4 +81,9 @@ std::vector<unsigned int> FixedSupplierGenome::getGenerationsOfMutation() const
 		generations.push_back(it->first);
 	}
 	return generations;
+}
+
+void FixedSupplierGenome::reserveEnergySupply(double energy)
+{
+	chromosome.reserved_energy += energy;
 }
