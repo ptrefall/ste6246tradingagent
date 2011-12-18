@@ -58,7 +58,7 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 	return chromosome.saldo;
 }
 
-const FixedSupplier &FixedSupplierGenome::chromosomeValue() const
+FixedSupplier &FixedSupplierGenome::chromosomeValue()
 {
 	return chromosome;
 }

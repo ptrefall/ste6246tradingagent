@@ -42,7 +42,7 @@ double ProsumerGenome::buyAllEnergy_Strategy(unsigned int generation, double ene
 	return factor;
 }
 
-const Prosumer &ProsumerGenome::chromosomeValue() const
+Prosumer &ProsumerGenome::chromosomeValue()
 {
 	return chromosome;
 }

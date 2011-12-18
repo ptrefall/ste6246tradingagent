@@ -43,6 +43,39 @@ void GAManager::initialize()
 	if(fixedSupplierGA) fixedSupplierGA->initialize();
 }
 
+void GAManager::trade()
+{
+	std::vector<Prosumer*> customers;
+	getCustomersInRandomOrder(customers);
+	
+}
+
+void GAManager::getCustomersInRandomOrder(std::vector<Prosumer*> &customers)
+{
+	if(prosumerGA)
+	{
+		std::vector<Prosumer*> temp; 
+
+		//Copy all individuals into a temp list
+		for(unsigned int i = 0; i < prosumerGA->generation->population->individuals.size(); i++)
+		{
+			Prosumer *customer = &prosumerGA->generation->population->individuals[i]->chromosomeValue();
+			temp.push_back(customer);
+		}
+
+		//Randomly pick an index from temp until it's empty
+		while(!temp.empty())
+		{
+			int rand_index = std::rand() % temp.size();
+			customers.push_back(temp[rand_index]);
+			
+			//then erase index from temp
+			temp[rand_index] = temp.back();
+			temp.pop_back();
+		}
+	}
+}
+
 bool GAManager::evolve()
 {
 	bool finished = false;

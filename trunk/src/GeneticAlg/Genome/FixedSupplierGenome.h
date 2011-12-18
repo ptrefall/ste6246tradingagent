@@ -55,7 +55,7 @@ public:
 	virtual ~FixedSupplierGenome();
 public:
 	double fitness(unsigned int generation) override;
-	const FixedSupplier &chromosomeValue() const override;
+	FixedSupplier &chromosomeValue() override;
 	void setChromosomeValue(FixedSupplier &chromosome, bool is_mutation, unsigned int generation) override;
 	bool wasMutatedInGeneration(const unsigned int &generation) const override;
 	std::vector<unsigned int> getGenerationsOfMutation() const override;
