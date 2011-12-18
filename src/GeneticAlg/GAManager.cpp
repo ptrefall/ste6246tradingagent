@@ -12,7 +12,7 @@ GAManager::GAManager()
 							1,			//Max children from crossover
 							0.05,		//Chance for mutation
 							0.1,		//Start saldo
-							3.0,		//Øk
+							1.0,		//Øk
 							1.0,		//Ep
 							24000.0,	//Ef
 							0.1,		//Flex
@@ -25,8 +25,8 @@ GAManager::GAManager()
 							1,			//Max children from crossover
 							0.05,		//Chance for mutation
 							0.1,		//Start saldo
-							3.0,		//Price Offer
-							1.0,		//Supply capacity
+							0.08,		//Price Offer
+							10.0,		//Supply capacity
 							1,			//Customer count
 							0.01);		//Participation cost
 }
@@ -52,7 +52,7 @@ void GAManager::trade()
 	{
 		const double avg_per_hour_factor = customers[i]->avg_per_hour_cost_factor;
 		double economic_capacity = getProsumerEconomicCapacity(i);
-		double energy_consumption_this_hour = getProsumerEnergyConsumption(i) * avg_per_hour_factor; //We need it per hour/generation
+		double energy_consumption_this_hour = getProsumerEnergyConsumption(i) / avg_per_hour_factor; //We need it per hour/generation
 		double price;
 		unsigned int index_in_supplier;
 		int supplier_type = findBestPriceOffer(economic_capacity, energy_consumption_this_hour, price, index_in_supplier);

@@ -148,6 +148,7 @@ int main(int argc, char **argv)
 	gaMgr.initialize();
 	for(unsigned int i = 0; i < 100; i++)
 	{
+		gaMgr.trade();
 		if(gaMgr.evolve())
 			break;
 	}
