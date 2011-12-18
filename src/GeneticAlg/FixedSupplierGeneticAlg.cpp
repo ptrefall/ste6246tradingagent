@@ -56,18 +56,6 @@ bool FixedSupplierGeneticAlg::mutate(FixedSupplierGenome &genome, double chance)
 		temp.supply_capacity = (supply_capacity_base*0.5) + randomize()*supply_capacity_base;
 		genome_was_mutated = true;
 	}
-	result = randomize();
-	if(result <= chance)
-	{
-		temp.customer_count = (customer_count_base*0.5) + randomize()*customer_count_base;
-		genome_was_mutated = true;
-	}
-	result = randomize();
-	if(result <= chance)
-	{
-		temp.participation_cost = (participation_cost_base*0.5) + randomize()*participation_cost_base;
-		genome_was_mutated = true;
-	}
 
 	if(genome_was_mutated)
 	{
@@ -135,8 +123,8 @@ void FixedSupplierGeneticAlg::calcResult(FixedSupplier &result, const FixedSuppl
 {
 	result.price_offer = midpoint.price_offer + distance.price_offer * (randomize()*randomize());
 	result.supply_capacity = midpoint.supply_capacity + distance.supply_capacity * (randomize()*randomize());
-	result.customer_count = midpoint.customer_count + distance.customer_count * (randomize()*randomize());
-	result.participation_cost = midpoint.participation_cost + distance.participation_cost * (randomize()*randomize());
+	result.customer_count = midpoint.customer_count;
+	result.participation_cost = midpoint.participation_cost;
 }
 
 FixedSupplierGenome *FixedSupplierGeneticAlg::createInitialRandomGenome()
