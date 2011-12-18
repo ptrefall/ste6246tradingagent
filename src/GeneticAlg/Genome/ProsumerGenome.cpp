@@ -1,8 +1,11 @@
 #include "ProsumerGenome.h"
+#include "FixedSupplierGenome.h"
+//#include "SpotSupplierGenome.h"
+//#include "HybridSupplierGenome.h"
 #include <math.h>
 
 ProsumerGenome::ProsumerGenome(GAManager &mgr, double ec, double ep, double ef, double flex, unsigned int policy, double saldo)
-	: mgr(mgr), chromosome(ec,ep,ef,flex,policy,saldo)
+	: mgr(mgr), chromosome(this, ec,ep,ef,flex,policy,saldo)
 {
 }
 
@@ -28,10 +31,17 @@ double ProsumerGenome::fitness(unsigned int generation)
 	return chromosome.saldo;
 }
 
+void ProsumerGenome::makePurchace(double price)
+{
+	//Reserve the price we got offered
+	//and use next time the fitness function is called!
+	chromosome.reserved_price = price; 
+}
+
 double ProsumerGenome::buyAllEnergy_Strategy(unsigned int generation, double energy_consumption_per_hour)
 {
-	double spot_price = 192.35 / 1000.0;
-	double bill = energy_consumption_per_hour * spot_price;
+	double bill = energy_consumption_per_hour * chromosome.reserved_price;
+	chromosome.reserved_price = 0.0; //reset the reserved price. We want a new offer for next generation!
 	
 	//If we can't pay our bills, we die
 	if(chromosome.economic_capacity <= bill)
