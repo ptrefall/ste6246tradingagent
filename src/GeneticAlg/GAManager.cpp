@@ -5,7 +5,7 @@
 GAManager::GAManager()
 	: prosumerGA(0x0)//, fixedSupplierGA(0x0)
 {
-	prosumerGA = new ProsumerGeneticAlg(
+	prosumerGA = new ProsumerGeneticAlg(*this,
 							100,		//Population Size 
 							0.0,		//Fitness threshold
 							0.05,		//Chance for crossover
@@ -18,7 +18,7 @@ GAManager::GAManager()
 							0.1,		//Flex
 							0);			//Policy
 
-	//fixedSupplierGA = new FixedSupplierGeneticAlg();
+	//fixedSupplierGA = new FixedSupplierGeneticAlg(this);
 }
 
 GAManager::~GAManager()
@@ -33,7 +33,7 @@ void GAManager::initialize()
 	//if(fixedSupplierGA) fixedSupplierGA->initialize();
 }
 
-bool GAManager::update(unsigned int generation)
+bool GAManager::evolve()
 {
 	bool finished = false;
 	finished = prosumerGA->evolve();
