@@ -69,6 +69,27 @@ unsigned int GAManager::getProsumerPopulationSize() const
 }
 
 ////////////////////////////////////////////////////
+// GENERAL ALL SUPPLIERS HELPERS
+////////////////////////////////////////////////////
+unsigned int GAManager::getSuppliersPopulationSize() const
+{
+	unsigned int population_size = 0;
+	population_size += getFixedSupplierPopulationSize();
+	//population_size += getSpotSupplierPopulationSize();
+	//population_size += getHybridSupplierPopulationSize();
+	return population_size;
+}
+
+unsigned int GAManager::getSuppliersSupplyCapacity() const
+{
+	unsigned int supply_capacity = 0;
+	supply_capacity += getFixedSupplierSupplyCapacitySUM();
+	//supply_capacity += getSpotSupplierSupplyCapacitySUM();
+	//supply_capacity += getHybridSupplierSupplyCapacitySUM();
+	return supply_capacity;
+}
+
+////////////////////////////////////////////////////
 // FIXED SUPPLIER HELPERS
 ////////////////////////////////////////////////////
 unsigned int GAManager::getFixedSupplierPopulationSize() const
@@ -77,20 +98,29 @@ unsigned int GAManager::getFixedSupplierPopulationSize() const
 	else return 0;
 }
 
-double GAManager::getPriceOffer(unsigned int individual) const
+double GAManager::getFixedSupplierPriceOffer(unsigned int individual) const
 {
 	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().price_offer;
 	return 0.0;
 }
 
-double GAManager::getSupplyCapacity(unsigned int individual) const
+double GAManager::getFixedSupplierSupplyCapacity(unsigned int individual) const
 {
 	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().supply_capacity;
 	return 0.0;
 }
 
+double GAManager::getFixedSupplierSupplyCapacitySUM() const
+{
+	double capacity = 0.0;
+	for(unsigned int i = 0; i < getFixedSupplierPopulationSize(); i++)
+	{
+		capacity += getFixedSupplierSupplyCapacity(i);
+	}
+	return capacity;
+}
 
-unsigned int GAManager::getCustomerCount(unsigned int individual) const
+unsigned int GAManager::getFixedSupplierCustomerCount(unsigned int individual) const
 {
 	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().customer_count;
 	return 0;
