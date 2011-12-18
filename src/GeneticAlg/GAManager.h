@@ -2,6 +2,9 @@
 
 class ProsumerGeneticAlg;
 class FixedSupplierGeneticAlg;
+class Prosumer;
+
+#include <vector>
 
 class GAManager
 {
@@ -10,6 +13,7 @@ public:
 	~GAManager();
 
 	void initialize();
+	void trade();
 	bool evolve();
 
 //GA getters
@@ -36,6 +40,10 @@ public:
 
 //PIMPL Helper functions for Spot Supplier GA
 public:
+
+//Internal help functions for diverse purposes
+private:
+	void getCustomersInRandomOrder(std::vector<Prosumer*> &customers);
 
 private:
 	ProsumerGeneticAlg *prosumerGA;

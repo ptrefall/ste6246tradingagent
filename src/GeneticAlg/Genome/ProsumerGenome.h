@@ -59,7 +59,7 @@ public:
 	virtual ~ProsumerGenome();
 public:
 	double fitness(unsigned int generation) override;
-	const Prosumer &chromosomeValue() const override;
+	Prosumer &chromosomeValue() override;
 	void setChromosomeValue(Prosumer &chromosome, bool is_mutation, unsigned int generation) override;
 	bool wasMutatedInGeneration(const unsigned int &generation) const override;
 	std::vector<unsigned int> getGenerationsOfMutation() const override;
