@@ -27,7 +27,6 @@ GAManager::GAManager()
 							0.1,		//Start saldo
 							0.08,		//Price Offer
 							10.0,		//Supply capacity
-							1,			//Customer count
 							0.01);		//Participation cost
 }
 
