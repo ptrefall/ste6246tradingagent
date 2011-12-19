@@ -45,16 +45,6 @@ using namespace gui;
 int main(int argc, char **argv)
 {
 	CL_SetupCore clanlib_core_setup;
-	
-	mglGraphZB gr;
-	mglData ch(7,2);
-	ch.Modify("rnd+0.1");
-	gr.Rotate(40,60);
-	gr.Light(true);
-	gr.SetFunc("(y+2)/3*cos(pi*x)","(y+2)/3*sin(pi*x)");
-	gr.Box();
-	gr.Chart(ch,"bgr cmy#");
-	gr.WriteBMP("test.bmp");
 
 	/*for(int ii=1; ii<argc; ii++) 
 	{
@@ -219,6 +209,41 @@ int main(int argc, char **argv)
             scene::ETPS_17,                         // patchSize
             4                                       // smoothFactor
             );
+
+	mglGraphZB gr;
+	gr.SetSize(512, 512);
+	mglData dat(100);
+	char frame_script[32];
+	gr.NewFrame();
+	gr.Box();
+	sprintf(frame_script,"sin(pi*x+%g*pi)",0.2*0);
+	dat.Modify(frame_script);
+	gr.Plot(dat, "b");
+	gr.EndFrame();
+	//gr.WriteBMP("test.bmp");
+	//unsigned char *bits = const_cast<unsigned char*>(gr.GetBits());
+	unsigned char *bits = const_cast<unsigned char*>(gr.GetBits());
+
+	IImage *graph_plot_image = driver->createImageFromData(ECF_R8G8B8, dimension2d<u32>(gr.GetWidth(), gr.GetHeight()), bits);
+	ITexture *graph_plot_tex = driver->addTexture("graph_plot", graph_plot_image);
+
+	ISceneNode *cube = smgr->addCubeSceneNode(100.0f);
+	if(cube)
+	{
+		cube->setMaterialTexture(0, graph_plot_tex);
+		cube->setMaterialFlag(video::EMF_LIGHTING, false);
+		
+		/*scene::ISceneNodeAnimator* anim = smgr->createRotationAnimator(core::vector3df(0,0.01f,0));
+        if (anim)
+        {
+                cube->addAnimator(anim);
+                anim->drop();
+        }*/
+
+		cube->setPosition(vector3df(0.0f, 0.0f, 200.0f));
+		float sh = terrain->getHeight(cube->getPosition().X, cube->getPosition().Z);
+		cube->setPosition(vector3df(0.0f, sh+100.0f, 200.0f));
+	}
 
     terrain->setMaterialFlag(video::EMF_LIGHTING, true);
     terrain->setMaterialTexture(0,
@@ -473,6 +498,34 @@ int main(int argc, char **argv)
 			generation++;
 		}*/
 		//}*/
+
+		if(accum_time > 0.1f)
+		{
+			
+			//void *bits = cube->getMaterial(0).getTexture(0)->lock();
+			//memset(bits, 0, gr.GetWidth()*gr.GetHeight());
+			
+			gr.NewFrame();
+
+			gr.Box();
+			sprintf(frame_script,"sin(pi*x+%g*pi)",0.2*0);
+			dat.Modify(frame_script);
+			gr.Plot(dat, "b");
+			gr.EndFrame();
+			//gr.WriteBMP("test.bmp");
+			//bits = const_cast<unsigned char*>(gr.GetBits());
+			//memcpy(bits, gr.GetBits(), gr.GetWidth()*gr.GetHeight());
+
+			unsigned char *bits = const_cast<unsigned char*>(gr.GetBits());
+
+			IImage *img = driver->createImageFromData(ECF_R8G8B8, dimension2d<u32>(gr.GetWidth(), gr.GetHeight()), bits);
+			ITexture *tex = driver->addTexture("graph_plot", img);
+
+			//cube->getMaterial(0).getTexture(0)->unlock();
+			cube->setMaterialTexture(0, tex);
+
+			accum_time = 0.0f;
+		}
 
 		if(weatherMgr)
 			weatherMgr->updateWeather();
