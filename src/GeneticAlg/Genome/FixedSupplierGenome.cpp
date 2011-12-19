@@ -41,18 +41,22 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 		chromosome.actual_price_offer = chromosome.price_offer;
 	}
 
+	chromosome.customer_count = chromosome.customer_count_ref;
+
 	if(!first_time)
 	{
 		//Here we calculate the fitness of the supplier based on it's customer count
-		chromosome.saldo = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
-		if(chromosome.saldo <= 0.0)
-		{
-			std::cout << "DEATH OF A FIXED SUPPLIER!!!!!!!" << std::endl;
-		}
+		if(chromosome.customer_count == 0)
+			chromosome.saldo = 0.0;
+		else
+			chromosome.saldo = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
 	}
 	else
+	{
 		first_time = false;
-	chromosome.customer_count = 0;
+	}
+
+	chromosome.customer_count_ref = 0;
 
 	//Reset reserved energy for next round
 	chromosome.reserved_energy = 0.0;
@@ -98,5 +102,5 @@ std::vector<unsigned int> FixedSupplierGenome::getGenerationsOfMutation() const
 void FixedSupplierGenome::reserveEnergySupply(double energy)
 {
 	chromosome.reserved_energy += energy;
-	chromosome.customer_count++;
+	chromosome.customer_count_ref++;
 }

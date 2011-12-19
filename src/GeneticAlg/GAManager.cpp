@@ -154,9 +154,9 @@ unsigned int GAManager::getSuppliersPopulationSize() const
 	return population_size;
 }
 
-unsigned int GAManager::getSuppliersSupplyCapacity() const
+double GAManager::getSuppliersSupplyCapacity() const
 {
-	unsigned int supply_capacity = 0;
+	double supply_capacity = 0;
 	supply_capacity += getFixedSupplierSupplyCapacitySUM();
 	//supply_capacity += getSpotSupplierSupplyCapacitySUM();
 	//supply_capacity += getHybridSupplierSupplyCapacitySUM();
@@ -264,7 +264,7 @@ double GAManager::getFixedSupplierSupplyCapacitySUM() const
 
 unsigned int GAManager::getFixedSupplierCustomerCount(unsigned int individual) const
 {
-	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().customer_count;
+	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().customer_count_ref;
 	return 0;
 }
 
