@@ -12,7 +12,7 @@ GAManager::GAManager()
 							1,			//Max children from crossover
 							0.05,		//Chance for mutation
 							0.1,		//Start saldo
-							0.01,		//Øk
+							10.01,		//Øk
 							1.0,		//Ep
 							24000.0,	//Ef
 							0.1,		//Flex

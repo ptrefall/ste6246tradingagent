@@ -201,7 +201,7 @@ int main(int argc, char **argv)
             "../../bin/resources/Terrain/terrain-heightmap.bmp",
             0,                                      // parent node
             -1,                                     // node id
-            core::vector3df(-2500.f, 100.f, -2500.f),         // position
+            core::vector3df(-512.f, 100.f, -512.f),         // position
             core::vector3df(0.f, 0.f, 0.f),         // rotation
             core::vector3df(50.f, 1.0f, 50.f),      // scale
             video::SColor ( 255, 255, 255, 255 ),   // vertexColor
@@ -210,14 +210,34 @@ int main(int argc, char **argv)
             4                                       // smoothFactor
             );
 
+	std::vector<double> test_values;
+	test_values.push_back(0.0);
+	test_values.push_back(0.1);
+	test_values.push_back(0.3);
+	test_values.push_back(0.8);
+	test_values.push_back(0.85);
+	test_values.push_back(0.90);
+	test_values.push_back(0.95);
+	test_values.push_back(1.0);
+	test_values.push_back(0.95);
+	test_values.push_back(0.90);
+	test_values.push_back(0.85);
+	test_values.push_back(0.8);
+	test_values.push_back(0.3);
+	test_values.push_back(0.1);
+	test_values.push_back(0.0);
+
 	mglGraphZB gr;
 	gr.SetSize(512, 512);
 	mglData dat(100);
 	char frame_script[32];
 	gr.NewFrame();
 	gr.Box();
-	sprintf(frame_script,"sin(pi*x+%g*pi)",0.2*0);
-	dat.Modify(frame_script);
+	//sprintf(frame_script,"sin(pi*x+%g*pi)",0.2*0);
+	//dat.Modify(frame_script);
+	const double *v = new double[test_values.size()];
+
+	dat.Set(v, test_values.size());
 	gr.Plot(dat, "b");
 	gr.EndFrame();
 	//gr.WriteBMP("test.bmp");
@@ -499,7 +519,7 @@ int main(int argc, char **argv)
 		}*/
 		//}*/
 
-		if(accum_time > 0.1f)
+		/*if(accum_time > 0.1f)
 		{
 			
 			//void *bits = cube->getMaterial(0).getTexture(0)->lock();
@@ -525,7 +545,7 @@ int main(int argc, char **argv)
 			cube->setMaterialTexture(0, tex);
 
 			accum_time = 0.0f;
-		}
+		}*/
 
 		if(weatherMgr)
 			weatherMgr->updateWeather();

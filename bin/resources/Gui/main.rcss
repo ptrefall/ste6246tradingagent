@@ -13,6 +13,18 @@ body {
 	padding: 35px;
 }
 
+/* logo */
+#logo {
+	position: absolute;
+	top: 500px;
+	left: 500px;
+	background-decorator: image;
+	background-image-src: images/logo2.png;
+	padding: 5px 0 0 893px;
+	height: 445px;
+	width: 0px;
+}
+
 /* health */
 #health {
 	position: absolute;
