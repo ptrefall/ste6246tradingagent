@@ -88,6 +88,7 @@ private:
 	GAManager &mgr;
 	FixedSupplier chromosome;
 	std::unordered_map<unsigned int, std::pair<FixedSupplier, FixedSupplier>> mutations;
+	bool first_time;
 };
 
 template<class ChromosomeType>

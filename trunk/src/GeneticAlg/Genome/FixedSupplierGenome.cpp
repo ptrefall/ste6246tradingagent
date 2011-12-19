@@ -3,7 +3,7 @@
 #include <math.h>
 
 FixedSupplierGenome::FixedSupplierGenome(GAManager &mgr, double po, double sc, double saldo, double pc)
-	: mgr(mgr), chromosome(po,sc,saldo,pc)
+	: mgr(mgr), chromosome(po,sc,saldo,pc), first_time(true)
 {
 }
 
@@ -41,8 +41,11 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 		chromosome.actual_price_offer = chromosome.price_offer;
 	}
 
-	//Here we calculate the fitness of the supplier based on it's customer count
-	chromosome.saldo = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
+	if(!first_time)
+	{
+		//Here we calculate the fitness of the supplier based on it's customer count
+		chromosome.saldo = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
+	}
 	chromosome.customer_count = 0;
 
 	//Reset reserved energy for next round
