@@ -32,6 +32,7 @@ public:
 	unsigned int getSuppliersPopulationSize() const;
 	double getSuppliersSupplyCapacity() const;
 	int findBestPriceOffer(double economic_capacity, double energy_consumption, double &price, unsigned int &index) const;
+	double findWorstPriceOffer() const;
 
 //PIMPL Helper functions for Fixed Supplier GA
 public:

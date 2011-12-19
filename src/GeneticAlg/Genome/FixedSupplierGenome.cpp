@@ -45,11 +45,19 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 
 	if(!first_time)
 	{
-		//Here we calculate the fitness of the supplier based on it's customer count
+		double price_factor = 0.0;
+		double customer_factor = 0.0;
+
+		//Here we calculate the fitness of the supplier based on it's price offer and customer count
+		price_factor = chromosome.actual_price_offer / mgr.findWorstPriceOffer();
+
 		if(chromosome.customer_count == 0)
-			chromosome.saldo = 0.0;
+			customer_factor = 0.0;
 		else
-			chromosome.saldo = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
+			customer_factor = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
+		
+		//Calculate new fitness
+		chromosome.saldo = price_factor + customer_factor;
 	}
 	else
 	{

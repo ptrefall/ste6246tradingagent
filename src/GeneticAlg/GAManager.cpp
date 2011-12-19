@@ -225,6 +225,24 @@ int GAManager::findBestPriceOffer(double economic_capacity, double energy_consum
 	return 0;
 }
 
+double GAManager::findWorstPriceOffer() const
+{
+	double worst_price = 0.0;
+
+	//Check best price from all fixed price suppliers
+	if(fixedSupplierGA)
+	{
+		for(unsigned int i = 0; i < getFixedSupplierPopulationSize(); i++)
+		{
+			double price_offer = getFixedSupplierPriceOffer(i);
+			if(worst_price < price_offer)
+				worst_price = price_offer;
+		}
+	}
+
+	return worst_price;
+}
+
 ////////////////////////////////////////////////////
 // FIXED SUPPLIER HELPERS
 ////////////////////////////////////////////////////
