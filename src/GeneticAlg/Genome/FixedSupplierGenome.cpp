@@ -49,8 +49,9 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 		{
 			std::cout << "DEATH OF A FIXED SUPPLIER!!!!!!!" << std::endl;
 		}
-		first_time = false;
 	}
+	else
+		first_time = false;
 	chromosome.customer_count = 0;
 
 	//Reset reserved energy for next round
