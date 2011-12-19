@@ -18,6 +18,7 @@ if(NOT BUILD_SHARED_LIBS)
 	add_definitions(-DFT2_BUILD_LIBRARY)
 	add_definitions(-D_LIB)
 	add_definitions(-DSTATIC_LIB)
+	add_definitions(-DNO_GSL)
 endif()
 
 # define an option for choosing between static and dynamic C runtime

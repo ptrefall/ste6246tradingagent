@@ -28,6 +28,9 @@
 #include <GeneticAlg\ProsumerGeneticAlg.h>
 #include <GeneticAlg\GAManager.h>
 
+#include <mgl/mgl_zb.h>
+//#include <mgl/data.h>
+
 #include <iostream>
 
 using namespace irr;
@@ -42,6 +45,16 @@ using namespace gui;
 int main(int argc, char **argv)
 {
 	CL_SetupCore clanlib_core_setup;
+	
+	mglGraphZB gr;
+	mglData ch(7,2);
+	ch.Modify("rnd+0.1");
+	gr.Rotate(40,60);
+	gr.Light(true);
+	gr.SetFunc("(y+2)/3*cos(pi*x)","(y+2)/3*sin(pi*x)");
+	gr.Box();
+	gr.Chart(ch,"bgr cmy#");
+	gr.WriteBMP("test.bmp");
 
 	/*for(int ii=1; ii<argc; ii++) 
 	{
