@@ -11,7 +11,6 @@ FixedSupplierGeneticAlg::FixedSupplierGeneticAlg(GAManager &mgr,
 										double start_saldo, 
 										double price_offer_base, 
 										double supply_capacity_base, 
-										unsigned int customer_count_base, 
 										double participation_cost_base)
 
 	: IGeneticAlg<FixedSupplierGenome>(	mgr,
@@ -24,7 +23,6 @@ FixedSupplierGeneticAlg::FixedSupplierGeneticAlg(GAManager &mgr,
 								 start_saldo(start_saldo), 
 								 price_offer_base(price_offer_base), 
 								 supply_capacity_base(supply_capacity_base), 
-								 customer_count_base(customer_count_base), 
 								 participation_cost_base(participation_cost_base)
 {
 }
@@ -41,7 +39,6 @@ bool FixedSupplierGeneticAlg::mutate(FixedSupplierGenome &genome, double chance)
 	FixedSupplier temp;
 	temp.price_offer = value.price_offer;
 	temp.supply_capacity = value.supply_capacity;
-	temp.customer_count = value.customer_count;
 	temp.participation_cost = value.participation_cost;
 
 	double result = randomize();
@@ -94,7 +91,6 @@ std::vector<FixedSupplierGenome*> FixedSupplierGeneticAlg::crossover(FixedSuppli
 																	res.price_offer, 
 																	res.supply_capacity, 
 																	start_saldo,
-																	res.customer_count,
 																	res.participation_cost);
 			children.push_back(child);
 		}
@@ -107,7 +103,6 @@ void FixedSupplierGeneticAlg::calcMidpoint(FixedSupplier &midpoint, const FixedS
 {
 	midpoint.price_offer = (a.price_offer + b.price_offer) / 2.0;
 	midpoint.supply_capacity = (a.supply_capacity + b.supply_capacity) / 2.0;
-	midpoint.customer_count = (a.customer_count + b.customer_count) / 2.0;
 	midpoint.participation_cost = (a.participation_cost + b.participation_cost) / 2.0;
 }
 
@@ -115,7 +110,6 @@ void FixedSupplierGeneticAlg::calcDistance(FixedSupplier &distance, const FixedS
 {
 	distance.price_offer = (int)fabs((double)a.price_offer - (double)b.price_offer);
 	distance.supply_capacity = (int)fabs((double)a.supply_capacity - (double)b.supply_capacity);
-	distance.customer_count = (int)fabs((double)a.customer_count - (double)b.customer_count);
 	distance.participation_cost = (int)fabs((double)a.participation_cost - (double)b.participation_cost);
 }
 
@@ -123,7 +117,6 @@ void FixedSupplierGeneticAlg::calcResult(FixedSupplier &result, const FixedSuppl
 {
 	result.price_offer = midpoint.price_offer + distance.price_offer * (randomize()*randomize());
 	result.supply_capacity = midpoint.supply_capacity + distance.supply_capacity * (randomize()*randomize());
-	result.customer_count = midpoint.customer_count;
 	result.participation_cost = midpoint.participation_cost;
 }
 
@@ -131,9 +124,8 @@ FixedSupplierGenome *FixedSupplierGeneticAlg::createInitialRandomGenome()
 {
 	double po = price_offer_base/**0.5) + randomize()*price_offer_base*/;
 	double sc = supply_capacity_base/**0.5) + randomize()*supply_capacity_base*/;
-	unsigned int cc = customer_count_base/**0.5) + randomize()*customer_count_base*/;
 	double pc = participation_cost_base/**0.5) + randomize()*participation_cost_base*/;
-	return new FixedSupplierGenome(mgr, po,sc,start_saldo,cc,pc);
+	return new FixedSupplierGenome(mgr, po,sc,start_saldo,pc);
 }
 
 std::vector<FixedSupplierGenome*> FixedSupplierGeneticAlg::findSurvivors()

@@ -21,8 +21,8 @@ public:
 	double reserved_energy;
 
 	FixedSupplier() : price_offer(0.0), actual_price_offer(price_offer), supply_capacity(0.0), saldo(0.0), customer_count(0), participation_cost(0.0), avg_per_hour_factor(24.0*365.0), reserved_energy(0.0) {}
-	FixedSupplier(double po, double sc, double saldo, unsigned int cc, double pc) 
-		: price_offer(po), actual_price_offer(price_offer), supply_capacity(sc), saldo(saldo), customer_count(cc), participation_cost(pc), avg_per_hour_factor(24.0*365.0), reserved_energy(0.0) {}
+	FixedSupplier(double po, double sc, double saldo, double pc) 
+		: price_offer(po), actual_price_offer(price_offer), supply_capacity(sc), saldo(saldo), customer_count(0), participation_cost(pc), avg_per_hour_factor(24.0*365.0), reserved_energy(0.0) {}
 
 	static std::ostream &write(std::ostream& s, FixedSupplier& d)
 	{
@@ -53,7 +53,7 @@ class GAManager;
 class FixedSupplierGenome : public IGenome<FixedSupplier>
 {
 public:
-	FixedSupplierGenome(GAManager &mgr, double po, double sc, double saldo, unsigned int cc, double pc);
+	FixedSupplierGenome(GAManager &mgr, double po, double sc, double saldo, double pc);
 	virtual ~FixedSupplierGenome();
 public:
 	double fitness(unsigned int generation) override;

@@ -2,8 +2,8 @@
 #include "../GAManager.h"
 #include <math.h>
 
-FixedSupplierGenome::FixedSupplierGenome(GAManager &mgr, double po, double sc, double saldo, unsigned int cc, double pc)
-	: mgr(mgr), chromosome(po,sc,saldo,cc,pc)
+FixedSupplierGenome::FixedSupplierGenome(GAManager &mgr, double po, double sc, double saldo, double pc)
+	: mgr(mgr), chromosome(po,sc,saldo,pc)
 {
 }
 
@@ -41,8 +41,11 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 		chromosome.actual_price_offer = chromosome.price_offer;
 	}
 
+	//Here we calculate the fitness of the supplier based on it's customer count
+	chromosome.saldo = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
+	chromosome.customer_count = 0;
 
-	//Somewhere in this fitness function we use, then reset the reserved energy from this generation
+	//Reset reserved energy for next round
 	chromosome.reserved_energy = 0.0;
 
 	return chromosome.saldo;
@@ -86,4 +89,5 @@ std::vector<unsigned int> FixedSupplierGenome::getGenerationsOfMutation() const
 void FixedSupplierGenome::reserveEnergySupply(double energy)
 {
 	chromosome.reserved_energy += energy;
+	chromosome.customer_count++;
 }

@@ -19,7 +19,6 @@ public:
 						double start_saldo =					1.0, 
 						double price_offer_base =				2.0, 
 						double supply_capacity_base =			1.0, 
-						unsigned int customer_count_base =		0, 
 						double participation_cost_base =		0.01
 					  );
 
@@ -76,7 +75,6 @@ protected:
 	double start_saldo;
 	double price_offer_base;
 	double supply_capacity_base;
-	unsigned int customer_count_base;
 	double participation_cost_base;
 };
 
