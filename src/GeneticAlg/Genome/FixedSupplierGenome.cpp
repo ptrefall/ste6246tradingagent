@@ -45,6 +45,11 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 	{
 		//Here we calculate the fitness of the supplier based on it's customer count
 		chromosome.saldo = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
+		if(chromosome.saldo <= 0.0)
+		{
+			std::cout << "DEATH OF A FIXED SUPPLIER!!!!!!!" << std::endl;
+		}
+		first_time = false;
 	}
 	chromosome.customer_count = 0;
 
