@@ -90,7 +90,7 @@ std::vector<FixedSupplierGenome*> FixedSupplierGeneticAlg::crossover(FixedSuppli
 			FixedSupplierGenome *child = new FixedSupplierGenome(	mgr,	
 																	res.price_offer, 
 																	res.supply_capacity, 
-																	start_saldo,
+																	res.saldo,
 																	res.participation_cost);
 			children.push_back(child);
 		}
@@ -103,6 +103,7 @@ void FixedSupplierGeneticAlg::calcMidpoint(FixedSupplier &midpoint, const FixedS
 {
 	midpoint.price_offer = (a.price_offer + b.price_offer) / 2.0;
 	midpoint.supply_capacity = (a.supply_capacity + b.supply_capacity) / 2.0;
+	midpoint.saldo = (a.saldo + b.saldo) / 2.0;
 	midpoint.participation_cost = (a.participation_cost + b.participation_cost) / 2.0;
 }
 
@@ -110,6 +111,7 @@ void FixedSupplierGeneticAlg::calcDistance(FixedSupplier &distance, const FixedS
 {
 	distance.price_offer = (int)fabs((double)a.price_offer - (double)b.price_offer);
 	distance.supply_capacity = (int)fabs((double)a.supply_capacity - (double)b.supply_capacity);
+	distance.saldo = (int)fabs((double)a.saldo - (double)b.saldo);
 	distance.participation_cost = (int)fabs((double)a.participation_cost - (double)b.participation_cost);
 }
 
@@ -117,6 +119,7 @@ void FixedSupplierGeneticAlg::calcResult(FixedSupplier &result, const FixedSuppl
 {
 	result.price_offer = midpoint.price_offer + distance.price_offer * (randomize()*randomize());
 	result.supply_capacity = midpoint.supply_capacity + distance.supply_capacity * (randomize()*randomize());
+	result.saldo = midpoint.saldo + distance.saldo * (randomize()*randomize());
 	result.participation_cost = midpoint.participation_cost;
 }
 
