@@ -14,8 +14,8 @@ public:
 	Population(unsigned int size) : size(size) {}
 	~Population() 
 	{
-		for(unsigned int i = 0; i < individuals.size(); i++)
-			delete individuals[i];
+		/*for(unsigned int i = 0; i < individuals.size(); i++)
+			delete individuals[i];*/
 	}
 };
 

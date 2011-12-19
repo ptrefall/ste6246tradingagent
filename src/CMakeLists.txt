@@ -127,6 +127,7 @@ find_package(ClanLib REQUIRED)
 #find_package(Totem REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(Rocket REQUIRED)
+find_package(MathGL REQUIRED)
 #---------------------------------------------------------------
 add_executable(TradingAgent ${HDRS} ${SRCS} 
 							${SCENE_NODE_HDRS} ${SCENE_NODE_SRCS}
@@ -145,6 +146,7 @@ target_link_libraries(TradingAgent
   debug ${IRR_LIB_DEBUG} optimized ${IRR_LIB_RELEASE}
   debug ${GALIB_LIB_DEBUG} optimized ${GALIB_LIB_RELEASE}
   debug ${ZLIB_LIBRARY_DEBUG} optimized ${ZLIB_LIBRARY_RELEASE}
+  debug ${MATHGL_LIBRARY_DEBUG} optimized ${MATHGL_LIBRARY_RELEASE}
   debug ${CL_CORE_LIB_DEBUG} optimized ${CL_CORE_LIB_RELEASE}
   TotemEDK
   #debug ${TOTEM_LIB_DEBUG} optimized ${TOTEM_LIB_RELEASE}
