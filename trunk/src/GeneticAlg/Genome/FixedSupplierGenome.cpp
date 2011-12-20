@@ -54,7 +54,7 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 			double customer_factor = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
 		
 			//Calculate new fitness
-			chromosome.saldo = price_factor + customer_factor;
+			chromosome.saldo = (1.0 - price_factor) + customer_factor;
 		}
 	}
 	else
