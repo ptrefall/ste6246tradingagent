@@ -199,7 +199,7 @@ std::vector<ProsumerGenome*> ProsumerGeneticAlg::findSurvivors()
 
 	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-	std::cout << "Prosumer Deaths: " << deaths << std::endl;
+	//std::cout << "Prosumer Deaths: " << deaths << std::endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
 	return survivors;

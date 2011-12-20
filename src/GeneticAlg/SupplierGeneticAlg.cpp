@@ -151,7 +151,7 @@ std::vector<SupplierGenome*> SupplierGeneticAlg::findSurvivors()
 
 	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-	std::cout << "Fixed Supplier Deaths: " << deaths << std::endl;
+	//std::cout << "Fixed Supplier Deaths: " << deaths << std::endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
 	return survivors;
