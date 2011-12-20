@@ -56,11 +56,18 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 			//We add a small factor of how many customers you have compared to the customer population size to help further the strongest
 			double customer_factor = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
 
-			//Cost of participation accumulates linearly over generations, thus long living suppliers will have to pay more to stay alive
+			//Cost of participation accumulates logarithmically over generations, thus long living suppliers will have to pay more to stay alive.
+			//This adds a bit of chaos to the fitness value, such that fitness won't completely reflect the supplier's price offer and customer count.
+			//Basically it means that the older a supplier is, the harder it is to stay alive, but the impact of the participation cost reduce over time,
+			//due to the logarithmic nature of the participation cost factor accumulation. We chose to do this logarithmically over linearly, because a
+			//linear participation cost killed price specialization... this might have been the result of a too high participation cost (adding to heavy
+			//a linear impact on the fitness/saldo).
 			chromosome.participation_cost_accumulator += chromosome.participation_cost;
+			double participation_factor = (chromosome.participation_cost / chromosome.participation_cost_accumulator) * chromosome.participation_cost;
+			chromosome.participation_factor_accumulator += participation_factor;
 		
 			//Calculate new fitness
-			chromosome.saldo = (1.0 - price_factor) + customer_factor - chromosome.participation_cost_accumulator;
+			chromosome.saldo = (1.0 - price_factor) + customer_factor - chromosome.participation_factor_accumulator;
 		}
 	}
 	else
