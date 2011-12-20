@@ -2,8 +2,8 @@
 #include "ProsumerGeneticAlg.h"
 #include "SupplierGeneticAlg.h"
 
-GAManager::GAManager()
-	: prosumerGA(0x0), SupplierGA(0x0)
+GAManager::GAManager(irr::scene::ISceneManager *smgr, EntityManager &entityMgr, Totem::ComponentFactory &componentFactory)
+	: smgr(smgr), entityMgr(entityMgr), componentFactory(componentFactory), prosumerGA(0x0), SupplierGA(0x0)
 {
 	prosumerGA = new ProsumerGeneticAlg(*this,
 							100,		//Population Size 
@@ -12,7 +12,7 @@ GAManager::GAManager()
 							1,			//Max children from crossover
 							0.05,		//Chance for mutation
 							0.1,		//Start saldo
-							10.01,		//Øk
+							1.01,		//Øk
 							1.0,		//Ep
 							24000.0,	//Ef
 							0.1,		//Flex
@@ -23,11 +23,13 @@ GAManager::GAManager()
 							0.0,		//Fitness threshold
 							0.05,		//Chance for crossover
 							1,			//Max children from crossover
-							0.05,		//Chance for mutation
+							0.15,		//Chance for mutation
 							0.1,		//Start saldo
-							0.08,		//Price Offer
-							10.0,		//Supply capacity
-							0.01);		//Participation cost
+							0.12,		//Price Offer
+							8.0,		//Supply capacity
+							0.04,		//Participation cost
+							0.4,		//Hybrid Spot Percentage of Spot Price
+							0.75);		//Hybrid Fixed Percentage of Fixed Price
 }
 
 GAManager::~GAManager()

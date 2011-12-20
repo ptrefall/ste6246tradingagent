@@ -1,9 +1,38 @@
 #include "ProsumerGenome.h"
 #include <math.h>
+#include <exception>
+#include <GeneticAlg\GAManager.h>
+
+#include <Totem\types_config.h>
+#include <Totem\ComponentFactory.h>
+#include <Entity\EntityManager.h>
+#include <Entity\Entity.h>
+
+#include <Irrlicht\irrlicht.h>
 
 ProsumerGenome::ProsumerGenome(GAManager &mgr, double ec, double ep, double ef, double flex, unsigned int policy, double saldo)
-	: mgr(mgr), chromosome(this, ec,ep,ef,flex,policy,saldo)
+	: mgr(mgr), chromosome(this, ec,ep,ef,flex,policy,saldo), entity(0x0)
 {
+	try{
+		entity = &mgr.getEntityMgr().create(mgr.getComponentFactory());
+		entity->addComponent<EntityManager, irr::scene::ISceneManager>("Health", mgr.getEntityMgr(), *mgr.getSceneMgr());
+		/*if(a == '1')
+		{
+			entity.addComponent<irr::scene::ISceneNode, irr::scene::ISceneManager, std::string>("Sprite", 
+				*smgr->getRootSceneNode(), *smgr, std::string("../../bin/resources/Particle/Particle.tga"), irr::core::vector2di(64,64));
+		}
+		else
+		{*/
+			entity->addComponent<irr::scene::ISceneNode, irr::scene::ISceneManager, std::string>("Sprite", 
+				*mgr.getSceneMgr()->getRootSceneNode(), *mgr.getSceneMgr(), std::string("../../bin/resources/Sprites/goblin_001.png"), irr::core::vector2di(72,97));
+		//}
+		entity->sendEvent0(T_HashedString("LOAD"));
+		float x = (float)((std::rand() % 400) - 200);
+		float z = (float)((std::rand() % 400) - 200);
+		entity->getProperty<irr::core::vector3df>("Position") = irr::core::vector3df(x,0,z);
+	}catch(std::exception &e){
+		std::cout << e.what() << std::endl;
+	}
 }
 
 ProsumerGenome::~ProsumerGenome()
@@ -24,6 +53,9 @@ double ProsumerGenome::fitness(unsigned int generation)
 		bills_lifetime_reduction_factor = buyAllEnergy_Strategy(generation, energy_consumption_per_hour);
 
 	chromosome.saldo = (1.0 - (ef_lifetime_reduction_factor+bills_lifetime_reduction_factor)) * chromosome.saldo;
+
+	if(entity)
+		entity->getProperty<float>("Health") = (float)chromosome.saldo * 1000.0f;
 
 	return chromosome.saldo;
 }

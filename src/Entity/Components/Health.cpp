@@ -27,12 +27,12 @@ Health::~Health()
 
 void Health::onDmgEvent(const float &dmg, const std::string &attackerName)
 {
-	std::cout << attackerName.c_str() << " inflicted " << dmg << " damage to " << name_property.get().c_str() << std::endl;
+	//std::cout << attackerName.c_str() << " inflicted " << dmg << " damage to " << name_property.get().c_str() << std::endl;
 
 	health_property -= dmg;
 	if(0 < health_property)
 	{
-		std::cout << name_property.get().c_str() << "'s remaining health is " << health_property.get() << " hp!" << std::endl;
+		//std::cout << name_property.get().c_str() << "'s remaining health is " << health_property.get() << " hp!" << std::endl;
 	}
 }
 
@@ -63,7 +63,7 @@ void Health::onAliveChanged(const bool &/*oldValue*/, const bool &newValue)
 		//Could send an event here that we died (useful if someone targets us, or if player should be notified in some way, 
 		//or the game manager should put us in a pending_deletion list or something...
 
-		std::cout << name_property.get().c_str() << " died..." << std::endl;
+		//std::cout << name_property.get().c_str() << " died..." << std::endl;
 		entityMgr.erase(&owner);
 	}
 }
