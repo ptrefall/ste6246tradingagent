@@ -1,9 +1,9 @@
 #include "GAManager.h"
 #include "ProsumerGeneticAlg.h"
-#include "FixedSupplierGeneticAlg.h"
+#include "SupplierGeneticAlg.h"
 
 GAManager::GAManager()
-	: prosumerGA(0x0), fixedSupplierGA(0x0)
+	: prosumerGA(0x0), SupplierGA(0x0)
 {
 	prosumerGA = new ProsumerGeneticAlg(*this,
 							100,		//Population Size 
@@ -18,7 +18,7 @@ GAManager::GAManager()
 							0.1,		//Flex
 							0);			//Policy
 
-	fixedSupplierGA = new FixedSupplierGeneticAlg(*this,
+	SupplierGA = new SupplierGeneticAlg(*this,
 							10,		//Population Size 
 							0.0,		//Fitness threshold
 							0.05,		//Chance for crossover
@@ -33,20 +33,20 @@ GAManager::GAManager()
 GAManager::~GAManager()
 {
 	if(prosumerGA) delete prosumerGA;
-	if(fixedSupplierGA) delete fixedSupplierGA;
+	if(SupplierGA) delete SupplierGA;
 }
 
 void GAManager::initialize()
 {
 	if(prosumerGA) prosumerGA->initialize();
-	if(fixedSupplierGA) fixedSupplierGA->initialize();
+	if(SupplierGA) SupplierGA->initialize();
 }
 
 void GAManager::trade()
 {
 	//Register all suppliers for trade, this is to mark any new-born suppliers as having a valid fitness
-	for(unsigned int i = 0; i < fixedSupplierGA->generation->population->individuals.size(); i++)
-		fixedSupplierGA->generation->population->individuals[i]->trade();
+	for(unsigned int i = 0; i < SupplierGA->generation->population->individuals.size(); i++)
+		SupplierGA->generation->population->individuals[i]->trade();
 
 	std::vector<Prosumer*> customers;
 	getCustomersInRandomOrder(customers);
@@ -70,7 +70,7 @@ void GAManager::trade()
 		else if(supplier_type == 1)
 		{
 			customers[i]->genome->makePurchace(price);
-			fixedSupplierGA->generation->population->individuals[index_in_supplier]->reserveEnergySupply(energy_consumption_this_hour);
+			SupplierGA->generation->population->individuals[index_in_supplier]->reserveEnergySupply(energy_consumption_this_hour);
 		}
 		//Best price from a spot price supplier
 		else if(supplier_type == 2)
@@ -117,8 +117,8 @@ bool GAManager::evolve()
 	if(finished)
 		return finished;
 
-	finished = fixedSupplierGA->evolve();
-	std::cout << *fixedSupplierGA;
+	finished = SupplierGA->evolve();
+	std::cout << *SupplierGA;
 	if(finished)
 		return finished;
 
@@ -152,7 +152,7 @@ double GAManager::getProsumerEnergyConsumption(unsigned int individual) const
 unsigned int GAManager::getSuppliersPopulationSize() const
 {
 	unsigned int population_size = 0;
-	population_size += getFixedSupplierPopulationSize();
+	population_size += getSupplierPopulationSize();
 	//population_size += getSpotSupplierPopulationSize();
 	//population_size += getHybridSupplierPopulationSize();
 	return population_size;
@@ -161,7 +161,7 @@ unsigned int GAManager::getSuppliersPopulationSize() const
 double GAManager::getSuppliersSupplyCapacity() const
 {
 	double supply_capacity = 0;
-	supply_capacity += getFixedSupplierSupplyCapacitySUM();
+	supply_capacity += getSupplierSupplyCapacitySUM();
 	//supply_capacity += getSpotSupplierSupplyCapacitySUM();
 	//supply_capacity += getHybridSupplierSupplyCapacitySUM();
 	return supply_capacity;
@@ -174,14 +174,14 @@ int GAManager::findBestPriceOffer(double economic_capacity, double energy_consum
 	int index_is_from = 0;
 
 	//Check best price from all fixed price suppliers
-	if(fixedSupplierGA)
+	if(SupplierGA)
 	{
-		for(unsigned int i = 0; i < getFixedSupplierPopulationSize(); i++)
+		for(unsigned int i = 0; i < getSupplierPopulationSize(); i++)
 		{
 			//If supplier can meet the energy consumption requirement
-			if(getFixedSupplierUnreservedSupplyCapacity(i) >= energy_consumption)
+			if(getSupplierUnreservedSupplyCapacity(i) >= energy_consumption)
 			{
-				double price_offer = getFixedSupplierPriceOffer(i);
+				double price_offer = getSupplierPriceOffer(i);
 				if(best_price > price_offer)
 				{
 					best_price = price_offer;
@@ -234,11 +234,11 @@ double GAManager::findWorstPriceOffer() const
 	double worst_price = 0.0;
 
 	//Check best price from all fixed price suppliers
-	if(fixedSupplierGA)
+	if(SupplierGA)
 	{
-		for(unsigned int i = 0; i < getFixedSupplierPopulationSize(); i++)
+		for(unsigned int i = 0; i < getSupplierPopulationSize(); i++)
 		{
-			double price_offer = getFixedSupplierPriceOffer(i);
+			double price_offer = getSupplierPriceOffer(i);
 			if(worst_price < price_offer)
 				worst_price = price_offer;
 		}
@@ -250,43 +250,43 @@ double GAManager::findWorstPriceOffer() const
 ////////////////////////////////////////////////////
 // FIXED SUPPLIER HELPERS
 ////////////////////////////////////////////////////
-unsigned int GAManager::getFixedSupplierPopulationSize() const
+unsigned int GAManager::getSupplierPopulationSize() const
 {
-	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals.size();
+	if(SupplierGA) return SupplierGA->generation->population->individuals.size();
 	else return 0;
 }
 
-double GAManager::getFixedSupplierPriceOffer(unsigned int individual) const
+double GAManager::getSupplierPriceOffer(unsigned int individual) const
 {
-	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().actual_price_offer;
+	if(SupplierGA) return SupplierGA->generation->population->individuals[individual]->chromosomeValue().actual_price_offer;
 	return 0.0;
 }
 
-double GAManager::getFixedSupplierUnreservedSupplyCapacity(unsigned int individual) const
+double GAManager::getSupplierUnreservedSupplyCapacity(unsigned int individual) const
 {
-	if(fixedSupplierGA) return getFixedSupplierSupplyCapacity(individual) - fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().reserved_energy;
+	if(SupplierGA) return getSupplierSupplyCapacity(individual) - SupplierGA->generation->population->individuals[individual]->chromosomeValue().reserved_energy;
 	return 0.0;
 }
 
-double GAManager::getFixedSupplierSupplyCapacity(unsigned int individual) const
+double GAManager::getSupplierSupplyCapacity(unsigned int individual) const
 {
-	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().supply_capacity;
+	if(SupplierGA) return SupplierGA->generation->population->individuals[individual]->chromosomeValue().supply_capacity;
 	return 0.0;
 }
 
-double GAManager::getFixedSupplierSupplyCapacitySUM() const
+double GAManager::getSupplierSupplyCapacitySUM() const
 {
 	double capacity = 0.0;
-	for(unsigned int i = 0; i < getFixedSupplierPopulationSize(); i++)
+	for(unsigned int i = 0; i < getSupplierPopulationSize(); i++)
 	{
-		capacity += getFixedSupplierSupplyCapacity(i);
+		capacity += getSupplierSupplyCapacity(i);
 	}
 	return capacity;
 }
 
-unsigned int GAManager::getFixedSupplierCustomerCount(unsigned int individual) const
+unsigned int GAManager::getSupplierCustomerCount(unsigned int individual) const
 {
-	if(fixedSupplierGA) return fixedSupplierGA->generation->population->individuals[individual]->chromosomeValue().customer_count_ref;
+	if(SupplierGA) return SupplierGA->generation->population->individuals[individual]->chromosomeValue().customer_count_ref;
 	return 0;
 }
 
