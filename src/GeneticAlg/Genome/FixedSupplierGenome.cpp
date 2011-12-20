@@ -50,11 +50,17 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 			chromosome.saldo = 0.0;
 		else
 		{
+			//How good is your price compared to the worst price? Worst price gives a factor of 1, thus we do 1.0-factor for saldo.
 			double price_factor = chromosome.actual_price_offer / mgr.findWorstPriceOffer();
+
+			//We add a small factor of how many customers you have compared to the customer population size to help further the strongest
 			double customer_factor = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
+
+			//Cost of participation accumulates linearly over generations, thus long living suppliers will have to pay more to stay alive
+			chromosome.participation_cost_accumulator += chromosome.participation_cost;
 		
 			//Calculate new fitness
-			chromosome.saldo = (1.0 - price_factor) + customer_factor;
+			chromosome.saldo = (1.0 - price_factor) + customer_factor - chromosome.participation_cost_accumulator;
 		}
 	}
 	else
