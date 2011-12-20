@@ -3,7 +3,7 @@
 #include <math.h>
 
 FixedSupplierGenome::FixedSupplierGenome(GAManager &mgr, double po, double sc, double saldo, double pc)
-	: mgr(mgr), chromosome(po,sc,saldo,pc), first_time(true)
+	: mgr(mgr), chromosome(po,sc,saldo,pc), first_time(true), has_traded(false)
 {
 }
 
@@ -45,19 +45,17 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 
 	if(!first_time)
 	{
-		double price_factor = 0.0;
-		double customer_factor = 0.0;
-
 		//Here we calculate the fitness of the supplier based on it's price offer and customer count
-		price_factor = chromosome.actual_price_offer / mgr.findWorstPriceOffer();
-
 		if(chromosome.customer_count == 0)
-			customer_factor = 0.0;
+			chromosome.saldo = 0.0;
 		else
-			customer_factor = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
+		{
+			double price_factor = chromosome.actual_price_offer / mgr.findWorstPriceOffer();
+			double customer_factor = (double)chromosome.customer_count / (double)mgr.getProsumerPopulationSize();
 		
-		//Calculate new fitness
-		chromosome.saldo = price_factor + customer_factor;
+			//Calculate new fitness
+			chromosome.saldo = price_factor + customer_factor;
+		}
 	}
 	else
 	{

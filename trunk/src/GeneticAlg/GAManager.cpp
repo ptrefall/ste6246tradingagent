@@ -44,6 +44,10 @@ void GAManager::initialize()
 
 void GAManager::trade()
 {
+	//Register all suppliers for trade, this is to mark any new-born suppliers as having a valid fitness
+	for(unsigned int i = 0; i < fixedSupplierGA->generation->population->individuals.size(); i++)
+		fixedSupplierGA->generation->population->individuals[i]->trade();
+
 	std::vector<Prosumer*> customers;
 	getCustomersInRandomOrder(customers);
 	

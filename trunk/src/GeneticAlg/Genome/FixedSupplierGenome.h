@@ -67,9 +67,14 @@ public:
 
 	void reserveEnergySupply(double energy);
 
+	void trade() { has_traded = true; }
+
 public:
 	static std::ostream &write(std::ostream& s, FixedSupplierGenome& d)
 	{
+		if(!d.has_traded)
+			return s;
+		
 		HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN);
 		s << "Fitness: " << d.chromosomeValue().saldo << std::endl;
@@ -90,6 +95,7 @@ private:
 	FixedSupplier chromosome;
 	std::unordered_map<unsigned int, std::pair<FixedSupplier, FixedSupplier>> mutations;
 	bool first_time;
+	bool has_traded;
 };
 
 template<class ChromosomeType>
