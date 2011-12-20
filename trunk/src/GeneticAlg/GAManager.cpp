@@ -113,14 +113,31 @@ bool GAManager::evolve()
 {
 	bool finished = false;
 	finished = prosumerGA->evolve();
-	std::cout << *prosumerGA;
+	//std::cout << *prosumerGA;
 	if(finished)
 		return finished;
 
 	finished = SupplierGA->evolve();
-	std::cout << *SupplierGA;
+	//std::cout << *SupplierGA;
 	if(finished)
 		return finished;
+
+	//ProsumerSaldo	EconomicCapacity	EnergyConsumption	SupplierSaldo	PriceOffer	CustomerCount	PriceStrategy
+
+	if(prosumerGA->generation->bestGenome)
+	{
+		std::cout << prosumerGA->generation->bestGenome->chromosomeValue().saldo << "\t";
+		std::cout << prosumerGA->generation->bestGenome->chromosomeValue().economic_capacity << "\t";
+		std::cout << prosumerGA->generation->bestGenome->chromosomeValue().energy_consumption << "\t";
+	}
+	if(SupplierGA->generation->bestGenome)
+	{
+		std::cout << SupplierGA->generation->bestGenome->chromosomeValue().saldo << "\t";
+		std::cout << SupplierGA->generation->bestGenome->chromosomeValue().actual_price_offer << "\t";
+		std::cout << SupplierGA->generation->bestGenome->chromosomeValue().customer_count << "\t";
+		std::cout << SupplierGA->generation->bestGenome->chromosomeValue().price_strategy << "\t";
+	}
+	//std::cout << std::endl;
 
 	return false;
 }

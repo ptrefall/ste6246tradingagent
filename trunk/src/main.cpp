@@ -147,14 +147,14 @@ int main(int argc, char **argv)
 							0);			//Policy
 	ga.initialize();*/
 
-	/*GAManager gaMgr;
+	GAManager gaMgr;
 	gaMgr.initialize();
 	for(unsigned int i = 0; i < 100; i++)
 	{
 		gaMgr.trade();
 		if(gaMgr.evolve())
 			break;
-	}*/
+	}
 
 	char a;
 	std::cout << "Do you want to draw the scene with 1) Software, or 2) OpenGL renderer?" << std::endl;
