@@ -77,7 +77,7 @@ public:
 
 
 //Object functions
-public:
+private:
 	double buyAllEnergy_Strategy(unsigned int generation, double energy_consumption_per_hour);
 
 public:

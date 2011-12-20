@@ -67,7 +67,7 @@ protected:
 	void calcResult(FixedSupplier &result, const FixedSupplier &midpoint, const FixedSupplier &distance) const;
 
 protected:
-	virtual FixedSupplierGenome *createInitialRandomGenome() override;
+	virtual FixedSupplierGenome *createInitialRandomGenome(unsigned int index, unsigned int population_size) override;
 	std::vector<FixedSupplierGenome*> findSurvivors() override;
 	void sortPopulation() override;
 	void selectBestIndividual() override;

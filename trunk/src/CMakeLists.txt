@@ -71,6 +71,7 @@ set(GA_HDRS
 	#./GeneticAlg/RgbGeneticAlg.h
 	./GeneticAlg/ProsumerGeneticAlg.h
 	./GeneticAlg/FixedSupplierGeneticAlg.h
+	./GeneticAlg/ElPrice_loader.h
 )
 SOURCE_GROUP("Header Files\\GeneticAlg" FILES ${GA_HDRS})
 #---------------------------------------------------------------
@@ -79,6 +80,7 @@ set(GA_SRCS
 	#./GeneticAlg/RgbGeneticAlg.cpp
 	./GeneticAlg/ProsumerGeneticAlg.cpp
 	./GeneticAlg/FixedSupplierGeneticAlg.cpp
+	./GeneticAlg/ElPrice_loader.cpp
 )
 SOURCE_GROUP("Source Files\\GeneticAlg" FILES ${GA_SRCS})
 #---------------------------------------------------------------

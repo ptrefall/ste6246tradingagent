@@ -1,45 +1,30 @@
 #include "FixedSupplierGenome.h"
 #include "../GAManager.h"
+#include "../ElPrice_loader.h"
 #include <math.h>
 
-FixedSupplierGenome::FixedSupplierGenome(GAManager &mgr, double po, double sc, double saldo, double pc)
-	: mgr(mgr), chromosome(po,sc,saldo,pc), first_time(true), has_traded(false)
+FixedSupplierGenome::FixedSupplierGenome(GAManager &mgr, unsigned int ps, double po, double sc, double saldo, double pc)
+	: mgr(mgr), chromosome(ps,po,sc,saldo,pc), first_time(true), has_traded(false)
 {
+	if(ps == SPS_SPOT_PRICE)
+	{
+		chromosome.spotPrice = new SpotPriceArray();
+		ElSpotPriceLoader::loadPriceData("../../bin/resources/ElPrice/Elspot_prices.txt", chromosome.spotPrice->prices_per_generation);
+	}
 }
 
 FixedSupplierGenome::~FixedSupplierGenome()
 {
+	if(chromosome.spotPrice)
+		delete chromosome.spotPrice;
 }
 
 double FixedSupplierGenome::fitness(unsigned int generation)
 {
-	///////////////////////////////
-	// Bargain price
-	///////////////////////////////
-	unsigned int prosumer_population_size = mgr.getProsumerPopulationSize();
-	unsigned int suppliers_population_size = mgr.getSuppliersPopulationSize();
-	unsigned int suppliers_supply_capacity = mgr.getSuppliersSupplyCapacity();
-	double prosumer_vs_supplier_relation = (double)prosumer_population_size / (double)suppliers_population_size;
-
-	//If the relation between number of customers and suppliers is more than double in size
-	//compared to the estimated customer capacity of the competition, the fixed price suppliers
-	//will add addition 15% to their fixed price.
-	if(((unsigned int)prosumer_vs_supplier_relation*2.0) > suppliers_supply_capacity)
-	{
-		chromosome.actual_price_offer = chromosome.price_offer + (chromosome.price_offer*0.15);
-	}
-	//Else, if the relation between the customers and suppliers is one to one or less in size
-	//compared to the estimated customer capacity of the competition, the fixed price suppliers
-	//will subtract 15% from their fixed price.
-	else if((unsigned int)prosumer_vs_supplier_relation <= suppliers_supply_capacity)
-	{
-		chromosome.actual_price_offer = chromosome.price_offer - (chromosome.price_offer*0.15);
-	}
-	//Otherwise, the price is unchanged.
-	else
-	{
-		chromosome.actual_price_offer = chromosome.price_offer;
-	}
+	if(chromosome.price_strategy == SPS_FIXED_PRICE)
+		fixedPrice_strategy(generation);
+	else if(chromosome.price_strategy == SPS_SPOT_PRICE)
+		spotPrice_strategy(generation);
 
 	chromosome.customer_count = chromosome.customer_count_ref;
 
@@ -81,6 +66,47 @@ double FixedSupplierGenome::fitness(unsigned int generation)
 	chromosome.reserved_energy = 0.0;
 
 	return chromosome.saldo;
+}
+
+///////////////////////////////////////////////
+// FIXED PRICE SUPPLIER STRATEGY
+///////////////////////////////////////////////
+void FixedSupplierGenome::fixedPrice_strategy(unsigned int generation)
+{
+	// Bargain price
+	unsigned int prosumer_population_size = mgr.getProsumerPopulationSize();
+	unsigned int suppliers_population_size = mgr.getSuppliersPopulationSize();
+	unsigned int suppliers_supply_capacity = mgr.getSuppliersSupplyCapacity();
+	double prosumer_vs_supplier_relation = (double)prosumer_population_size / (double)suppliers_population_size;
+
+	//If the relation between number of customers and suppliers is more than double in size
+	//compared to the estimated customer capacity of the competition, the fixed price suppliers
+	//will add addition 15% to their fixed price.
+	if(((unsigned int)prosumer_vs_supplier_relation*2.0) > suppliers_supply_capacity)
+	{
+		chromosome.actual_price_offer = chromosome.price_offer + (chromosome.price_offer*0.15);
+	}
+	//Else, if the relation between the customers and suppliers is one to one or less in size
+	//compared to the estimated customer capacity of the competition, the fixed price suppliers
+	//will subtract 15% from their fixed price.
+	else if((unsigned int)prosumer_vs_supplier_relation <= suppliers_supply_capacity)
+	{
+		chromosome.actual_price_offer = chromosome.price_offer - (chromosome.price_offer*0.15);
+	}
+	//Otherwise, the price is unchanged.
+	else
+	{
+		chromosome.actual_price_offer = chromosome.price_offer;
+	}
+}
+
+///////////////////////////////////////////////
+// SPOT PRICE SUPPLIER STRATEGY
+///////////////////////////////////////////////
+void FixedSupplierGenome::spotPrice_strategy(unsigned int generation)
+{
+	if(chromosome.spotPrice && chromosome.spotPrice->prices_per_generation.size() < generation)
+		chromosome.actual_price_offer = chromosome.spotPrice->prices_per_generation[generation];
 }
 
 FixedSupplier &FixedSupplierGenome::chromosomeValue()

@@ -174,7 +174,7 @@ void ProsumerGeneticAlg::calcResult(Prosumer &result, const Prosumer &midpoint, 
 	result.policy = midpoint.policy + distance.policy * (randomize()*randomize());
 }
 
-ProsumerGenome *ProsumerGeneticAlg::createInitialRandomGenome()
+ProsumerGenome *ProsumerGeneticAlg::createInitialRandomGenome(unsigned int index, unsigned int population_size)
 {
 	double ec = economic_capacity_base/**0.5) + randomize()*economic_capacity_base*/;
 	double ep = energy_production_base/**0.5) + randomize()*energy_production_base*/;
@@ -199,7 +199,7 @@ std::vector<ProsumerGenome*> ProsumerGeneticAlg::findSurvivors()
 
 	HANDLE  hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
-	std::cout << "Deaths: " << deaths << std::endl;
+	std::cout << "Prosumer Deaths: " << deaths << std::endl;
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
 	return survivors;

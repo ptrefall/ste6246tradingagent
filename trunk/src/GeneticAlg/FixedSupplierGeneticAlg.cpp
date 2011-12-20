@@ -87,7 +87,8 @@ std::vector<FixedSupplierGenome*> FixedSupplierGeneticAlg::crossover(FixedSuppli
 			FixedSupplier res;
 			calcResult(res, midpoint, distance);
 
-			FixedSupplierGenome *child = new FixedSupplierGenome(	mgr,	
+			FixedSupplierGenome *child = new FixedSupplierGenome(	mgr,
+																	mum.chromosomeValue().price_strategy,
 																	res.price_offer, 
 																	res.supply_capacity, 
 																	res.saldo,
@@ -123,12 +124,16 @@ void FixedSupplierGeneticAlg::calcResult(FixedSupplier &result, const FixedSuppl
 	result.participation_cost = midpoint.participation_cost;
 }
 
-FixedSupplierGenome *FixedSupplierGeneticAlg::createInitialRandomGenome()
+FixedSupplierGenome *FixedSupplierGeneticAlg::createInitialRandomGenome(unsigned int index, unsigned int population_size)
 {
 	double po = price_offer_base/**0.5) + randomize()*price_offer_base*/;
 	double sc = supply_capacity_base/**0.5) + randomize()*supply_capacity_base*/;
 	double pc = participation_cost_base/**0.5) + randomize()*participation_cost_base*/;
-	return new FixedSupplierGenome(mgr, po,sc,start_saldo,pc);
+
+	if(index < population_size/2)
+		return new FixedSupplierGenome(mgr, SPS_FIXED_PRICE, po,sc,start_saldo,pc);
+	else
+		return new FixedSupplierGenome(mgr, SPS_SPOT_PRICE, po,sc,start_saldo,pc);
 }
 
 std::vector<FixedSupplierGenome*> FixedSupplierGeneticAlg::findSurvivors()
