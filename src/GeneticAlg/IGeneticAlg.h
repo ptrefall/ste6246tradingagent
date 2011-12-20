@@ -182,7 +182,7 @@ protected:
 // ABSTRACT HELPERS
 ////////////////////////////////////////////
 protected:
-	virtual GenomeType *createInitialRandomGenome() = 0;
+	virtual GenomeType *createInitialRandomGenome(unsigned int index, unsigned int population_size) = 0;
 	virtual std::vector<GenomeType*> findSurvivors() = 0;
 	virtual void sortPopulation() = 0;
 	virtual void selectBestIndividual() = 0;
@@ -195,7 +195,7 @@ private:
 	{
 		//Create an initial population
 		for(unsigned int i = 0; i < generation->population->size; i++)
-			generation->population->individuals.push_back(createInitialRandomGenome());
+			generation->population->individuals.push_back(createInitialRandomGenome(i, generation->population->size));
 
 		//Calculate the fitness of the initial population
 		for(unsigned int i = 0; i < generation->population->individuals.size(); i++)

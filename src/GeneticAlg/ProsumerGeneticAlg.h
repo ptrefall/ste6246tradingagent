@@ -69,7 +69,7 @@ protected:
 	void calcResult(Prosumer &result, const Prosumer &midpoint, const Prosumer &distance) const;
 
 protected:
-	virtual ProsumerGenome *createInitialRandomGenome() override;
+	virtual ProsumerGenome *createInitialRandomGenome(unsigned int index, unsigned int population_size) override;
 	std::vector<ProsumerGenome*> findSurvivors() override;
 	void sortPopulation() override;
 	void selectBestIndividual() override;

@@ -5,6 +5,19 @@
 #include <unordered_map>
 #include <windows.h>
 
+enum SupplierPriceStrategy
+{
+	SPS_FIXED_PRICE = 1,
+	SPS_SPOT_PRICE,
+	SPS_HYBRID_PRICE
+};
+
+class SpotPriceArray
+{
+public:
+	std::vector<double> prices_per_generation;
+};
+
 class FixedSupplier
 {
 public:
@@ -23,8 +36,14 @@ public:
 
 	double reserved_energy;
 
+	unsigned int price_strategy;
+
+	SpotPriceArray *spotPrice; //create this if we're a spot-price strategy supplier
+
 	FixedSupplier() 
-		:	price_offer(0.0), 
+		:	
+			price_strategy(0),
+			price_offer(0.0), 
 			actual_price_offer(price_offer), 
 			supply_capacity(0.0), 
 			saldo(0.0), 
@@ -34,10 +53,12 @@ public:
 			avg_per_hour_factor(24.0*365.0), 
 			reserved_energy(0.0), 
 			participation_cost_accumulator(0.0),
-			participation_factor_accumulator(0.0) {}
+			participation_factor_accumulator(0.0),
+			spotPrice(0x0) {}
 
-	FixedSupplier(double po, double sc, double saldo, double pc) 
-		:	price_offer(po), 
+	FixedSupplier(unsigned int ps, double po, double sc, double saldo, double pc) 
+		:	price_strategy(ps),
+			price_offer(po), 
 			actual_price_offer(price_offer), 
 			supply_capacity(sc), 
 			saldo(saldo), 
@@ -47,13 +68,18 @@ public:
 			avg_per_hour_factor(24.0*365.0), 
 			reserved_energy(0.0), 
 			participation_cost_accumulator(0.0),
-			participation_factor_accumulator(0.0) {}
+			participation_factor_accumulator(0.0),
+			spotPrice(0x0) {}
 
 	static std::ostream &write(std::ostream& s, FixedSupplier& d)
 	{
 		s << "- - Price Offer: " << d.price_offer << std::endl;
 		s << "- - Supply Capacity: " << d.supply_capacity << std::endl;
 		s << "- - Customer Count: " << d.customer_count << std::endl;
+		if(d.price_strategy == SPS_FIXED_PRICE)
+			s << "- - Strategy: FIXED PRICE" << std::endl;
+		else if(d.price_strategy == SPS_SPOT_PRICE)
+			s << "- - Strategy: SPOT PRICE" << std::endl;
 		return s;
 	}
 
@@ -78,7 +104,7 @@ class GAManager;
 class FixedSupplierGenome : public IGenome<FixedSupplier>
 {
 public:
-	FixedSupplierGenome(GAManager &mgr, double po, double sc, double saldo, double pc);
+	FixedSupplierGenome(GAManager &mgr, unsigned int ps, double po, double sc, double saldo, double pc);
 	virtual ~FixedSupplierGenome();
 public:
 	double fitness(unsigned int generation) override;
@@ -113,6 +139,10 @@ public:
 	{
 		return d.write(s,d);
 	}
+
+private:
+	void fixedPrice_strategy(unsigned int generation);
+	void spotPrice_strategy(unsigned int generation);
 	
 private:
 	GAManager &mgr;
