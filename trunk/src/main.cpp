@@ -147,14 +147,14 @@ int main(int argc, char **argv)
 							0);			//Policy
 	ga.initialize();*/
 
-	GAManager gaMgr;
+	/*GAManager gaMgr;
 	gaMgr.initialize();
 	for(unsigned int i = 0; i < 100; i++)
 	{
 		gaMgr.trade();
 		if(gaMgr.evolve())
 			break;
-	}
+	}*/
 
 	char a;
 	std::cout << "Do you want to draw the scene with 1) Software, or 2) OpenGL renderer?" << std::endl;
@@ -203,7 +203,7 @@ int main(int argc, char **argv)
             -1,                                     // node id
             core::vector3df(-512.f, 100.f, -512.f),         // position
             core::vector3df(0.f, 0.f, 0.f),         // rotation
-            core::vector3df(50.f, 1.0f, 50.f),      // scale
+            core::vector3df(10.f, 1.0f, 10.f),      // scale
             video::SColor ( 255, 255, 255, 255 ),   // vertexColor
             5,                                      // maxLOD
             scene::ETPS_17,                         // patchSize
@@ -493,9 +493,17 @@ int main(int argc, char **argv)
 		rocket_gui = new CIrrRocketGUI(device);
 	}
 
+	ITexture *logo = driver->getTexture("../../bin/resources/Gui/images/logo2.png");
+	IGUIImage *logo_gui = guienv->addImage(logo, core::position2d<s32>(driver->getScreenSize().Width/2 - logo->getOriginalSize().Width/2,
+												 driver->getScreenSize().Height/2 - logo->getOriginalSize().Height/2), true);
+	int logo_alpha = 255;
+	logo_gui->setColor(SColor(logo_alpha,255,255,255));
+
 	device->getCursorControl()->setVisible(false);
 
 	double accum_time = 0.0;
+	double logo_fade_start_accum = 0.0;
+	double logo_fade_at = 6.0;
 	//int generation = 0;
 	while(device->run())
 	{
@@ -506,7 +514,20 @@ int main(int argc, char **argv)
 		//device->setWindowCaption((const wchar_t*)(std::string("TradingAgent") + std::stringHelp::int_to_text(driver->getFPS())).c_str());
 
 		if(fps_ms < 0.1)
+		{
 			accum_time += fps_ms;
+			logo_fade_start_accum += fps_ms;
+		}
+
+		if(logo_fade_start_accum >= logo_fade_at)
+		{
+			logo_alpha--;
+			if(logo_alpha < 0)
+				logo_gui->setEnabled(false);
+			else
+				logo_gui->setColor(SColor(logo_alpha,255,255,255));
+		}
+
 		/*if(accum_time > 10.0)
 		{
 			accum_time = 0.0;*/
@@ -555,7 +576,7 @@ int main(int argc, char **argv)
 		smgr->drawAll();
 		if(rocket_gui)
 			rocket_gui->run();
-		else
+		//else
 			guienv->drawAll();
 		driver->endScene();
 
