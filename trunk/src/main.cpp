@@ -147,16 +147,6 @@ int main(int argc, char **argv)
 							0);			//Policy
 	ga.initialize();*/
 
-	GAManager gaMgr;
-	gaMgr.initialize();
-	std::cout << "Genearation	ProsumerSaldo	EconomicCapacity	EnergyConsumption	ProsumerPopulationSize	ProsumerDeaths	SupplierSaldo	PriceOffer	CustomerCount	PriceStrategy	SupplierPopulationSize	SupplierDeaths" << std::endl;
-	for(unsigned int i = 0; i < 100; i++)
-	{
-		gaMgr.trade();
-		if(gaMgr.evolve())
-			break;
-	}
-
 	char a;
 	std::cout << "Do you want to draw the scene with 1) Software, or 2) OpenGL renderer?" << std::endl;
 	std::cin >> a;
@@ -211,38 +201,14 @@ int main(int argc, char **argv)
             4                                       // smoothFactor
             );
 
-	std::vector<double> test_values;
-	test_values.push_back(0.0);
-	test_values.push_back(0.1);
-	test_values.push_back(0.3);
-	test_values.push_back(0.8);
-	test_values.push_back(0.85);
-	test_values.push_back(0.90);
-	test_values.push_back(0.95);
-	test_values.push_back(1.0);
-	test_values.push_back(0.95);
-	test_values.push_back(0.90);
-	test_values.push_back(0.85);
-	test_values.push_back(0.8);
-	test_values.push_back(0.3);
-	test_values.push_back(0.1);
-	test_values.push_back(0.0);
-
 	mglGraphZB gr;
 	gr.SetSize(512, 512);
-	mglData dat(100);
-	char frame_script[32];
-	gr.NewFrame();
+	mglData y(10,3);
+	y.Modify("0.8*sin(pi*(2*x+y/2))+0.2*rnd");
+	gr.Org=mglPoint(0,0);
 	gr.Box();
-	//sprintf(frame_script,"sin(pi*x+%g*pi)",0.2*0);
-	//dat.Modify(frame_script);
-	const double *v = new double[test_values.size()];
-
-	dat.Set(v, test_values.size());
-	gr.Plot(dat, "b");
-	gr.EndFrame();
+	gr.Bars(y);
 	//gr.WriteBMP("test.bmp");
-	//unsigned char *bits = const_cast<unsigned char*>(gr.GetBits());
 	unsigned char *bits = const_cast<unsigned char*>(gr.GetBits());
 
 	IImage *graph_plot_image = driver->createImageFromData(ECF_R8G8B8, dimension2d<u32>(gr.GetWidth(), gr.GetHeight()), bits);
@@ -435,7 +401,17 @@ int main(int argc, char **argv)
 	///////////////////////////////
 	// POPULATION
 	///////////////////////////////
-	try{
+	GAManager gaMgr(smgr,emgr, factory);
+	gaMgr.initialize();
+	std::cout << "Genearation	ProsumerSaldo	EconomicCapacity	EnergyConsumption	ProsumerPopulationSize	ProsumerDeaths	SupplierSaldo	PriceOffer	CustomerCount	PriceStrategy	SupplierPopulationSize	SupplierDeaths" << std::endl;
+	/*for(unsigned int i = 0; i < 100; i++)
+	{
+		gaMgr.trade();
+		if(gaMgr.evolve())
+			break;
+	}*/
+
+	/*try{
 		Entity &entity = emgr.create(factory);
 		entity.addComponent<EntityManager, ISceneManager>("Health", emgr, *smgr);
 		if(a == '1')
@@ -489,7 +465,7 @@ int main(int argc, char **argv)
 		entity.getProperty<vector3df>("Position") = vector3df(30,0,0);
 	}catch(std::exception &e){
 		std::cout << e.what() << std::endl;
-	}
+	}*/
 
 	//////////////////////////////////////////
 	// GUI INITIALIZING
@@ -513,6 +489,10 @@ int main(int argc, char **argv)
 
 	device->getCursorControl()->setVisible(false);
 
+	double ga_accum = 0.0;
+	double ga_update_speed = 1.0;
+	bool ga_stop = false;
+
 	double accum_time = 0.0;
 	double logo_fade_start_accum = 0.0;
 	double logo_fade_at = 6.0;
@@ -529,6 +509,7 @@ int main(int argc, char **argv)
 		{
 			accum_time += fps_ms;
 			logo_fade_start_accum += fps_ms;
+			ga_accum += fps_ms;
 		}
 
 		if(logo_fade_start_accum >= logo_fade_at)
@@ -539,6 +520,15 @@ int main(int argc, char **argv)
 			else
 				logo_gui->setColor(SColor(logo_alpha,255,255,255));
 		}
+
+
+		if(!ga_stop && ga_accum > ga_update_speed)
+		{
+			ga_accum = 0.0;
+			gaMgr.trade();
+			ga_stop = gaMgr.evolve();
+		}
+				
 
 		/*if(accum_time > 10.0)
 		{

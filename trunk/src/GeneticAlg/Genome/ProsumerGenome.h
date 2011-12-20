@@ -6,6 +6,7 @@
 #include <windows.h>
 
 class ProsumerGenome;
+class Entity;
 
 class Prosumer
 {
@@ -100,6 +101,7 @@ public:
 private:
 	GAManager &mgr;
 	Prosumer chromosome;
+	Entity *entity;
 	std::unordered_map<unsigned int, std::pair<Prosumer, Prosumer>> mutations;
 };
 

@@ -4,17 +4,24 @@ class ProsumerGeneticAlg;
 class SupplierGeneticAlg;
 class Prosumer;
 
+#include <Entity\EntityManager.h>
+#include <Totem\ComponentFactory.h>
+#include <Irrlicht\irrlicht.h>
 #include <vector>
 
 class GAManager
 {
 public:
-	GAManager();
+	GAManager(irr::scene::ISceneManager *smgr, EntityManager &entityMgr, Totem::ComponentFactory &componentFactory);
 	~GAManager();
 
 	void initialize();
 	void trade();
 	bool evolve();
+
+	irr::scene::ISceneManager *getSceneMgr() { return smgr; }
+	EntityManager &getEntityMgr() { return entityMgr; }
+	Totem::ComponentFactory &getComponentFactory() { return componentFactory; }
 
 //GA getters
 public:
@@ -51,6 +58,9 @@ private:
 	void getCustomersInRandomOrder(std::vector<Prosumer*> &customers);
 
 private:
+	irr::scene::ISceneManager *smgr;
+	EntityManager &entityMgr;
+	Totem::ComponentFactory &componentFactory;
 	ProsumerGeneticAlg *prosumerGA;
 	SupplierGeneticAlg *SupplierGA;
 };
