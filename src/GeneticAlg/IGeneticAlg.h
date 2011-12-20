@@ -27,6 +27,7 @@ public:
 	double fitness_for_survival_threshold;
 	Population<GenomeType> *population;
 	GenomeType *bestGenome;
+	unsigned int deaths;
 
 	Generation(	unsigned int id,
 				double fitness_for_survival_threshold, 
@@ -35,7 +36,7 @@ public:
 		:	id(id), 
 			fitness_for_survival_threshold(fitness_for_survival_threshold), 
 			population(new Population<GenomeType>(populationSize)), 
-			bestGenome(0x0) {}
+			bestGenome(0x0), deaths(0) {}
 
 	~Generation() { delete population; }
 };

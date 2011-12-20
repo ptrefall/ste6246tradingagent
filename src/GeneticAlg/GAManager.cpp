@@ -122,13 +122,16 @@ bool GAManager::evolve()
 	if(finished)
 		return finished;
 
-	//ProsumerSaldo	EconomicCapacity	EnergyConsumption	SupplierSaldo	PriceOffer	CustomerCount	PriceStrategy
+	//Genearation	ProsumerSaldo	EconomicCapacity	EnergyConsumption	ProsumerPopulationSize	ProsumerDeaths	SupplierSaldo	PriceOffer	CustomerCount	PriceStrategy	SupplierPopulationSize	SupplierDeaths
 
+	std::cout << prosumerGA->generation->id << "\t";
 	if(prosumerGA->generation->bestGenome)
 	{
 		std::cout << prosumerGA->generation->bestGenome->chromosomeValue().saldo << "\t";
 		std::cout << prosumerGA->generation->bestGenome->chromosomeValue().economic_capacity << "\t";
 		std::cout << prosumerGA->generation->bestGenome->chromosomeValue().energy_consumption << "\t";
+		std::cout << prosumerGA->generation->population->individuals.size() << "\t";
+		std::cout << prosumerGA->generation->deaths << "\t";
 	}
 	if(SupplierGA->generation->bestGenome)
 	{
@@ -136,8 +139,10 @@ bool GAManager::evolve()
 		std::cout << SupplierGA->generation->bestGenome->chromosomeValue().actual_price_offer << "\t";
 		std::cout << SupplierGA->generation->bestGenome->chromosomeValue().customer_count << "\t";
 		std::cout << SupplierGA->generation->bestGenome->chromosomeValue().price_strategy << "\t";
+		std::cout << SupplierGA->generation->population->individuals.size() << "\t";
+		std::cout << SupplierGA->generation->deaths << "\t";
 	}
-	//std::cout << std::endl;
+	std::cout << std::endl;
 
 	return false;
 }
