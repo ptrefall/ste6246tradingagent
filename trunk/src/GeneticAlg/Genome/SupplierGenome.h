@@ -39,6 +39,8 @@ public:
 	unsigned int price_strategy;
 
 	SpotPriceArray *spotPrice; //create this if we're a spot-price strategy supplier
+	double hybrid_spot_percentage;
+	double hybrid_fixed_percentage;
 
 	Supplier() 
 		:	
@@ -54,9 +56,11 @@ public:
 			reserved_energy(0.0), 
 			participation_cost_accumulator(0.0),
 			participation_factor_accumulator(0.0),
-			spotPrice(0x0) {}
+			spotPrice(0x0),
+			hybrid_spot_percentage(0),
+			hybrid_fixed_percentage(0) {}
 
-	Supplier(unsigned int ps, double po, double sc, double saldo, double pc) 
+	Supplier(unsigned int ps, double po, double sc, double saldo, double pc, double hsp, double hfp) 
 		:	price_strategy(ps),
 			price_offer(po), 
 			actual_price_offer(price_offer), 
@@ -69,17 +73,21 @@ public:
 			reserved_energy(0.0), 
 			participation_cost_accumulator(0.0),
 			participation_factor_accumulator(0.0),
-			spotPrice(0x0) {}
+			spotPrice(0x0),
+			hybrid_spot_percentage(hsp),
+			hybrid_fixed_percentage(hfp) {}
 
 	static std::ostream &write(std::ostream& s, Supplier& d)
 	{
-		s << "- - Price Offer: " << d.price_offer << std::endl;
+		s << "- - Price Offer: " << d.actual_price_offer << std::endl;
 		s << "- - Supply Capacity: " << d.supply_capacity << std::endl;
 		s << "- - Customer Count: " << d.customer_count << std::endl;
 		if(d.price_strategy == SPS_FIXED_PRICE)
 			s << "- - Strategy: FIXED PRICE" << std::endl;
 		else if(d.price_strategy == SPS_SPOT_PRICE)
 			s << "- - Strategy: SPOT PRICE" << std::endl;
+		else if(d.price_strategy == SPS_HYBRID_PRICE)
+			s << "- - Strategy: HYBRID PRICE" << std::endl;
 		return s;
 	}
 
@@ -104,7 +112,7 @@ class GAManager;
 class SupplierGenome : public IGenome<Supplier>
 {
 public:
-	SupplierGenome(GAManager &mgr, unsigned int ps, double po, double sc, double saldo, double pc);
+	SupplierGenome(GAManager &mgr, unsigned int ps, double po, double sc, double saldo, double pc, double hsp, double hfp);
 	virtual ~SupplierGenome();
 public:
 	double fitness(unsigned int generation) override;
@@ -143,6 +151,7 @@ public:
 private:
 	void fixedPrice_strategy(unsigned int generation);
 	void spotPrice_strategy(unsigned int generation);
+	void hybridPrice_strategy(unsigned int generation);
 	
 private:
 	GAManager &mgr;

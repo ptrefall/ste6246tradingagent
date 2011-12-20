@@ -3,10 +3,10 @@
 #include "../ElPrice_loader.h"
 #include <math.h>
 
-SupplierGenome::SupplierGenome(GAManager &mgr, unsigned int ps, double po, double sc, double saldo, double pc)
-	: mgr(mgr), chromosome(ps,po,sc,saldo,pc), first_time(true), has_traded(false)
+SupplierGenome::SupplierGenome(GAManager &mgr, unsigned int ps, double po, double sc, double saldo, double pc, double hsp, double hfp)
+	: mgr(mgr), chromosome(ps,po,sc,saldo,pc, hsp, hfp), first_time(true), has_traded(false)
 {
-	if(ps == SPS_SPOT_PRICE)
+	if(ps == SPS_SPOT_PRICE || ps == SPS_HYBRID_PRICE)
 	{
 		chromosome.spotPrice = new SpotPriceArray();
 		ElSpotPriceLoader::loadPriceData("../../bin/resources/ElPrice/Elspot_prices.txt", chromosome.spotPrice->prices_per_generation);
@@ -25,6 +25,8 @@ double SupplierGenome::fitness(unsigned int generation)
 		fixedPrice_strategy(generation);
 	else if(chromosome.price_strategy == SPS_SPOT_PRICE)
 		spotPrice_strategy(generation);
+	else if(chromosome.price_strategy == SPS_HYBRID_PRICE)
+		hybridPrice_strategy(generation);
 
 	chromosome.customer_count = chromosome.customer_count_ref;
 
@@ -107,6 +109,18 @@ void SupplierGenome::spotPrice_strategy(unsigned int generation)
 {
 	if(chromosome.spotPrice && chromosome.spotPrice->prices_per_generation.size() < generation)
 		chromosome.actual_price_offer = chromosome.spotPrice->prices_per_generation[generation];
+}
+
+///////////////////////////////////////////////
+// HYBRID PRICE SUPPLIER STRATEGY
+///////////////////////////////////////////////
+void SupplierGenome::hybridPrice_strategy(unsigned int generation)
+{
+	fixedPrice_strategy(generation);
+
+	if(chromosome.spotPrice && chromosome.spotPrice->prices_per_generation.size() < generation)
+		chromosome.actual_price_offer = (chromosome.actual_price_offer*chromosome.hybrid_fixed_percentage) + 
+										chromosome.spotPrice->prices_per_generation[generation]*chromosome.hybrid_spot_percentage;
 }
 
 Supplier &SupplierGenome::chromosomeValue()
