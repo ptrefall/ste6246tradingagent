@@ -70,7 +70,7 @@ set(GA_HDRS
 	./GeneticAlg/IGeneticAlg.h
 	#./GeneticAlg/RgbGeneticAlg.h
 	./GeneticAlg/ProsumerGeneticAlg.h
-	./GeneticAlg/FixedSupplierGeneticAlg.h
+	./GeneticAlg/SupplierGeneticAlg.h
 	./GeneticAlg/ElPrice_loader.h
 )
 SOURCE_GROUP("Header Files\\GeneticAlg" FILES ${GA_HDRS})
@@ -79,14 +79,14 @@ set(GA_SRCS
 	./GeneticAlg/GAManager.cpp
 	#./GeneticAlg/RgbGeneticAlg.cpp
 	./GeneticAlg/ProsumerGeneticAlg.cpp
-	./GeneticAlg/FixedSupplierGeneticAlg.cpp
+	./GeneticAlg/SupplierGeneticAlg.cpp
 	./GeneticAlg/ElPrice_loader.cpp
 )
 SOURCE_GROUP("Source Files\\GeneticAlg" FILES ${GA_SRCS})
 #---------------------------------------------------------------
 set(GA_GENOME_HDRS
 	./GeneticAlg/Genome/ProsumerGenome.h
-	./GeneticAlg/Genome/FixedSupplierGenome.h
+	./GeneticAlg/Genome/SupplierGenome.h
 	./GeneticAlg/Genome/IGenome.h
 	#./GeneticAlg/Genome/RgbGenome.h
 )
@@ -94,7 +94,7 @@ SOURCE_GROUP("Header Files\\GeneticAlg\\Genome" FILES ${GA_GENOME_HDRS})
 #---------------------------------------------------------------
 set(GA_GENOME_SRCS
 	./GeneticAlg/Genome/ProsumerGenome.cpp
-	./GeneticAlg/Genome/FixedSupplierGenome.cpp
+	./GeneticAlg/Genome/SupplierGenome.cpp
 	#./GeneticAlg/Genome/RgbGenome.cpp
 )
 SOURCE_GROUP("Source Files\\GeneticAlg\\Genome" FILES ${GA_GENOME_SRCS})

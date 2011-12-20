@@ -1,7 +1,7 @@
 #pragma once
 
 class ProsumerGeneticAlg;
-class FixedSupplierGeneticAlg;
+class SupplierGeneticAlg;
 class Prosumer;
 
 #include <vector>
@@ -19,7 +19,7 @@ public:
 //GA getters
 public:
 	ProsumerGeneticAlg *getProsumer() { return prosumerGA; }
-	FixedSupplierGeneticAlg *getFixedSupplier() { return fixedSupplierGA; }
+	SupplierGeneticAlg *getSupplier() { return SupplierGA; }
 
 //PIMPL Helper functions for Prosument GA
 public:
@@ -36,12 +36,12 @@ public:
 
 //PIMPL Helper functions for Fixed Supplier GA
 public:
-	unsigned int getFixedSupplierPopulationSize() const;
-	double getFixedSupplierPriceOffer(unsigned int individual) const;
-	double getFixedSupplierUnreservedSupplyCapacity(unsigned int individual) const; //For each customer reserving energy with this individual supplyer, this capacity will decrease
-	double getFixedSupplierSupplyCapacity(unsigned int individual) const;
-	double getFixedSupplierSupplyCapacitySUM() const;
-	unsigned int getFixedSupplierCustomerCount(unsigned int individual) const;
+	unsigned int getSupplierPopulationSize() const;
+	double getSupplierPriceOffer(unsigned int individual) const;
+	double getSupplierUnreservedSupplyCapacity(unsigned int individual) const; //For each customer reserving energy with this individual supplyer, this capacity will decrease
+	double getSupplierSupplyCapacity(unsigned int individual) const;
+	double getSupplierSupplyCapacitySUM() const;
+	unsigned int getSupplierCustomerCount(unsigned int individual) const;
 
 //PIMPL Helper functions for Spot Supplier GA
 public:
@@ -52,5 +52,5 @@ private:
 
 private:
 	ProsumerGeneticAlg *prosumerGA;
-	FixedSupplierGeneticAlg *fixedSupplierGA;
+	SupplierGeneticAlg *SupplierGA;
 };

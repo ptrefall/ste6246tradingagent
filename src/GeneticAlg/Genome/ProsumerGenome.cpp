@@ -1,7 +1,4 @@
 #include "ProsumerGenome.h"
-#include "FixedSupplierGenome.h"
-//#include "SpotSupplierGenome.h"
-//#include "HybridSupplierGenome.h"
 #include <math.h>
 
 ProsumerGenome::ProsumerGenome(GAManager &mgr, double ec, double ep, double ef, double flex, unsigned int policy, double saldo)
