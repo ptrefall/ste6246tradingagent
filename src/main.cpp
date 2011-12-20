@@ -147,14 +147,14 @@ int main(int argc, char **argv)
 							0);			//Policy
 	ga.initialize();*/
 
-	GAManager gaMgr;
+	/*GAManager gaMgr;
 	gaMgr.initialize();
 	for(unsigned int i = 0; i < 100; i++)
 	{
 		gaMgr.trade();
 		if(gaMgr.evolve())
 			break;
-	}
+	}*/
 
 	char a;
 	std::cout << "Do you want to draw the scene with 1) Software, or 2) OpenGL renderer?" << std::endl;
@@ -273,6 +273,26 @@ int main(int argc, char **argv)
     terrain->setMaterialType(video::EMT_DETAIL_MAP);
     terrain->scaleTexture(4.0f, 1280.0f);
 
+	//ICameraSceneNode *camera = smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
+	//ICameraSceneNode *camera = smgr->addCameraSceneNodeMaya(0, -1500.0f, 200.0f, 1500.0f);
+	ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0, 100.0f, 0.25f);
+	camera->setPosition(vector3df(0, 0, -40));
+	float spawn_height = terrain->getHeight(camera->getPosition().X, camera->getPosition().Z);
+	camera->setPosition(vector3df(0.0f, spawn_height+30.0f, -40.0f));
+	if(a == '2')
+		camera->setFarValue(100000);
+
+	//Collide camera with terrain
+	scene::ITriangleSelector* selector = smgr->createTerrainTriangleSelector(terrain, 0);
+	terrain->setTriangleSelector(selector);
+	scene::ISceneNodeAnimator* anim = smgr->createCollisionResponseAnimator(
+            selector, camera, core::vector3df(10,10,10),
+            core::vector3df(0,0,0),
+            core::vector3df(0,10,0));
+    selector->drop();
+    camera->addAnimator(anim);
+    anim->drop();
+
 	//const float spawn_height = 175.0f;
 
 	//ISceneNode *tower = smgr->addSceneNode("Tower");
@@ -356,15 +376,6 @@ int main(int argc, char **argv)
 			healthbar->setScale(vector3df(0.02f, 0.02f, 0.02f));
 		}
 	}*/
-
-	//ICameraSceneNode *camera = smgr->addCameraSceneNode(0, vector3df(0,30,-40), vector3df(0,5,0));
-	//ICameraSceneNode *camera = smgr->addCameraSceneNodeMaya(0, -1500.0f, 200.0f, 1500.0f);
-	ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0, 100.0f, 0.25f);
-	camera->setPosition(vector3df(0, 0, -40));
-	float spawn_height = terrain->getHeight(camera->getPosition().X, camera->getPosition().Z);
-	camera->setPosition(vector3df(0.0f, spawn_height+30.0f, -40.0f));
-	if(a == '2')
-		camera->setFarValue(100000);
 
 	//////////////////////////////////////////
 	// WEATHER INITIALIZING
