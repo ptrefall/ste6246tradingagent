@@ -149,6 +149,7 @@ int main(int argc, char **argv)
 
 	GAManager gaMgr;
 	gaMgr.initialize();
+	std::cout << "ProsumerSaldo	EconomicCapacity	EnergyConsumption	SupplierSaldo	PriceOffer	CustomerCount	PriceStrategy" << std::endl;
 	for(unsigned int i = 0; i < 100; i++)
 	{
 		gaMgr.trade();

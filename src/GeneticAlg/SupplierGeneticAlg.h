@@ -19,7 +19,9 @@ public:
 						double start_saldo =					1.0, 
 						double price_offer_base =				2.0, 
 						double supply_capacity_base =			1.0, 
-						double participation_cost_base =		0.01
+						double participation_cost_base =		0.01,
+						double hybrid_spot_percentage =			0.4,
+						double hybrid_fixed_percentage =		0.75
 					  );
 
 	virtual ~SupplierGeneticAlg();
@@ -76,5 +78,7 @@ protected:
 	double price_offer_base;
 	double supply_capacity_base;
 	double participation_cost_base;
+	double hybrid_spot_percentage_base;
+	double hybrid_fixed_percentage_base;
 };
 

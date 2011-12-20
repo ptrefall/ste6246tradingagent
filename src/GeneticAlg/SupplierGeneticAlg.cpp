@@ -11,7 +11,9 @@ SupplierGeneticAlg::SupplierGeneticAlg(GAManager &mgr,
 										double start_saldo, 
 										double price_offer_base, 
 										double supply_capacity_base, 
-										double participation_cost_base)
+										double participation_cost_base,
+										double hybrid_spot_percentage_base,
+										double hybrid_fixed_percentage_base)
 
 	: IGeneticAlg<SupplierGenome>(	mgr,
 										population_size, 
@@ -23,7 +25,9 @@ SupplierGeneticAlg::SupplierGeneticAlg(GAManager &mgr,
 								 start_saldo(start_saldo), 
 								 price_offer_base(price_offer_base), 
 								 supply_capacity_base(supply_capacity_base), 
-								 participation_cost_base(participation_cost_base)
+								 participation_cost_base(participation_cost_base),
+								 hybrid_spot_percentage_base(hybrid_spot_percentage_base),
+								 hybrid_fixed_percentage_base(hybrid_fixed_percentage_base)
 {
 }
 
@@ -40,6 +44,8 @@ bool SupplierGeneticAlg::mutate(SupplierGenome &genome, double chance) const
 	temp.price_offer = value.price_offer;
 	temp.supply_capacity = value.supply_capacity;
 	temp.participation_cost = value.participation_cost;
+	temp.hybrid_spot_percentage = value.hybrid_spot_percentage;
+	temp.hybrid_fixed_percentage = value.hybrid_fixed_percentage;
 
 	double result = randomize();
 	if(result <= chance)
@@ -51,6 +57,12 @@ bool SupplierGeneticAlg::mutate(SupplierGenome &genome, double chance) const
 	if(result <= chance)
 	{
 		temp.supply_capacity = (supply_capacity_base*0.5) + randomize()*supply_capacity_base;
+		genome_was_mutated = true;
+	}
+	result = randomize();
+	if(result <= chance)
+	{
+		temp.hybrid_spot_percentage = (hybrid_spot_percentage_base*0.5) + randomize()*hybrid_spot_percentage_base;
 		genome_was_mutated = true;
 	}
 
@@ -72,6 +84,8 @@ bool SupplierGeneticAlg::mutate(SupplierGenome &genome, double chance) const
 std::vector<SupplierGenome*> SupplierGeneticAlg::crossover(SupplierGenome &mum, SupplierGenome &dad, unsigned int child_count, double chance)
 {
 	std::vector<SupplierGenome*> children;
+	if(mum.chromosomeValue().price_strategy != dad.chromosomeValue().price_strategy)
+		return children;
 
 	double result = randomize();
 	if(result <= chance)
@@ -92,7 +106,9 @@ std::vector<SupplierGenome*> SupplierGeneticAlg::crossover(SupplierGenome &mum, 
 																	res.price_offer, 
 																	res.supply_capacity, 
 																	res.saldo,
-																	res.participation_cost);
+																	res.participation_cost,
+																	res.hybrid_spot_percentage,
+																	res.hybrid_fixed_percentage);
 			children.push_back(child);
 		}
 	}
@@ -106,6 +122,8 @@ void SupplierGeneticAlg::calcMidpoint(Supplier &midpoint, const Supplier &a, con
 	midpoint.supply_capacity = (a.supply_capacity + b.supply_capacity) / 2.0;
 	midpoint.saldo = (a.saldo + b.saldo) / 2.0;
 	midpoint.participation_cost = (a.participation_cost + b.participation_cost) / 2.0;
+	midpoint.hybrid_spot_percentage = (a.hybrid_spot_percentage + b.hybrid_spot_percentage) / 2.0;
+	midpoint.hybrid_fixed_percentage = (a.hybrid_fixed_percentage + b.hybrid_fixed_percentage) / 2.0;
 }
 
 void SupplierGeneticAlg::calcDistance(Supplier &distance, const Supplier &a, const Supplier &b) const 
@@ -114,6 +132,8 @@ void SupplierGeneticAlg::calcDistance(Supplier &distance, const Supplier &a, con
 	distance.supply_capacity = (int)fabs((double)a.supply_capacity - (double)b.supply_capacity);
 	distance.saldo = (int)fabs((double)a.saldo - (double)b.saldo);
 	distance.participation_cost = (int)fabs((double)a.participation_cost - (double)b.participation_cost);
+	distance.hybrid_spot_percentage = (int)fabs((double)a.hybrid_spot_percentage - (double)b.hybrid_spot_percentage);
+	distance.hybrid_fixed_percentage = (int)fabs((double)a.hybrid_fixed_percentage - (double)b.hybrid_fixed_percentage);
 }
 
 void SupplierGeneticAlg::calcResult(Supplier &result, const Supplier &midpoint, const Supplier &distance) const
@@ -122,6 +142,8 @@ void SupplierGeneticAlg::calcResult(Supplier &result, const Supplier &midpoint, 
 	result.supply_capacity = midpoint.supply_capacity + distance.supply_capacity * (randomize()*randomize());
 	result.saldo = midpoint.saldo + distance.saldo * (randomize()*randomize());
 	result.participation_cost = midpoint.participation_cost;
+	result.hybrid_spot_percentage = midpoint.hybrid_spot_percentage + distance.hybrid_spot_percentage * (randomize()*randomize());
+	result.hybrid_fixed_percentage = midpoint.hybrid_fixed_percentage + distance.hybrid_fixed_percentage * (randomize()*randomize());
 }
 
 SupplierGenome *SupplierGeneticAlg::createInitialRandomGenome(unsigned int index, unsigned int population_size)
@@ -129,11 +151,15 @@ SupplierGenome *SupplierGeneticAlg::createInitialRandomGenome(unsigned int index
 	double po = price_offer_base/**0.5) + randomize()*price_offer_base*/;
 	double sc = supply_capacity_base/**0.5) + randomize()*supply_capacity_base*/;
 	double pc = participation_cost_base/**0.5) + randomize()*participation_cost_base*/;
+	double hsp = hybrid_spot_percentage_base;
+	double hfp = hybrid_fixed_percentage_base;
 
-	if(index < population_size/2)
-		return new SupplierGenome(mgr, SPS_FIXED_PRICE, po,sc,start_saldo,pc);
-	else
-		return new SupplierGenome(mgr, SPS_SPOT_PRICE, po,sc,start_saldo,pc);
+	if(index < population_size/3)
+		return new SupplierGenome(mgr, SPS_FIXED_PRICE, po,sc,start_saldo,pc, hsp, hfp);
+	else if(index < (population_size/3)*2)
+		return new SupplierGenome(mgr, SPS_SPOT_PRICE, po,sc,start_saldo,pc, hsp, hfp);
+	else 
+		return new SupplierGenome(mgr, SPS_HYBRID_PRICE, po,sc,start_saldo,pc, hsp, hfp);
 }
 
 std::vector<SupplierGenome*> SupplierGeneticAlg::findSurvivors()
