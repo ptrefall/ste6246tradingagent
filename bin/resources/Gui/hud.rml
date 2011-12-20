@@ -7,10 +7,6 @@
 	<body>
 		<!--SCREENSPACE WRAPPER-->
 		<div id="wrapper"><div id="wrapper-inner">
-				<!--LOGO CONTAINER-->
-				<div id="logo">
-				</div>
-				
 				<!--HEALTH CONTAINER-->
 				<div id="health">
 					<div id="health_label">health</div>
