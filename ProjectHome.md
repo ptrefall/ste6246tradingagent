@@ -1,0 +1,1 @@
+In the course STE6246 Artificial Intelligence at Narvik University College (NUC), we're writing a Trading Agent using Genetic Algorithm.
